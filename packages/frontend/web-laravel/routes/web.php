@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\VashMatch;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Home'    );
+    return Inertia::render('Home', [
+        'matches' => VashMatch::all()
+    ]);
 });
 
 Route::get('/dashboard', function () {
