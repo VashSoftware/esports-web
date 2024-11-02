@@ -1,7 +1,7 @@
 <script>
     import Layout from "../Shared/Layout.svelte";
 
-    export let matches;
+    let { matches } = $props();
 </script>
 
 <Layout>

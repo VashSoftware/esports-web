@@ -1,8 +1,10 @@
 <script>
+    import { preventDefault } from 'svelte/legacy';
+
     import { useForm } from "@inertiajs/svelte";
     import Layout from "../../Shared/Layout.svelte";
 
-    export let matches;
+    let { matches } = $props();
 
     let form = useForm({
         map_pool_id: 1,
@@ -19,7 +21,7 @@
             Matches ({matches.length})
         </h2>
 
-        <form on:submit|preventDefault={createMatch}>
+        <form onsubmit={preventDefault(createMatch)}>
             <button class="bg-slate-500 px-4 py-2 rounded">
                 Create Custom Match
             </button>

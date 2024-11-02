@@ -1,7 +1,9 @@
 <script>
-    export let auth
+    import { run } from 'svelte/legacy';
 
-    let showMenu = false
+    let { auth, children } = $props();
+
+    let showMenu = $state(false)
 
     // Function to handle click outside the menu to close it
     const handleClickOutside = (event) => {
@@ -13,11 +15,13 @@
     }
 
     // Add event listener when menu is open
-    $: if (showMenu) {
-        window.addEventListener('click', handleClickOutside)
-    } else {
-        window.removeEventListener('click', handleClickOutside)
-    }
+    run(() => {
+        if (showMenu) {
+            window.addEventListener('click', handleClickOutside)
+        } else {
+            window.removeEventListener('click', handleClickOutside)
+        }
+    });
 </script>
 
 <div class="flex h-screen">
@@ -30,7 +34,7 @@
                 <a href="/" class="text-2xl font-bold">Vash Esports</a>
                 <button
                     id="create-button"
-                    on:click={() => (showMenu = !showMenu)}
+                    onclick={() => (showMenu = !showMenu)}
                     class="text-3xl hover:text-gray-400 focus:outline-none"
                     aria-label="Create"
                 >
@@ -167,6 +171,6 @@
     <!-- Main Content Area -->
     <main class="flex-1 overflow-auto bg-primary p-6 text-white">
         <!-- Content goes here -->
-        <slot />
+        {@render children?.()}
     </main>
 </div>

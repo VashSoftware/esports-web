@@ -1,8 +1,10 @@
 <script>
+    import { preventDefault } from 'svelte/legacy';
+
     import { useForm, router } from "@inertiajs/svelte";
     import Layout from "../Shared/Layout.svelte";
 
-    export let mapPools;
+    let { mapPools } = $props();
 
     let values = {
         mods: [
@@ -20,7 +22,7 @@
 </script>
 
 <Layout>
-    <form on:submit|preventDefault={storeMapPool}>
+    <form onsubmit={preventDefault(storeMapPool)}>
         <input type="text" />
 
         <button>Create</button>
@@ -36,7 +38,7 @@
         </thead>
         <tbody>
             {#each mapPools as pool}
-                <tr on:click={router.visit(`/map_pools/${pool.id}`)}>
+                <tr onclick={router.visit(`/map_pools/${pool.id}`)}>
                     <td>{pool.name}</td>
                     <td>{pool.description}</td>
                     <td>{pool.created_at}</td>

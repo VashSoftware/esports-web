@@ -1,7 +1,7 @@
 <script>
     import Layout from "../Shared/Layout.svelte";
 
-    export let profile;
+    let { profile } = $props();
 
     console.log(profile);
 </script>

@@ -1,9 +1,7 @@
 <script>
     import Layout from "../Shared/Layout.svelte";
 
-    export let top_players;
-    export let top_teams;
-    export let top_scores;
+    let { top_players, top_teams, top_scores } = $props();
 </script>
 
 <Layout>

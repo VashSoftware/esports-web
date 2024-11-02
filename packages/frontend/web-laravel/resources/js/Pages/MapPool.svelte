@@ -1,7 +1,7 @@
 <script>
     import Layout from "../Shared/Layout.svelte";
 
-    export let mapPool;
+    let { mapPool } = $props();
 </script>
 
 <Layout>

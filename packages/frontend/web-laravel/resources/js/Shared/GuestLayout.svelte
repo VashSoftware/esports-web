@@ -1,6 +1,11 @@
 <script lang="ts">
     import { inertia } from "@inertiajs/svelte";
     import ApplicationLogo from "../Components/ApplicationLogo.svelte";
+    interface Props {
+        children?: import('svelte').Snippet;
+    }
+
+    let { children }: Props = $props();
 </script>
 
 <div
@@ -15,6 +20,6 @@
     <div
         class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800"
     >
-        <slot />
+        {@render children?.()}
     </div>
 </div>
