@@ -1,5 +1,5 @@
 <script>
-    import { useForm } from "@inertiajs/svelte";
+    import { useForm, router } from "@inertiajs/svelte";
     import Layout from "../Shared/Layout.svelte";
 
     export let mapPools;
@@ -26,7 +26,22 @@
         <button>Create</button>
     </form>
 
-    {#each mapPools as pool}
-        hiii :3
-    {/each}
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Created At</th>
+                <th>Mods</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each mapPools as pool}
+                <tr on:click={router.visit(`/map_pools/${pool.id}`)}>
+                    <td>{pool.name}</td>
+                    <td>{pool.description}</td>
+                    <td>{pool.created_at}</td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
 </Layout>

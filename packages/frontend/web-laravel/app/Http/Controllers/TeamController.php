@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MapPool;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
-class MapPoolController extends Controller
+class TeamController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('MapPools', ['mapPools' => MapPool::all()]);
+        //
     }
 
     /**
@@ -29,7 +27,7 @@ class MapPoolController extends Controller
      */
     public function store(Request $request)
     {
-        MapPool::create();
+        //
     }
 
     /**
@@ -37,8 +35,7 @@ class MapPoolController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('MapPool', ['mapPool' => MapPool::find($id)]);
-
+        //
     }
 
     /**
