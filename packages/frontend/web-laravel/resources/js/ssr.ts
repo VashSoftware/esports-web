@@ -1,12 +1,18 @@
-import { createInertiaApp } from '@inertiajs/svelte'
-import createServer from '@inertiajs/svelte/server'
+import { createInertiaApp, type ResolvedComponent } from "@inertiajs/svelte";
+import createServer from "@inertiajs/svelte/server";
+import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import { defineRoutes } from "momentum-trail";
+import routes from "./routes.json";
 
-createServer(page =>
+defineRoutes(routes);
+
+createServer((page) =>
     createInertiaApp({
         page,
-        resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.svelte', { eager: true })
-            return pages[`./Pages/${name}.svelte`]
-        },
+        resolve: (name) =>
+            resolvePageComponent(
+                `./Pages/${name}.svelte`,
+                import.meta.glob<ResolvedComponent>("./Pages/**/*.svelte"),
+            ),
     }),
-)
+);

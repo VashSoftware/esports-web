@@ -18,9 +18,11 @@
         </a>
         <table>
             <thead>
-                <th> Time </th>
-                <th> Name</th>
-                <th>Score</th>
+                <tr>
+                    <th> Time </th>
+                    <th> Name</th>
+                    <th>Score</th>
+                </tr>
             </thead>
             <tbody>
                 {#each matches as match}
