@@ -11,6 +11,16 @@ return new class () extends Migration {
      */
     public function up(): void
     {
+        Schema::create('teams', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+
+        Schema::create('events', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+
         Schema::create('map_pools', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

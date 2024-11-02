@@ -3,7 +3,13 @@
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\OrganizationController;
 use App\Models\VashMatch;
+use App\Models\User;
+use App\Models\Team;
+use App\Models\Score;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -27,8 +33,6 @@ Route::resource('organizations', OrganizationController::class);
 
 Route::inertia('terms', 'Terms');
 Route::inertia('privacy', 'Privacy');
-
-Route::inertia('leaderboard', 'Leaderboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

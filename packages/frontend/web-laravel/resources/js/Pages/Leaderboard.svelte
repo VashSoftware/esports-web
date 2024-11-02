@@ -1,5 +1,29 @@
 <script>
     import Layout from "../Shared/Layout.svelte";
+
+    export let top_players;
+    export let top_teams;
+    export let top_scores;
 </script>
 
-<Layout></Layout>
+<Layout>
+    <h1>Leaderboard</h1>
+
+    {#each top_players as player, index (player.id)}
+        <div>
+            <h2>{index + 1}. {player.name}</h2>
+            <p>{player.score}</p>
+        </div>
+    {/each}
+    {#each top_teams as team, index (team.id)}
+        <div>
+            <h2>{index + 1}. {team.name}</h2>
+            <p>{team.score}</p>
+        </div>
+    {/each}
+    {#each top_scores as score, index (score.id)}
+        <div>
+            <h2>{index + 1}. {score.score}</h2>
+        </div>
+    {/each}
+</Layout>

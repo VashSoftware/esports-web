@@ -1,4 +1,6 @@
 <script>
+    export let auth;
+
     let showMenu = false;
 
     // Function to handle click outside the menu to close it
@@ -32,7 +34,7 @@
         <div>
             <!-- Logo and Create Button -->
             <div class="flex items-center justify-between p-6">
-                <a href="#" class="text-2xl font-bold">Vash Esports</a>
+                <a href="/" class="text-2xl font-bold">Vash Esports</a>
                 <button
                     id="create-button"
                     on:click={() => (showMenu = !showMenu)}
@@ -150,8 +152,10 @@
                     class="rounded-full w-10 h-10 object-cover"
                 />
                 <div class="ml-3">
-                    <p class="text-sm font-medium">Stan</p>
-                    <p class="text-xs text-gray-400">@stanrunge</p>
+                    <a href="/users/{auth}">
+                        <p class="text-sm font-medium">Stan</p>
+                        <p class="text-xs text-gray-400">@stanrunge</p>
+                    </a>
                 </div>
                 <button
                     class="ml-auto bg-primary p-2 rounded hover:bg-opacity-75 focus:outline-none"

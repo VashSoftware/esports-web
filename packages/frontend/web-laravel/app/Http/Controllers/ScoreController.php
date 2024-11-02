@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Models\Event;
 
-class EventController extends Controller
+class ScoreController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Events/Index', ['events' => Event::all()]);
+        //
     }
 
     /**
@@ -37,7 +35,7 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('Event', ['event' => Event::find($id)]);
+        //
     }
 
     /**
