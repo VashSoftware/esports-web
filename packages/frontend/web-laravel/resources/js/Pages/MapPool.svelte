@@ -16,7 +16,6 @@
                     <td>{map.name}</td>
                     <td>{map.description}</td>
                 </tr>
-                }
             {/each}
         </tbody>
     </table>

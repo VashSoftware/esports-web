@@ -17,9 +17,18 @@ Route::resource('matches', MatchController::class);
 
 Route::resource('map_pools', MapPoolController::class);
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::resource('events', EventController::class);
+
+Route::resource('teams', TeamController::class);
+
+Route::resource('users', ProfileController::class);
+
+Route::resource('organizations', OrganizationController::class);
+
+Route::inertia('terms', 'Terms');
+Route::inertia('privacy', 'Privacy');
+
+Route::inertia('leaderboard', 'Leaderboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
