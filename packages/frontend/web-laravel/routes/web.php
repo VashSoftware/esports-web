@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\MapPoolController;
+use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ProfileController;
 use App\Models\VashMatch;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,6 +12,10 @@ Route::get('/', function () {
         'matches' => VashMatch::all()
     ]);
 });
+
+Route::resource('matches', MatchController::class);
+
+Route::resource('map_pools', MapPoolController::class);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

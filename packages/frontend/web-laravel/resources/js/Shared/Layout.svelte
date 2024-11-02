@@ -123,18 +123,18 @@
                     </li>
                     <li>
                         <a
-                            href="/teams"
-                            class="block py-2 px-4 rounded hover:bg-primary hover:bg-opacity-75 transition-colors"
-                        >
-                            Teams
-                        </a>
-                    </li>
-                    <li>
-                        <a
                             href="/leaderboard"
                             class="block py-2 px-4 rounded hover:bg-primary hover:bg-opacity-75 transition-colors"
                         >
                             Leaderboard
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="/map_pools"
+                            class="block py-2 px-4 rounded hover:bg-primary hover:bg-opacity-75 transition-colors"
+                        >
+                            Map Pools
                         </a>
                     </li>
                 </ul>
