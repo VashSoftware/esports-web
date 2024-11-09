@@ -7,9 +7,6 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\OrganizationController;
 use App\Models\VashMatch;
-use App\Models\User;
-use App\Models\Team;
-use App\Models\Score;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,10 +17,12 @@ Route::get('/', function () {
 });
 
 Route::resource('matches', MatchController::class);
+Route::get('/matches/{match}/play', [MatchController::class, 'play'])->name('matches.play');
 
 Route::resource('map_pools', MapPoolController::class);
 
 Route::resource('events', EventController::class);
+Route::get('/events/{event}/manage', [EventController::class, 'manage'])->name('events.manage');
 
 Route::resource('teams', TeamController::class);
 
@@ -40,4 +39,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

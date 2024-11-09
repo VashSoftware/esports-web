@@ -1,5 +1,6 @@
 <script>
     import Layout from '../../Shared/Layout.svelte'
+    import { Link } from '@inertiajs/svelte'
 
     export let event
     export let matches
@@ -7,6 +8,9 @@
 
 <Layout>
     {event}
+    <Link href="/events/{event.id}/manage">
+        <button>Manage</button>
+    </Link>
 
     <h2>Matches</h2>
     <table>

@@ -25,4 +25,9 @@ class MatchController extends Controller
 
         $mapPool->matches()->save($match);
     }
+
+    public function play(VashMatch $match)
+    {
+        return Inertia::render('Matches/Play', ['match' => $match]);
+    }
 }

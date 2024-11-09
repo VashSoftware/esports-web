@@ -46,6 +46,11 @@ class EventController extends Controller
         return Inertia::render('Events/Show', ['event' => Event::find($id)]);
     }
 
+    public function manage()
+    {
+        return Inertia::render('Events/Manage');
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
