@@ -1,27 +1,9 @@
 <script>
-    import { run } from 'svelte/legacy';
+    import { run } from 'svelte/legacy'
 
-    let { auth, children } = $props();
+    let { auth, children } = $props()
 
-    let showMenu = $state(false)
-
-    // Function to handle click outside the menu to close it
-    const handleClickOutside = (event) => {
-        const menu = document.getElementById('create-menu')
-        const button = document.getElementById('create-button')
-        if (menu && !menu.contains(event.target) && button && !button.contains(event.target)) {
-            showMenu = false
-        }
-    }
-
-    // Add event listener when menu is open
-    run(() => {
-        if (showMenu) {
-            window.addEventListener('click', handleClickOutside)
-        } else {
-            window.removeEventListener('click', handleClickOutside)
-        }
-    });
+    let showMenu = false
 </script>
 
 <div class="flex h-screen">
@@ -43,7 +25,7 @@
             </div>
 
             <!-- Create Menu -->
-            {#if showMenu}
+            {#if false}
                 <div
                     id="create-menu"
                     class="absolute right-6 top-full z-50 mt-2 w-60 rounded-lg bg-secondary shadow-lg"

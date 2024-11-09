@@ -21,7 +21,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Events/Create');
     }
 
     /**
@@ -29,7 +29,13 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+        ]);
+
+        Event::create($request->all());
+
+        return redirect()->route('events.index');
     }
 
     /**
@@ -37,7 +43,7 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('Event', ['event' => Event::find($id)]);
+        return Inertia::render('Events/Show', ['event' => Event::find($id)]);
     }
 
     /**

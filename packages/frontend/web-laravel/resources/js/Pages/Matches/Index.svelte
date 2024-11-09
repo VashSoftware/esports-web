@@ -1,36 +1,34 @@
 <script>
-    import { preventDefault } from 'svelte/legacy';
+    import { preventDefault } from 'svelte/legacy'
 
-    import { useForm } from "@inertiajs/svelte";
-    import Layout from "../../Shared/Layout.svelte";
+    import { useForm } from '@inertiajs/svelte'
+    import Layout from '../../Shared/Layout.svelte'
 
-    let { matches } = $props();
+    let { matches } = $props()
 
     let form = useForm({
         map_pool_id: 1,
-    });
+    })
 
     function createMatch() {
-        $form.post("/matches");
+        $form.post('/matches')
     }
 </script>
 
 <Layout>
-    <div class="text-center my-10">
+    <div class="my-10 text-center">
         <h2 class="text-2xl font-semibold">
             Matches ({matches.length})
         </h2>
 
         <form onsubmit={preventDefault(createMatch)}>
-            <button class="bg-slate-500 px-4 py-2 rounded">
-                Create Custom Match
-            </button>
+            <button class="rounded bg-slate-500 px-4 py-2"> Create Custom Match </button>
         </form>
     </div>
 
     <div class="flex flex-col content-center">
         <a href="/matches">
-            <h2 class="text-center text-2xl my-5">Ongoing Matches:</h2>
+            <h2 class="my-5 text-center text-2xl">Ongoing Matches:</h2>
         </a>
         <table>
             <thead>
@@ -44,10 +42,7 @@
                 {#each matches as match}
                     <tr>
                         <td>{match.time}</td>
-                        <td
-                            >{match.match_participants[0]} - {match
-                                .match_participants[1]}</td
-                        >
+                        <td>{match.match_participants[0]} - {match.match_participants[1]}</td>
                     </tr>
                 {/each}
             </tbody>

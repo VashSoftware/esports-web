@@ -1,15 +1,15 @@
 <script lang="ts">
-    import type { Snippet } from "svelte";
-    import { Link } from "@inertiajs/svelte";
+    import type { Snippet } from 'svelte'
+    import { Link } from '@inertiajs/svelte'
 
     let {
         children,
         href,
         ...attrs
     }: {
-        children: Snippet;
-        href: string;
-    } = $props();
+        children: Snippet
+        href: string
+    } = $props()
 </script>
 
 <Link

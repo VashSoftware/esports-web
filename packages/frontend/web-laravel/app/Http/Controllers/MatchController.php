@@ -20,6 +20,7 @@ class MatchController extends Controller
 
 
         $match = VashMatch::create([
+            'map_pool_id' => $mapPool->id,
         ]);
 
         $mapPool->matches()->save($match);

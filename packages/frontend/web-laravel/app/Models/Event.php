@@ -11,6 +11,8 @@ class Event extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['title'];
+
     public function rounds(): HasMany
     {
         return $this->hasMany(Round::class);

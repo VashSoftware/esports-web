@@ -1,13 +1,13 @@
 <script lang="ts">
-    import type { HTMLInputAttributes } from "svelte/elements";
+    import type { HTMLInputAttributes } from 'svelte/elements'
 
     let {
         checked = $bindable(false),
         class: className,
         ...attrs
     }: HTMLInputAttributes & {
-        checked?: boolean;
-    } = $props();
+        checked?: boolean
+    } = $props()
 </script>
 
 <input

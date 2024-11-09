@@ -1,9 +1,9 @@
 <script>
-    import Layout from "../Shared/Layout.svelte";
+    import Layout from '../Shared/Layout.svelte'
 
-    let { profile } = $props();
+    let { profile } = $props()
 
-    console.log(profile);
+    console.log(profile)
 </script>
 
 <Layout>

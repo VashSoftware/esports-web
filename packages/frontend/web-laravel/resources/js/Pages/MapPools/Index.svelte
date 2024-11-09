@@ -1,10 +1,10 @@
 <script>
-    import { preventDefault } from 'svelte/legacy';
+    import { preventDefault } from 'svelte/legacy'
 
-    import { useForm, router } from "@inertiajs/svelte";
-    import Layout from "../Shared/Layout.svelte";
+    import { useForm, router } from '@inertiajs/svelte'
+    import Layout from '../../Shared/Layout.svelte'
 
-    let { mapPools } = $props();
+    let { mapPools } = $props()
 
     let values = {
         mods: [
@@ -12,12 +12,12 @@
                 id: 1,
             },
         ],
-    };
+    }
 
-    let form = useForm();
+    let form = useForm(values)
 
     function storeMapPool() {
-        $form.post("/map_pools");
+        $form.post('/map_pools')
     }
 </script>
 

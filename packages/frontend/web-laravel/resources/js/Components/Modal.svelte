@@ -1,48 +1,48 @@
 <script lang="ts">
-    import type { Snippet } from "svelte";
-    import { onDestroy } from "svelte";
-    import Portal from "svelte-portal";
-    import Transition from "svelte-transition";
+    import type { Snippet } from 'svelte'
+    import { onDestroy } from 'svelte'
+    import Portal from 'svelte-portal'
+    import Transition from 'svelte-transition'
 
     let {
         children,
         closeable = true,
-        maxWidth = "2xl",
+        maxWidth = '2xl',
         onclose = () => {},
         show = false,
     }: {
-        children: Snippet;
-        closeable?: boolean;
-        maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl";
-        onclose?: () => void;
-        show?: boolean;
-    } = $props();
+        children: Snippet
+        closeable?: boolean
+        maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+        onclose?: () => void
+        show?: boolean
+    } = $props()
 
     let maxWidthClass = $derived(
         {
-            sm: "sm:max-w-sm",
-            md: "sm:max-w-md",
-            lg: "sm:max-w-lg",
-            xl: "sm:max-w-xl",
-            "2xl": "sm:max-w-2xl",
+            sm: 'sm:max-w-sm',
+            md: 'sm:max-w-md',
+            lg: 'sm:max-w-lg',
+            xl: 'sm:max-w-xl',
+            '2xl': 'sm:max-w-2xl',
         }[maxWidth],
-    );
+    )
 
     $effect(() => {
-        document.body.style.overflow = show ? "hidden" : "visible";
-    });
+        document.body.style.overflow = show ? 'hidden' : 'visible'
+    })
 
-    onDestroy(() => (document.body.style.overflow = "visible"));
+    onDestroy(() => (document.body.style.overflow = 'visible'))
 
     function close() {
         if (closeable) {
-            onclose();
+            onclose()
         }
     }
 
     function closeOnEscape(e: KeyboardEvent) {
-        if (e.key === "Escape" && show) {
-            onclose();
+        if (e.key === 'Escape' && show) {
+            onclose()
         }
     }
 </script>
@@ -52,10 +52,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <Portal target="body">
     <Transition {show} leave="duration-200">
-        <div
-            class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0"
-            scroll-region
-        >
+        <div class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0" scroll-region>
             <Transition
                 enter="ease-out duration-300"
                 enterFrom="opacity-0"
@@ -65,13 +62,8 @@
                 leaveTo="opacity-0"
             >
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <div
-                    class="fixed inset-0 transform transition-all"
-                    onclick={close}
-                >
-                    <div
-                        class="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900"
-                    ></div>
+                <div class="fixed inset-0 transform transition-all" onclick={close}>
+                    <div class="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900"></div>
                 </div>
             </Transition>
 

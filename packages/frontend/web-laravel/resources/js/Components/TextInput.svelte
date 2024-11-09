@@ -1,26 +1,26 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import type { HTMLInputAttributes } from "svelte/elements";
+    import { onMount } from 'svelte'
+    import type { HTMLInputAttributes } from 'svelte/elements'
 
     let {
         class: className,
         value = $bindable(),
         ...attrs
     }: HTMLInputAttributes & {
-        value?: string;
-    } = $props();
+        value?: string
+    } = $props()
 
-    let input: HTMLInputElement;
+    let input: HTMLInputElement
 
     export function focus() {
-        input?.focus();
+        input?.focus()
     }
 
     onMount(() => {
         if (attrs.autofocus && input) {
-            input.focus();
+            input.focus()
         }
-    });
+    })
 </script>
 
 <input
