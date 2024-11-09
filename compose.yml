@@ -9,19 +9,13 @@ services:
   #   restart: unless-stopped
 
   traefik:
-    image: traefik:v3.1
+    image: traefik
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.myresolver.acme.email=stan@vash.software"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
     ports:
       - "8080:8080"
       - "443:443"
@@ -51,8 +45,6 @@ services:
       context: "./packages/frontend/web-laravel"
     networks:
       - webnet
-    depends_on:
-      - socket.io
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -62,12 +54,12 @@ services:
       - "traefik.http.routers.web.tls.certresolver=myresolver"
       - "traefik.http.services.web.loadbalancer.server.port=8000"
 
-  socket.io:
-    build:
-      context: "./packages/backend/realtime"
-    networks:
-      - webnet
-    restart: unless-stopped
+  # socket.io:
+  #   build:
+  #     context: "./packages/backend/realtime"
+  #   networks:
+  #     - webnet
+  #   restart: unless-stopped
 
   osu-server:
     build:
@@ -82,9 +74,6 @@ services:
       OSU_CLIENT_SECRET: "${OSU_CLIENT_SECRET}"
     networks:
       - webnet
-
-    depends_on:
-      - socket.io
     restart: unless-stopped
 
   # minecraft-hub:

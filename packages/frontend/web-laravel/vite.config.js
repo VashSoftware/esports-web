@@ -1,11 +1,33 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import laravel from 'laravel-vite-plugin'
+import { defineConfig } from 'vite'
+import { run } from 'vite-plugin-run'
+import { watch } from 'vite-plugin-watch'
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: 'resources/js/app.ts',
+            ssr: 'resources/js/ssr.ts',
             refresh: true,
         }),
+        run([
+            {
+                name: 'trail generate routes',
+                pattern: 'routes/*.php',
+                run: ['php', 'artisan', 'trail:generate'],
+            },
+            {
+                name: 'clear compiled views',
+                pattern: 'routes/*.php',
+                run: ['php', 'artisan', 'view:clear'],
+            },
+        ]),
+        svelte(),
+
+        watch({
+            pattern: 'routes/*.php',
+            command: 'php artisan trail:generate',
+        }),
     ],
-});
+})
