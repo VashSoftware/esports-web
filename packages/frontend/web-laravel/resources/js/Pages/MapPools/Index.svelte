@@ -1,32 +1,14 @@
 <script>
-    import { preventDefault } from 'svelte/legacy'
-
-    import { useForm, router } from '@inertiajs/svelte'
+    import { router, Link } from '@inertiajs/svelte'
     import Layout from '../../Shared/Layout.svelte'
 
     let { mapPools } = $props()
-
-    let values = {
-        mods: [
-            {
-                id: 1,
-            },
-        ],
-    }
-
-    let form = useForm(values)
-
-    function storeMapPool() {
-        $form.post('/map_pools')
-    }
 </script>
 
 <Layout>
-    <form onsubmit={preventDefault(storeMapPool)}>
-        <input type="text" />
-
+    <Link href="/map_pools/create">
         <button>Create</button>
-    </form>
+    </Link>
 
     <table class="table-auto">
         <thead>

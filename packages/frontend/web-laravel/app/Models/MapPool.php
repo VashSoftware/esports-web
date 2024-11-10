@@ -11,6 +11,8 @@ class MapPool extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name'];
+
     public function mapPoolMaps(): HasMany
     {
         return $this->hasMany(MapPoolMap::class);

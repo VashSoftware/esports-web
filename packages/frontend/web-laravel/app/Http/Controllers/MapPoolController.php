@@ -21,7 +21,7 @@ class MapPoolController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('MapPools/Create');
     }
 
     /**
@@ -29,7 +29,9 @@ class MapPoolController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        MapPool::create($request->all());
+
+        return redirect('/map_pools');
     }
 
     /**
