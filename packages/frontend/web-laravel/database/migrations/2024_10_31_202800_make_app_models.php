@@ -28,6 +28,12 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('map_pool_maps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(MapPool::class);
+            $table->timestamps();
+        });
+
         Schema::create('vash_matches', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(MapPool::class);

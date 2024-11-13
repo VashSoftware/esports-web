@@ -31,16 +31,13 @@ class MapPoolMapController extends Controller
     {
         $validated = $request->validate([
             'map_pool_id' => 'required|exists:map_pools,id',
-            'mod_id' => 'required|exists:mods,id',
         ]);
 
         $mapPool = MapPool::find($validated['map_pool_id']);
 
-        $mapPool->mapPoolMaps()->create([
-            'mod_id' => $validated['mod_id'],
-        ]);
+        $mapPool->mapPoolMaps()->create();
 
-        return redirect()->route('map-pools.show', $mapPool);
+        return redirect()->route('map_pools.edit', $mapPool);
     }
 
     /**
