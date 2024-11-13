@@ -14,7 +14,7 @@
 <Layout>
     <form on:submit|preventDefault={createMapPool}>
         <label for="title">Title</label>
-        <input type="text" id="title" bind:value={$form.name} />
+        <input type="text" id="title" class="text-black" bind:value={$form.name} />
 
         <button type="submit">Create Map Pool</button>
     </form>
