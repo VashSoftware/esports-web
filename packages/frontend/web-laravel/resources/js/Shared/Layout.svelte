@@ -1,4 +1,5 @@
 <script>
+    import { Link } from '@inertiajs/svelte'
     import { run } from 'svelte/legacy'
 
     let { auth, children } = $props()
@@ -13,7 +14,7 @@
         <div>
             <!-- Logo and Create Button -->
             <div class="flex items-center justify-between p-6">
-                <a href="/" class="text-2xl font-bold">Vash Esports</a>
+                <Link href="/" class="text-2xl font-bold">Vash Esports</Link>
                 <button
                     id="create-button"
                     onclick={() => (showMenu = !showMenu)}
@@ -84,36 +85,36 @@
             <nav class="mt-8 px-6">
                 <ul class="space-y-2">
                     <li>
-                        <a
+                        <Link
                             href="/matches"
                             class="block rounded px-4 py-2 transition-colors hover:bg-primary hover:bg-opacity-75"
                         >
                             Matches
-                        </a>
+                        </Link>
                     </li>
                     <li>
-                        <a
+                        <Link
                             href="/events"
                             class="block rounded px-4 py-2 transition-colors hover:bg-primary hover:bg-opacity-75"
                         >
                             Events
-                        </a>
+                        </Link>
                     </li>
                     <li>
-                        <a
+                        <Link
                             href="/leaderboard"
                             class="block rounded px-4 py-2 transition-colors hover:bg-primary hover:bg-opacity-75"
                         >
                             Leaderboard
-                        </a>
+                        </Link>
                     </li>
                     <li>
-                        <a
+                        <Link
                             href="/map_pools"
                             class="block rounded px-4 py-2 transition-colors hover:bg-primary hover:bg-opacity-75"
                         >
                             Map Pools
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </nav>
@@ -124,10 +125,10 @@
             <div class="flex items-center">
                 <img src="https://via.placeholder.com/40" alt="Profile" class="h-10 w-10 rounded-full object-cover" />
                 <div class="ml-3">
-                    <a href="/users/{auth}">
+                    <Link href="/users/{auth}">
                         <p class="text-sm font-medium">Stan</p>
                         <p class="text-xs text-gray-400">@stanrunge</p>
-                    </a>
+                    </Link>
                 </div>
                 <button
                     class="ml-auto rounded bg-primary p-2 hover:bg-opacity-75 focus:outline-none"
