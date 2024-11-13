@@ -21,4 +21,5 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
-.php-cs-fixer.cache
+resources/js/routes.d.ts
+resources/js/routes.json

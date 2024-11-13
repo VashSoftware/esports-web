@@ -10,6 +10,8 @@ class Mod extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'code'];
+
     public function mapPoolMaps(): BelongsToMany
     {
         return $this->belongsToMany(MapPoolMap::class);

@@ -33,6 +33,14 @@ return new class () extends Migration {
             $table->foreignIdFor(MapPool::class);
             $table->timestamps();
         });
+
+        Schema::create('mods', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code');
+            $table->timestamps();
+        });
+
     }
 
     /**
