@@ -48,7 +48,7 @@ class MapPoolController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return Inertia::render('MapPools/Edit', ['mapPool' => MapPool::find($id)]);
     }
 
     /**
