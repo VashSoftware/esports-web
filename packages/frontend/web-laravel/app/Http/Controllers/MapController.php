@@ -6,6 +6,7 @@ use App\Services\OsuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Map;
 
 class MapController extends Controller
 {
@@ -78,10 +79,10 @@ class MapController extends Controller
             'query' => 'required|string',
         ]);
 
-        $beatmaps = $this->osuService->get('beatmapsets/search', [
-            'cursor_string' => $validated['query'],
-        ]);
+        $maps = Map;
 
-        Log::debug($beatmaps);
+        $beatmap = $this->osuService->get('beatmaps/' + $validated['query']);
+
+        return response()->json($beatmaps);
     }
 }

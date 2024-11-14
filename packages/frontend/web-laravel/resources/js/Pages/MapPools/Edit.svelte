@@ -2,15 +2,12 @@
     import Layout from '../../Shared/Layout.svelte'
     import { useForm } from '@inertiajs/svelte'
     import { preventDefault } from 'svelte/legacy'
+    import MapSearchInput from '@/Components/MapSearchInput.svelte'
 
     let { mapPool, mods } = $props()
 
     let form = useForm({
         map_pool_id: mapPool.id,
-    })
-
-    let mapForm = useForm({
-        query: '',
     })
 </script>
 
@@ -39,16 +36,7 @@
                             </select></td
                         >
                         <td>
-                            <input
-                                class="text-black"
-                                oninput={() => $mapForm.get('/maps/search')}
-                                bind:value={$mapForm.query}
-                            />
-                            <li>
-                                {#each $mapForm.data as map}
-                                    <a href="/maps/{map.id}">{map.name}</a>
-                                {/each}
-                            </li>
+                            <MapSearchInput mapPoolMap={map} />
                         </td>
                     </tr>
                 {/each}

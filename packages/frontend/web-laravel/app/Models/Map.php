@@ -11,6 +11,8 @@ class Map extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['artist', 'title'];
+
     public function mapSet(): BelongsTo
     {
         return $this->belongsTo(MapSet::class);

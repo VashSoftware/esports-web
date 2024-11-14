@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Map;
 use App\Models\MapPool;
+use App\Models\MapSet;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -28,9 +30,23 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('maps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(MapSet::class);
+            $table->timestamps();
+        });
+
+        Schema::create('mapsets', function (Blueprint $table) {
+            $table->id();
+            $table->string('artist');
+            $table->string('title');
+            $table->timestamps();
+        });
+
         Schema::create('map_pool_maps', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(MapPool::class);
+            $table->foreignIdFor(Map::class)->nullable();
             $table->timestamps();
         });
 

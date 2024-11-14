@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Map;
 use App\Models\MapPool;
 use App\Models\MapPoolMap;
+use App\Models\MapSet;
 use App\Models\Mod;
+use App\Services\OsuService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class MapPoolMapController extends Controller
@@ -60,7 +64,30 @@ class MapPoolMapController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'map_pool_map_id' => 'required|exists:map_pool_maps,id',
+            'map_id' => 'required',
+        ]);
+
+        $map = Map::find($validated['map_id']);
+        if (!$map) {
+            $osuService = new OsuService();
+            $mapData = $osuService->get("beatmaps/$validated[map_id]");
+            Log::info($mapData);
+
+            $mapset = MapSet::find();
+
+            $map = Map::create([
+                'name' => $validated['map_id'],
+            ]);
+        }
+
+        $mapPoolMap = MapPoolMap::find($validated['map_pool_map_id']);
+        $mapPoolMap->map_id = $validated['map_id'];
+
+        $mapPoolMap->save();
+
+        return redirect()->route('map_pools.edit', $validated['map_pool_id']);
     }
 
     /**
