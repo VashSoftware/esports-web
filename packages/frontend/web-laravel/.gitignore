@@ -24,3 +24,4 @@ yarn-error.log
 /.zed
 resources/js/routes.d.ts
 resources/js/routes.json
+bun.lockb
