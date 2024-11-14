@@ -2,10 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\OsuService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class MapController extends Controller
 {
+    protected $osuService;
+
+    public function __construct(OsuService $osuService)
+    {
+        $this->osuService = $osuService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -60,5 +70,18 @@ class MapController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        $validated = $request->validate([
+            'query' => 'required|string',
+        ]);
+
+        $beatmaps = $this->osuService->get('beatmapsets/search', [
+            'cursor_string' => $validated['query'],
+        ]);
+
+        Log::debug($beatmaps);
     }
 }

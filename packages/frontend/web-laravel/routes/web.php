@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MapPoolMapController;
 use App\Http\Controllers\MatchController;
@@ -42,6 +43,9 @@ Route::resource('teams', TeamController::class);
 Route::resource('users', ProfileController::class);
 
 Route::resource('organizations', OrganizationController::class);
+
+Route::get('/maps/search', [MapController::class, 'search'])->name('maps.search');
+Route::resource('maps', MapController::class);
 
 Route::inertia('terms', 'Terms');
 Route::inertia('privacy', 'Privacy');

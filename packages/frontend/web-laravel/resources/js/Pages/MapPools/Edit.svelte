@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Layout from '../../Shared/Layout.svelte'
     import { useForm } from '@inertiajs/svelte'
     import { preventDefault } from 'svelte/legacy'
@@ -7,6 +7,10 @@
 
     let form = useForm({
         map_pool_id: mapPool.id,
+    })
+
+    let mapForm = useForm({
+        query: '',
     })
 </script>
 
@@ -20,25 +24,32 @@
         <table class="table-auto">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Mod</th>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>Mods</th>
+                    <th>Map</th>
                 </tr>
             </thead>
             <tbody>
                 {#each mapPool.map_pool_maps as map, index (map.id)}
                     <tr>
-                        <td>{index + 1}</td>
                         <td
-                            ><select name="" id="">
+                            ><select value={map}>
                                 {#each mods as mod}
                                     <option value={mod.id}>{mod.name}</option>
                                 {/each}
                             </select></td
                         >
-                        <td>{map.name}</td>
-                        <td>{map.description}</td>
+                        <td>
+                            <input
+                                class="text-black"
+                                oninput={() => $mapForm.get('/maps/search')}
+                                bind:value={$mapForm.query}
+                            />
+                            <li>
+                                {#each $mapForm.data as map}
+                                    <a href="/maps/{map.id}">{map.name}</a>
+                                {/each}
+                            </li>
+                        </td>
                     </tr>
                 {/each}
             </tbody>
