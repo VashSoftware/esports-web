@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Services\OsuService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Map;
+use App\Models\MapSet;
 
 class MapController extends Controller
 {
@@ -79,12 +79,32 @@ class MapController extends Controller
             'query' => 'required|string',
         ]);
 
+        if (is_numeric($validated['query'])) {
+            if (!Map::where('osu_id', $validated['query'])->exists()) {
+                $beatmap = $this->osuService->get('beatmaps/' . $validated['query']);
+
+                $mapSet = MapSet::where('osu_id', $beatmap['beatmapset_id'])->first();
+                if (!$mapSet) {
+                    $mapSet = $this->osuService->get('beatmapsets/' . $beatmap['beatmapset_id']);
+                    $mapSet = MapSet::create([
+                        'artist' => $mapSet['artist'],
+                        'title' => $mapSet['title'],
+                        'osu_id' => $mapSet['id'],
+                    ]);
+                }
+
+                $mapSet->maps()->save(new Map([
+                    'difficulty_name' => $beatmap['version'],
+                    'osu_id' => $beatmap['id'],
+                ]));
+            }
+        }
+
         $maps = Map::search($validated['query'])->query(function ($query) {
             $query->join('map_sets', 'maps.map_set_id', 'map_sets.id')
                 ->select(['maps.id as map_id', 'maps.osu_id', 'maps.difficulty_name', 'map_sets.id', 'map_sets.artist', 'map_sets.title']);
         })->get();
 
-        //        $beatmap = $this->osuService->get('beatmaps/' . $validated['query']);
 
         return response()->json($maps);
     }
