@@ -19,6 +19,8 @@
                     query: cursor_string,
                 },
             })
+            console.log('Found maps:', response.data)
+
             foundMaps = response.data.beatmapsets
         } catch (error) {
             console.error('Error fetching maps:', error)

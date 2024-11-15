@@ -79,10 +79,10 @@ class MapController extends Controller
             'query' => 'required|string',
         ]);
 
-        $maps = Map;
+        $maps = Map::search($validated['query'])->get();
 
         $beatmap = $this->osuService->get('beatmaps/' + $validated['query']);
 
-        return response()->json($beatmaps);
+        return response()->json([$maps, $beatmap]);
     }
 }
