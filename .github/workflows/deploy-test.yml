@@ -4,16 +4,14 @@ on:
   push:
     branches:
       - test
-  pull_request:
-    branches:
-      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Testing
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up SSH
@@ -21,11 +19,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to Testing Server
+      - name: Deploy to Testing
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} -p ${{ secrets.SERVER_PORT }} << 'EOF'
-            cd /path/to/vash-esports
+            cd /opt/vash-esports
             git pull origin test
-            docker stack deploy -c docker-compose.test.yml vash-esports-test
-            exit
+            docker compose -f docker/compose.yml -f docker/compose.test.yml up -d --build
           EOF

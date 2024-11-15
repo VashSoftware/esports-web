@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Development
 
     steps:
       - name: Checkout code
@@ -21,8 +22,8 @@ jobs:
       - name: Deploy to Production
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} -p ${{ secrets.SERVER_PORT }} << 'EOF'
-            cd /path/to/vash-esports
-            git pull origin develop
-            docker stack deploy -c docker-compose.dev.yml vash-esports-dev
-            exit
+            cd /opt/vash-esports
+            git pull origin dev
+            docker compose -f docker/compose.yml -f docker/compose.dev.yml up -d --build
           EOF
+
