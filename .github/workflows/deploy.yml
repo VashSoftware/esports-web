@@ -1,14 +1,14 @@
-name: Deploy to Development
+name: Deploy to Production
 
 on:
   push:
     branches:
-      - dev
+      - prod
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Development
+    environment: Production
 
     steps:
       - name: Checkout code
@@ -19,11 +19,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to Development
+      - name: Deploy to Production
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} -p ${{ secrets.SERVER_PORT }} << 'EOF'
             cd /opt/vash-esports
-            git pull origin dev
-            docker compose -f docker/compose.yml -f docker/compose.dev.yml up -d --build
+            git pull origin prod
+            docker compose -d --build
           EOF
-
