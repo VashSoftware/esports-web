@@ -12,6 +12,8 @@ class MapSet extends Model
     use HasFactory;
     use Searchable;
 
+    protected $fillable = ['artist', 'title', 'osu_id'];
+
     public function maps(): HasMany
     {
         return $this->hasMany(Map::class);

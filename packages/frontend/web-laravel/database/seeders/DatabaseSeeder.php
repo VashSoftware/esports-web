@@ -45,6 +45,34 @@ class DatabaseSeeder extends Seeder
             'code' => 'TB',
         ]);
 
+        DB::table('map_sets')->insert([[
+            'artist' => 'Test Artist',
+            'title' => 'Test Title',
+            'osu_id' => 12345,
+        ], [
+           'artist' => 'Test Artist 2',
+           'title' => 'Test Title 2',
+           'osu_id' => 12346,
+        ], [
+           'artist' => 'Test Artist 3',
+           'title' => 'Test Title 3',
+           'osu_id' => 12347,
+            ]]);
+
+        DB::table('maps')->insert([[
+            'difficulty_name' => 'Test Difficulty',
+            'osu_id' => 12345,
+            'map_set_id' => 1,
+        ], [
+            'difficulty_name' => 'Test Difficulty 2',
+            'osu_id' => 12346,
+            'map_set_id' => 2,
+        ], [
+            'difficulty_name' => 'Test Difficulty 3',
+            'osu_id' => 12347,
+            'map_set_id' => 3,
+        ]]);
+
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

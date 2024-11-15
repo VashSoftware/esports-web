@@ -79,10 +79,13 @@ class MapController extends Controller
             'query' => 'required|string',
         ]);
 
-        $maps = Map::search($validated['query'])->get();
+        $maps = Map::search($validated['query'])->query(function ($query) {
+            $query->join('map_sets', 'maps.map_set_id', 'map_sets.id')
+                ->select(['maps.id as map_id', 'maps.osu_id', 'maps.difficulty_name', 'map_sets.id', 'map_sets.artist', 'map_sets.title']);
+        })->get();
 
-        $beatmap = $this->osuService->get('beatmaps/' + $validated['query']);
+        //        $beatmap = $this->osuService->get('beatmaps/' . $validated['query']);
 
-        return response()->json([$maps, $beatmap]);
+        return response()->json($maps);
     }
 }

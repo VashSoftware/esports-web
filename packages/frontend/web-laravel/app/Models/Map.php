@@ -13,15 +13,15 @@ class Map extends Model
     use HasFactory;
     use Searchable;
 
-    protected $fillable = ['artist', 'title'];
+    protected $fillable = ['difficulty_name', 'osu_id'];
 
     public function toSearchableArray(): array
     {
         return [
-            'id' => $this->id,
-            'artist' => $this->mapSet()->aritst
-            'title' => $this->mapSet()->title,
-            'difficulty_name' => $this->difficulty_name,
+            'osu_id' => '',
+            'map_sets.artist' => '',
+            'map_sets.title' => '',
+            'difficulty_name' => '',
         ];
     }
 

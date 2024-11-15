@@ -30,16 +30,19 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('maps', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(MapSet::class);
-            $table->timestamps();
-        });
-
-        Schema::create('mapsets', function (Blueprint $table) {
+        Schema::create('map_sets', function (Blueprint $table) {
             $table->id();
             $table->string('artist');
             $table->string('title');
+            $table->integer('osu_id');
+            $table->timestamps();
+        });
+
+        Schema::create('maps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(MapSet::class)->constrained();
+            $table->string('difficulty_name');
+            $table->integer('osu_id');
             $table->timestamps();
         });
 
