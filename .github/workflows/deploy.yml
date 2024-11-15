@@ -1,19 +1,17 @@
-name: Deploy to Testing
+name: Deploy to Production
 
 on:
   push:
     branches:
-      - test
-  pull_request:
-    branches:
-      - main
+      - prod
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Production
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up SSH
@@ -21,11 +19,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to Testing Server
+      - name: Deploy to Production
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} -p ${{ secrets.SERVER_PORT }} << 'EOF'
-            cd /path/to/vash-esports
-            git pull origin test
-            docker stack deploy -c docker-compose.test.yml vash-esports-test
-            exit
+            cd /opt/vash-esports
+            git pull origin prod
+            docker compose -d --build
           EOF
