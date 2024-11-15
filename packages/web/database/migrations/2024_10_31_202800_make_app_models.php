@@ -14,6 +14,19 @@ return new class () extends Migration {
      */
     public function up(): void
     {
+        Schema::create('games', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('game_modes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('game_id')->constrained();
+            $table->string('name');
+            $table->timestamps();
+        });
+
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

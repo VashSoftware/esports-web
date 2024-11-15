@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Event;
+use App\Models\Game;
+use App\Models\GameMode;
 
 class EventController extends Controller
 {
@@ -48,7 +50,8 @@ class EventController extends Controller
 
     public function manage(string $id)
     {
-        return Inertia::render('Events/Manage', ['event' => Event::with('teams')->with('rounds')->find($id)]);
+        return Inertia::render('Events/Manage', ['event' => Event::with('teams')->with('rounds')->find($id), 'games' => Game::all(), 'game_modes' => GameMode::all()]);
+
     }
 
     /**

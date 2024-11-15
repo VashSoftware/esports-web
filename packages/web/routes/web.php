@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\GameModeController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MapPoolMapController;
@@ -46,6 +48,10 @@ Route::resource('teams', TeamController::class);
 Route::resource('users', ProfileController::class);
 
 Route::resource('organizations', OrganizationController::class);
+
+Route::resource('games', GameController::class);
+
+Route::resource('game_modes', GameModeController::class);
 
 Route::get('/maps/search', [MapController::class, 'search'])->name('maps.search');
 Route::resource('maps', MapController::class);

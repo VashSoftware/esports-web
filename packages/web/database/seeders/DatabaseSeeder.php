@@ -15,6 +15,32 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+
+        DB::table('games')->insert([[
+            'name' => 'osu!',
+        ], [
+            'name' => 'osu!taiko',
+        ], [
+            'name' => 'osu!catch',
+        ], [
+            'name' => 'osu!mania',
+            ]]);
+
+        DB::table('game_modes')->insert([[
+            'name' => 'osu!standard',
+            'game_id' => 1,
+        ], [
+            'name' => 'osu!taiko',
+            'game_id' => 2,
+        ], [
+            'name' => 'osu!catch',
+            'game_id' => 3,
+        ], [
+            'name' => 'osu!mania',
+            'game_id' => 4,
+         ]]);
+
+
         DB::table('mods')->insert([
             'name' => 'No Mod',
             'code' => '',

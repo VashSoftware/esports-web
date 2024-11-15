@@ -2,9 +2,7 @@
     import Layout from '@/Shared/Layout.svelte'
     import { router } from '@inertiajs/svelte'
 
-    let { event } = $props()
-
-    console.log(event)
+    let { event, games, game_modes } = $props()
 </script>
 
 <Layout>
@@ -27,6 +25,30 @@
             <div class="my-1">
                 <label for="title">Name</label>
                 <input type="text" id="title" name="title" value={event.title} />
+            </div>
+        </div>
+    </form>
+
+    <form>
+        <div class="mb-5 flex flex-col items-center rounded bg-secondary">
+            <h2 class="my-3 text-xl font-bold">Game Settings</h2>
+
+            <div class="my-1">
+                <label for="event_group">Game</label>
+                <select id="event_group" name="event_group" value={event.event_group}>
+                    {#each games as game}
+                        <option value={game.id}>{game.name}</option>
+                    {/each}
+                </select>
+            </div>
+
+            <div class="my-1">
+                <label for="title">Game Mode</label>
+                <select id="title" name="title" value={event.title}>
+                    {#each game_modes as game_mode}
+                        <option value={game_mode.id}>{game_mode.name}</option>
+                    {/each}
+                </select>
             </div>
         </div>
     </form>

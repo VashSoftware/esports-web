@@ -10,8 +10,17 @@ class Game extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+    ];
+
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function gameModes(): HasMany
+    {
+        return $this->hasMany(GameMode::class);
     }
 }
