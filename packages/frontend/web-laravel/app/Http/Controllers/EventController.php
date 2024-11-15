@@ -46,9 +46,9 @@ class EventController extends Controller
         return Inertia::render('Events/Show', ['event' => Event::find($id)]);
     }
 
-    public function manage()
+    public function manage(string $id)
     {
-        return Inertia::render('Events/Manage');
+        return Inertia::render('Events/Manage', ['event' => Event::with('teams')->find($id)]);
     }
 
     /**

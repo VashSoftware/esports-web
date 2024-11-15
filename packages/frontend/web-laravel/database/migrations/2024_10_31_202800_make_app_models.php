@@ -24,6 +24,13 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('event_team', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained();
+            $table->foreignId('team_id')->constrained();
+            $table->timestamps();
+        });
+
         Schema::create('map_pools', function (Blueprint $table) {
             $table->id();
             $table->string('name');
