@@ -41,6 +41,8 @@ return new class () extends Migration {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->boolean('has_qualifier_stage')->default(true);
+            $table->boolean('has_group_stage')->default(false);
             $table->foreignIdFor(EventGroup::class)->nullable();
             $table->timestamps();
         });

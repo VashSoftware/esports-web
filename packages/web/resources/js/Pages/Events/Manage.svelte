@@ -1,8 +1,17 @@
 <script>
     import Layout from '@/Shared/Layout.svelte'
-    import { router } from '@inertiajs/svelte'
+    import { router, useForm } from '@inertiajs/svelte'
 
     let { event, games, game_modes } = $props()
+
+    let form = useForm({
+        event_group: event.event_group,
+        title: event.title,
+        has_qualifier_stage: event.has_qualifier_stage,
+        has_group_stage: event.has_group_stage,
+        game_id: event.game_id,
+        game_mode_id: event.game_mode_id,
+    })
 </script>
 
 <Layout>
@@ -16,7 +25,7 @@
 
             <div class="my-1">
                 <label for="event_group">Event Group</label>
-                <select id="event_group" name="event_group" value={event.event_group}>
+                <select class="text-black" id="event_group" name="event_group" value={event.event_group}>
                     <option value="1">Group 1</option>
                     <option value="2">Group 2</option>
                 </select>
@@ -24,7 +33,17 @@
 
             <div class="my-1">
                 <label for="title">Name</label>
-                <input type="text" id="title" name="title" value={event.title} />
+                <input type="text" class="text-black" id="title" name="title" value={event.title} />
+            </div>
+
+            <div class="my-1">
+                <label for="toggle-qualifier-stage">Qualifier stage?</label>
+                <input type="checkbox" bind:checked={$form.has_qualifier_stage} />
+            </div>
+
+            <div class="my-1">
+                <label for="toggle-group-stage">Group stage?</label>
+                <input type="checkbox" bind:checked={$form.has_group_stage} />
             </div>
         </div>
     </form>
@@ -35,7 +54,7 @@
 
             <div class="my-1">
                 <label for="event_group">Game</label>
-                <select id="event_group" name="event_group" value={event.event_group}>
+                <select id="event_group" class="text-black" name="event_group" bind:value={$form.game_id}>
                     {#each games as game}
                         <option value={game.id}>{game.name}</option>
                     {/each}
@@ -44,8 +63,8 @@
 
             <div class="my-1">
                 <label for="title">Game Mode</label>
-                <select id="title" name="title" value={event.title}>
-                    {#each game_modes as game_mode}
+                <select id="title" name="title" class="text-black" bind:value={$form.game_mode_id}>
+                    {#each game_modes.filter((gm) => gm.game_id == $form.game_id) as game_mode}
                         <option value={game_mode.id}>{game_mode.name}</option>
                     {/each}
                 </select>
@@ -56,7 +75,10 @@
     <div class="mb-5 flex flex-col items-center rounded bg-secondary">
         <div class="my-3 flex content-around">
             <h2 class="text-xl font-bold">Participants ({0})</h2>
-            <button class=" mx-3 rounded bg-white px-4 py-2 text-black">Invite Teams</button>
+            <button
+                class=" p x-4 mx-3 rounded
+                bg-white py-2 text-black">Invite Teams</button
+            >
         </div>
 
         <table>

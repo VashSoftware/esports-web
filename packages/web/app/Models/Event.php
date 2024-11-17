@@ -12,7 +12,7 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'has_qualifier_stage', 'has_group_stage'];
 
     public function rounds(): HasMany
     {

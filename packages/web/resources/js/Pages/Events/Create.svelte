@@ -32,7 +32,7 @@
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Title</label>
-            <input type="text" bind:value={$form.title} />
+            <input class="text-black" type="text" bind:value={$form.title} />
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Game</label>
