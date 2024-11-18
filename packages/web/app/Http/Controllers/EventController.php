@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\GameMode;
+use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
@@ -67,7 +68,15 @@ class EventController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        Log::info($request->all());
+
+        $validated = $request->validate([
+            'title' => 'required',
+        ]);
+
+        $event = Event::find($id);
+
+        $event->update($validated);
     }
 
     /**

@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
     import Layout from '@/Shared/Layout.svelte'
     import { router, useForm } from '@inertiajs/svelte'
+    import { debounce } from 'lodash'
 
     let { event, games, game_modes } = $props()
 
@@ -12,6 +13,12 @@
         game_id: event.game_id,
         game_mode_id: event.game_mode_id,
     })
+
+    function save(field: string) {
+        $form.patch(`/events/${event.id}`, {
+            event_id: event.id,
+        })
+    }
 </script>
 
 <Layout>
@@ -25,7 +32,13 @@
 
             <div class="my-1">
                 <label for="event_group">Event Group</label>
-                <select class="text-black" id="event_group" name="event_group" value={event.event_group}>
+                <select
+                    class="text-black"
+                    id="event_group"
+                    name="event_group"
+                    bind:value={$form.event_group}
+                    on:input={debounce((e) => save('event_group'), 500)}
+                >
                     <option value="1">Group 1</option>
                     <option value="2">Group 2</option>
                 </select>
@@ -33,17 +46,28 @@
 
             <div class="my-1">
                 <label for="title">Name</label>
-                <input type="text" class="text-black" id="title" name="title" value={event.title} />
+                <input
+                    type="text"
+                    class="text-black"
+                    id="title"
+                    name="title"
+                    bind:value={$form.title}
+                    on:input={debounce((e) => save('title'), 500)}
+                />
             </div>
 
             <div class="my-1">
                 <label for="toggle-qualifier-stage">Qualifier stage?</label>
-                <input type="checkbox" bind:checked={$form.has_qualifier_stage} />
+                <input
+                    type="checkbox"
+                    bind:checked={$form.has_qualifier_stage}
+                    on:change={() => save('has_qualifier_stage')}
+                />
             </div>
 
             <div class="my-1">
                 <label for="toggle-group-stage">Group stage?</label>
-                <input type="checkbox" bind:checked={$form.has_group_stage} />
+                <input type="checkbox" bind:checked={$form.has_group_stage} on:change={() => save('has_group_stage')} />
             </div>
         </div>
     </form>
