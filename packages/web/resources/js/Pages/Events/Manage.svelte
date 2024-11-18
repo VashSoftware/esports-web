@@ -6,7 +6,7 @@
     let { event, games, game_modes } = $props()
 
     let form = useForm({
-        event_group: event.event_group,
+        event_group_id: event.event_group,
         title: event.title,
         has_qualifier_stage: event.has_qualifier_stage,
         has_group_stage: event.has_group_stage,
@@ -35,9 +35,9 @@
                 <select
                     class="text-black"
                     id="event_group"
-                    name="event_group"
-                    bind:value={$form.event_group}
-                    on:input={debounce((e) => save('event_group'), 500)}
+                    name="event_group_id"
+                    bind:value={$form.event_group_id}
+                    on:input={debounce((e) => save('event_group_id'), 500)}
                 >
                     <option value="1">Group 1</option>
                     <option value="2">Group 2</option>

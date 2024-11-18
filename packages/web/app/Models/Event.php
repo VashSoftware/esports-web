@@ -28,4 +28,14 @@ class Event extends Model
     {
         return $this->belongsToMany(Team::class);
     }
+
+    public function game(): BelongsTo
+    {
+        return $this->belongsTo(Game::class);
+    }
+
+    public function gameMode(): BelongsTo
+    {
+        return $this->belongsTo(GameMode::class);
+    }
 }

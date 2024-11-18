@@ -4,6 +4,8 @@ use App\Models\Map;
 use App\Models\MapPool;
 use App\Models\MapSet;
 use App\Models\EventGroup;
+use App\Models\Game;
+use App\Models\GameMode;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -44,6 +46,8 @@ return new class () extends Migration {
             $table->boolean('has_qualifier_stage')->default(true);
             $table->boolean('has_group_stage')->default(false);
             $table->foreignIdFor(EventGroup::class)->nullable();
+            $table->foreignIdFor(Game::class)->constrained();
+            $table->foreignIdFor(GameMode::class)->constrained();
             $table->timestamps();
         });
 

@@ -72,6 +72,11 @@ class EventController extends Controller
 
         $validated = $request->validate([
             'title' => 'required',
+            'has_qualifier_stage' => 'required',
+            'has_group_stage' => 'required',
+            'event_group_id' => 'required',
+            'game_id' => 'required',
+            'game_mode_id' => 'required',
         ]);
 
         $event = Event::find($id);
