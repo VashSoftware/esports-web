@@ -1,10 +1,9 @@
 <script>
-    import { Link } from '@inertiajs/svelte'
-    import { run } from 'svelte/legacy'
+    import { Link, page } from '@inertiajs/svelte'
 
-    let { auth, children } = $props()
+    let { children } = $props()
 
-    let showMenu = false
+    console.log($page.props.user)
 </script>
 
 <div class="flex h-screen">
@@ -125,7 +124,7 @@
             <div class="flex items-center">
                 <img src="https://via.placeholder.com/40" alt="Profile" class="h-10 w-10 rounded-full object-cover" />
                 <div class="ml-3">
-                    <Link href="/users/{auth}">
+                    <Link href="/users/{$page.props.user?.id}">
                         <p class="text-sm font-medium">Stan</p>
                         <p class="text-xs text-gray-400">@stanrunge</p>
                     </Link>
