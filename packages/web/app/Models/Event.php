@@ -14,6 +14,11 @@ class Event extends Model
 
     protected $fillable = ['title', 'has_qualifier_stage', 'has_group_stage'];
 
+    public function organisation(): BelongsTo
+    {
+        return $this->belongsTo(Organisation::class);
+    }
+
     public function rounds(): HasMany
     {
         return $this->hasMany(Round::class);
@@ -29,13 +34,8 @@ class Event extends Model
         return $this->belongsToMany(Team::class);
     }
 
-    public function game(): BelongsTo
+    public function gameModes(): BelongsToMany
     {
-        return $this->belongsTo(Game::class);
-    }
-
-    public function gameMode(): BelongsTo
-    {
-        return $this->belongsTo(GameMode::class);
+        return $this->belongsToMany(GameMode::class);
     }
 }

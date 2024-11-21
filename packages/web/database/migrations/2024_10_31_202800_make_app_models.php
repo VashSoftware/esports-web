@@ -6,6 +6,7 @@ use App\Models\MapSet;
 use App\Models\EventGroup;
 use App\Models\Game;
 use App\Models\GameMode;
+use App\Models\Organisation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -37,6 +38,7 @@ return new class () extends Migration {
         Schema::create('event_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignIdFor(Organisation::class);
             $table->timestamps();
         });
 
@@ -46,8 +48,14 @@ return new class () extends Migration {
             $table->boolean('has_qualifier_stage')->default(true);
             $table->boolean('has_group_stage')->default(false);
             $table->foreignIdFor(EventGroup::class)->nullable();
-            $table->foreignIdFor(Game::class)->constrained();
-            $table->foreignIdFor(GameMode::class)->constrained();
+            $table->foreignIdFor(Organisation::class);
+            $table->timestamps();
+        });
+
+        Schema::create('event_game_mode', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained();
+            $table->foreignId('game_mode_id')->constrained();
             $table->timestamps();
         });
 

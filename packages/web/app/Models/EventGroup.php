@@ -14,4 +14,9 @@ class EventGroup extends Model
     {
         return $this->hasMany(Event::class);
     }
+
+    public function organisation(): HasMany
+    {
+        return $this->hasMany(Organisation::class);
+    }
 }

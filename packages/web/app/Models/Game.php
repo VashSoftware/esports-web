@@ -14,11 +14,6 @@ class Game extends Model
         'name',
     ];
 
-    public function events(): HasMany
-    {
-        return $this->hasMany(Event::class);
-    }
-
     public function gameModes(): HasMany
     {
         return $this->hasMany(GameMode::class);

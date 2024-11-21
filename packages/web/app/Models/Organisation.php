@@ -14,4 +14,14 @@ class Organisation extends Model
     {
         return $this->hasMany(OrganisationMember::class);
     }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    public function eventGroups(): HasMany
+    {
+        return $this->hasMany(EventGroup::class);
+    }
 }

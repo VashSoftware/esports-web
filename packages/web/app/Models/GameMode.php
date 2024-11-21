@@ -15,8 +15,8 @@ class GameMode extends Model
         return $this->belongsTo(Game::class);
     }
 
-    public function events(): HasMany
+    public function events(): BelongsToMany
     {
-        return $this->hasMany(Event::class);
+        return $this->BelongsToMany(Event::class);
     }
 }
