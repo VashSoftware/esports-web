@@ -10,6 +10,8 @@ class OrganisationMember extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['organisation_id', 'user_id'];
+
     public function organisation(): BelongsTo
     {
         return $this->belongsTo(Organisation::class);

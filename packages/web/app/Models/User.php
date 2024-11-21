@@ -13,7 +13,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -54,7 +55,7 @@ class User extends Authenticatable
         return $this->morphMany(Badge::class, 'badgeable');
     }
 
-    public function organisations(): HasMany
+    public function organisationMembers(): HasMany
     {
         return $this->hasMany(OrganisationMember::class);
     }

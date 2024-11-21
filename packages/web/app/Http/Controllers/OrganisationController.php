@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrganisationMember;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Organisation;
 
-class OrganizationController extends Controller
+class OrganisationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +22,7 @@ class OrganizationController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Organisations/Create');
     }
 
     /**
@@ -27,7 +30,18 @@ class OrganizationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
+
+        $organisation = Organisation::create($validated);
+
+        OrganisationMember::create([
+            'organisation_id' => $organisation->id,
+            'user_id' => $request->user()->id,
+        ]);
+
+        return redirect('/organisations/' . $organisation->id);
     }
 
     /**
@@ -35,7 +49,7 @@ class OrganizationController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Inertia::render('Organisations/Show', ['organisation' => Organisation::find($id)]);
     }
 
     /**

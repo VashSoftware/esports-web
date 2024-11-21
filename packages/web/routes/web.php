@@ -11,7 +11,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ModController;
 use App\Http\Controllers\RoundController;
-use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\OrganisationController;
 use App\Models\Mod;
 use App\Models\VashMatch;
 use Inertia\Inertia;
@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('users', ProfileController::class);
 
-    Route::resource('organizations', OrganizationController::class);
+    Route::resource('organisations', OrganisationController::class);
 
     Route::resource('games', GameController::class);
 

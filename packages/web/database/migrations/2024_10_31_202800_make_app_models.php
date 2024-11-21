@@ -7,6 +7,7 @@ use App\Models\EventGroup;
 use App\Models\Game;
 use App\Models\GameMode;
 use App\Models\Organisation;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -49,6 +50,19 @@ return new class () extends Migration {
             $table->boolean('has_group_stage')->default(false);
             $table->foreignIdFor(EventGroup::class)->nullable();
             $table->foreignIdFor(Organisation::class);
+            $table->timestamps();
+        });
+
+        Schema::create('organisations', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('organisation_members', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Organisation::class)->constrained();
+            $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();
         });
 

@@ -10,6 +10,8 @@ class Organisation extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name'];
+
     public function organisationMembers(): HasMany
     {
         return $this->hasMany(OrganisationMember::class);
