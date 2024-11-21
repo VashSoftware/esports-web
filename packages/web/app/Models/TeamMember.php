@@ -10,6 +10,8 @@ class TeamMember extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['team_id', 'user_id'];
+
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);

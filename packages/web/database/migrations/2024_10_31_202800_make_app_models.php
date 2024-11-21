@@ -33,6 +33,14 @@ return new class () extends Migration {
 
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('team_members', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('team_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
 

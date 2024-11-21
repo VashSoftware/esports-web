@@ -16,9 +16,10 @@
                 <img src="" alt="Organization logo" />
             {/each}
             <Link href="/organisations/create">+</Link>
-            {#each [1, 2, 3] as team}
+            {#each profile.team_members as team}
                 <img src="" alt="Team logo" />
             {/each}
+            <Link href="/teams/create">+</Link>
         </div>
     </div>
 
