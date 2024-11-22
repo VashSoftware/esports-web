@@ -26,7 +26,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Events/Create', ['organisation_members' => Auth::user()->organisationMembers()->with('organisation.eventGroups')->get()]);
+        return Inertia::render('Events/Create', ['organisation_members' => Auth::user()->organisationMembers()->with('organisation.eventGroups')->get(), 'games' => Game::with('gameModes')->get()]);
     }
 
     /**
@@ -36,7 +36,10 @@ class EventController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required',
-            'organisation_id' => 'required',
+            'organisation_id' => 'required|exists:organisations,id',
+            'event_group_id' => 'required|exists:event_groups,id',
+            'game_id' => 'required|exists:games,id',
+            'game_mode_id' => 'required|exists:game_modes,id',
         ]);
 
         $organisation = Organisation::find($validated['organisation_id']);
@@ -76,18 +79,17 @@ class EventController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        Log::info($request->all());
-
         $validated = $request->validate([
-            'title' => 'required',
-            'has_qualifier_stage' => 'required',
-            'has_group_stage' => 'required',
-            'event_group_id' => 'required',
+            'title' => 'nullable',
+            'has_qualifier_stage' => 'nullable',
+            'has_group_stage' => 'nullable',
         ]);
 
         $event = Event::find($id);
 
         $event->update($validated);
+
+        return redirect('events/' . $id . '/manage', 303);
     }
 
     /**

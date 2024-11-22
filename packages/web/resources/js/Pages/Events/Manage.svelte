@@ -3,10 +3,10 @@
     import { router, useForm } from '@inertiajs/svelte'
     import { debounce } from 'lodash'
 
-    let { event, games, game_modes } = $props()
+    let { event, games, game_modes, event_groups } = $props()
 
     let form = useForm({
-        event_group_id: event.event_group,
+        event_group_id: event.event_group_id,
         title: event.title,
         has_qualifier_stage: event.has_qualifier_stage,
         has_group_stage: event.has_group_stage,
@@ -14,10 +14,8 @@
         game_mode_id: event.game_mode_id,
     })
 
-    function save(field: string) {
-        $form.patch(`/events/${event.id}`, {
-            event_id: event.id,
-        })
+    function save() {
+        $form.patch(`/events/${event.id}`)
     }
 </script>
 
@@ -26,51 +24,46 @@
         Manage {event.event_group ? `${event.event_group} -` : ''}{event.title}
     </h1>
 
-    <form>
-        <div class="mb-5 flex flex-col items-center rounded bg-secondary">
-            <h2 class="my-3 text-xl font-bold">Event Details</h2>
+    <div class="mb-5 flex flex-col items-center rounded bg-secondary">
+        <h2 class="my-3 text-xl font-bold">Event Details</h2>
 
-            <div class="my-1">
-                <label for="event_group">Event Group</label>
-                <select
-                    class="text-black"
-                    id="event_group"
-                    name="event_group_id"
-                    bind:value={$form.event_group_id}
-                    on:input={debounce((e) => save('event_group_id'), 500)}
-                >
-                    <option value="1">Group 1</option>
-                    <option value="2">Group 2</option>
-                </select>
-            </div>
-
-            <div class="my-1">
-                <label for="title">Name</label>
-                <input
-                    type="text"
-                    class="text-black"
-                    id="title"
-                    name="title"
-                    bind:value={$form.title}
-                    on:input={debounce((e) => save('title'), 500)}
-                />
-            </div>
-
-            <div class="my-1">
-                <label for="toggle-qualifier-stage">Qualifier stage?</label>
-                <input
-                    type="checkbox"
-                    bind:checked={$form.has_qualifier_stage}
-                    on:change={() => save('has_qualifier_stage')}
-                />
-            </div>
-
-            <div class="my-1">
-                <label for="toggle-group-stage">Group stage?</label>
-                <input type="checkbox" bind:checked={$form.has_group_stage} on:change={() => save('has_group_stage')} />
-            </div>
+        <div class="my-1">
+            <label for="event_group">Event Group</label>
+            <select
+                class="text-black"
+                id="event_group"
+                name="event_group_id"
+                bind:value={$form.event_group_id}
+                oninput={(e) => save(e)}
+            >
+                {#each event_groups as event_group}
+                    <option value={event_group.id}>{event_group.name}</option>
+                {/each}
+            </select>
         </div>
-    </form>
+
+        <div class="my-1">
+            <label for="title">Name</label>
+            <input
+                type="text"
+                class="text-black"
+                id="title"
+                name="title"
+                bind:value={$form.title}
+                oninput={debounce(save, 500)}
+            />
+        </div>
+
+        <div class="my-1">
+            <label for="toggle-qualifier-stage">Qualifier stage?</label>
+            <input type="checkbox" bind:checked={$form.has_qualifier_stage} onchange={(e) => save(e)} />
+        </div>
+
+        <div class="my-1">
+            <label for="toggle-group-stage">Group stage?</label>
+            <input type="checkbox" bind:checked={$form.has_group_stage} onchange={(e) => save(e)} />
+        </div>
+    </div>
 
     <form>
         <div class="mb-5 flex flex-col items-center rounded bg-secondary">
@@ -78,7 +71,13 @@
 
             <div class="my-1">
                 <label for="event_group">Game</label>
-                <select id="event_group" class="text-black" name="event_group" bind:value={$form.game_id}>
+                <select
+                    id="event_group"
+                    class="text-black"
+                    name="event_group"
+                    bind:value={$form.game_id}
+                    oninput={(e) => save(e)}
+                >
                     {#each games as game}
                         <option value={game.id}>{game.name}</option>
                     {/each}
@@ -87,7 +86,13 @@
 
             <div class="my-1">
                 <label for="title">Game Mode</label>
-                <select id="title" name="title" class="text-black" bind:value={$form.game_mode_id}>
+                <select
+                    id="title"
+                    name="title"
+                    class="text-black"
+                    bind:value={$form.game_mode_id}
+                    oninput={(e) => save(e)}
+                >
                     {#each game_modes.filter((gm) => gm.game_id == $form.game_id) as game_mode}
                         <option value={game_mode.id}>{game_mode.name}</option>
                     {/each}
@@ -132,7 +137,7 @@
             <h2 class="text-xl font-bold">Rounds ({0})</h2>
             <button
                 class="rounded bg-white px-4 py-2 text-black"
-                on:click={() =>
+                onclick={() =>
                     router.post('/rounds', {
                         event_id: event.id,
                     })}>Add Round</button

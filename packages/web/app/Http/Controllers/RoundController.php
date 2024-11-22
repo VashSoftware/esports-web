@@ -36,6 +36,8 @@ class RoundController extends Controller
         $event = Event::find($validated['event_id']);
 
         $event->rounds()->create();
+
+        return back();
     }
 
     /**
