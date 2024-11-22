@@ -19,7 +19,7 @@
     <form on:submit|preventDefault={submitForm} class="flex flex-col text-center">
         <div class="my-3 flex justify-around">
             <label for="organization">Organization</label>
-            <select bind:value={$form.organisation_id}>
+            <select bind:value={$form.organisation_id} class="text-black">
                 {#each organisation_members as organisation_member}
                     <option value={organisation_member.organisation.id}>{organisation_member.organisation.name}</option>
                 {/each}
@@ -28,7 +28,7 @@
 
         <div class="my-3 flex justify-around">
             <label for="event_group">Event Group</label>
-            <select bind:value={$form.event_group_id}>
+            <select bind:value={$form.event_group_id} class="text-black">
                 {#each organisation_members.find((om) => om.organisation.id == $form.organisation_id)?.organisation.event_groups as event_group}
                     <option value={event_group.id}>{event_group.name}</option>
                 {/each}
@@ -40,7 +40,7 @@
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Game</label>
-            <select>
+            <select class="text-black">
                 {#each [] as game}
                     <option value={game.id}>{game.name}</option>
                 {/each}
@@ -48,7 +48,7 @@
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Game Mode</label>
-            <select>
+            <select class="text-black">
                 {#each [] as game_mode}
                     <option value={game_mode.id}>{game_mode.name}</option>
                 {/each}
