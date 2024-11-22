@@ -103,5 +103,19 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        DB::table('organisations')->insert([[
+            'name' => 'Test Organisation',
+        ]]);
+
+        DB::table('organisation_members')->insert([[
+            'organisation_id' => 1,
+            'user_id' => 1,
+        ]]);
+
+        DB::table('event_groups')->insert([[
+            'organisation_id' => 1,
+            'name' => 'Test Event Group',
+        ]]);
     }
 }
