@@ -5,18 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventGroup extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name'];
 
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
     }
 
-    public function organisation(): HasMany
+    public function organisation(): BelongsTo
     {
-        return $this->hasMany(Organisation::class);
+        return $this->belongsTo(Organisation::class);
     }
 }

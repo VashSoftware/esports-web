@@ -12,6 +12,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ModController;
 use App\Http\Controllers\RoundController;
 use App\Http\Controllers\OrganisationController;
+use App\Http\Controllers\EventGroupController;
 use App\Models\Mod;
 use App\Models\VashMatch;
 use Inertia\Inertia;
@@ -45,6 +46,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('events', EventController::class);
     Route::get('/events/{event}/manage', [EventController::class, 'manage'])->name('events.manage');
+
+    Route::resource('event_groups', EventGroupController::class);
 
     Route::resource('rounds', RoundController::class);
 

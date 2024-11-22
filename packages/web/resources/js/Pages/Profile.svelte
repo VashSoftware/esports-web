@@ -3,8 +3,6 @@
     import Layout from '../Shared/Layout.svelte'
 
     let { profile } = $props()
-
-    console.log(profile)
 </script>
 
 <Layout>
@@ -13,7 +11,9 @@
             <img src="" alt="" />
             <h1>{profile.username}</h1>
             {#each profile.organisation_members as organisation}
-                <img src="" alt="Organization logo" />
+                <Link href="/organisations/{organisation.organisation.id}">
+                    <img src="" alt="Organization logo" />
+                </Link>
             {/each}
             <Link href="/organisations/create">+</Link>
             {#each profile.team_members as team}

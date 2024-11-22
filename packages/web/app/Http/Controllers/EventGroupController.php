@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrganisationMember;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 use App\Models\Organisation;
 
-class OrganisationController extends Controller
+class EventGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,7 +22,6 @@ class OrganisationController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Organisations/Create');
     }
 
     /**
@@ -30,18 +29,15 @@ class OrganisationController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info($request);
+
         $validated = $request->validate([
             'name' => 'required',
+            'organisation_id' => 'required|exists:organisations,id',
         ]);
 
-        $organisation = Organisation::create($validated);
-
-        OrganisationMember::create([
-            'organisation_id' => $organisation->id,
-            'user_id' => $request->user()->id,
-        ]);
-
-        return redirect('/organisations/' . $organisation->id);
+        $organisation = Organisation::find($validated['organisation_id']);
+        $eventGroup = $organisation->eventGroups()->create($validated);
     }
 
     /**
@@ -49,7 +45,7 @@ class OrganisationController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('Organisations/Show', ['organisation' => Organisation::find($id)]);
+        //
     }
 
     /**
@@ -57,7 +53,7 @@ class OrganisationController extends Controller
      */
     public function edit(string $id)
     {
-        return Inertia::render('Organisations/Edit', ['organisation' => Organisation::with('events')->with('eventGroups.events')->find($id)]);
+        //
     }
 
     /**
