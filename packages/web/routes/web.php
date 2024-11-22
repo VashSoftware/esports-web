@@ -15,6 +15,9 @@ use App\Http\Controllers\RoundController;
 use App\Http\Controllers\OrganisationController;
 use App\Http\Controllers\EventGroupController;
 use App\Models\Mod;
+use App\Models\Score;
+use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\VashMatch;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -70,6 +73,11 @@ Route::middleware('auth')->group(function () {
 
     Route::inertia('terms', 'Terms');
     Route::inertia('privacy', 'Privacy');
+
+    Route::get('leaderboard', function () {
+        return Inertia::render('Leaderboard', ['top_teams' => Team::all(), 'top_players' => TeamMember::all(), 'top_scores' => Score::all()]);
+
+    });
 });
 
 require __DIR__ . '/auth.php';

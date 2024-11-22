@@ -136,6 +136,12 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('scores', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('vash_match_id')->constrained();
+            $table->integer('score');
+            $table->timestamps();
+        });
     }
 
     /**
