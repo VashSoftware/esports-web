@@ -2,12 +2,14 @@
     import Layout from '@/Shared/Layout.svelte'
     import { useForm } from '@inertiajs/svelte'
 
-    let { organisation_members } = $props()
+    let { organisation_members, games } = $props()
 
     let form = useForm({
         title: '',
         organisation_id: null,
         event_group_id: null,
+        game_id: null,
+        game_mode_id: null,
     })
 
     function submitForm() {
@@ -40,16 +42,16 @@
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Game</label>
-            <select class="text-black">
-                {#each [] as game}
+            <select class="text-black" bind:value={$form.game_id}>
+                {#each games as game}
                     <option value={game.id}>{game.name}</option>
                 {/each}
             </select>
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Game Mode</label>
-            <select class="text-black">
-                {#each [] as game_mode}
+            <select class="text-black" bind:value={$form.game_mode_id}>
+                {#each games.find((game) => game.id == $form.game_id)?.game_modes as game_mode}
                     <option value={game_mode.id}>{game_mode.name}</option>
                 {/each}
             </select>
