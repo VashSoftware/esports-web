@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Organisation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\GameMode;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -24,7 +26,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Events/Create');
+        return Inertia::render('Events/Create', ['organisation_members' => Auth::user()->organisationMembers()->with('organisation.eventGroups')->get()]);
     }
 
     /**
@@ -32,11 +34,14 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required',
+            'organisation_id' => 'required',
         ]);
 
-        $event = Event::create($request->all());
+        $organisation = Organisation::find($validated['organisation_id']);
+
+        $event = $organisation->events()->create($validated);
 
         return redirect()->route('events.show', $event->id);
     }
@@ -51,8 +56,11 @@ class EventController extends Controller
 
     public function manage(string $id)
     {
-        return Inertia::render('Events/Manage', ['event' => Event::with('teams')->with('rounds')->find($id), 'games' => Game::all(), 'game_modes' => GameMode::all()]);
-
+        return Inertia::render('Events/Manage', [
+            'event' => Event::with('teams')->with('rounds')->find($id),
+            'games' => Game::all(), 'game_modes' => GameMode::all(),
+            'event_groups' => Event::find($id)->organisation->eventGroups()->get(),
+        ]);
     }
 
     /**
@@ -75,8 +83,6 @@ class EventController extends Controller
             'has_qualifier_stage' => 'required',
             'has_group_stage' => 'required',
             'event_group_id' => 'required',
-            'game_id' => 'required',
-            'game_mode_id' => 'required',
         ]);
 
         $event = Event::find($id);
