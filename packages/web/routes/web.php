@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GameModeController;
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
@@ -46,6 +47,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('events', EventController::class);
     Route::get('/events/{event}/manage', [EventController::class, 'manage'])->name('events.manage');
+    Route::get('/events/{event}/register', [EventController::class, 'register'])->name('events.register');
+
+    Route::resource('participants', ParticipantController::class);
 
     Route::resource('event_groups', EventGroupController::class);
 

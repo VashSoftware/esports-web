@@ -66,6 +66,15 @@ class EventController extends Controller
         ]);
     }
 
+    public function register(string $id)
+    {
+        return Inertia::render('Events/Register', [
+            'event' => Event::find($id),
+            'team_members' => Auth::user()->teamMembers()->with('team')->get()
+        ]);
+    }
+
+
     /**
      * Show the form for editing the specified resource.
      */

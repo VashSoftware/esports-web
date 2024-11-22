@@ -64,6 +64,6 @@ class ProfileController extends Controller
 
     public function show(string $id)
     {
-        return Inertia::render('Profile', ['profile' => User::with('organisationMembers.organisation')->find($id)]);
+        return Inertia::render('Profile', ['profile' => User::with('teamMembers.team')->with('organisationMembers.organisation')->find($id)]);
     }
 }

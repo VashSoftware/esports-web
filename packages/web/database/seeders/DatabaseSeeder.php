@@ -117,5 +117,14 @@ class DatabaseSeeder extends Seeder
             'organisation_id' => 1,
             'name' => 'Test Event Group',
         ]]);
+
+        DB::table('teams')->insert([[
+            'name' => 'Test Team',
+        ]]);
+
+        DB::table('team_members')->insert([[
+            'team_id' => 1,
+            'user_id' => 1,
+        ]]);
     }
 }
