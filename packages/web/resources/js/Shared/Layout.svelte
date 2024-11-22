@@ -2,8 +2,6 @@
     import { Link, page } from '@inertiajs/svelte'
 
     let { children } = $props()
-
-    console.log($page.props.user)
 </script>
 
 <div class="flex h-screen">
