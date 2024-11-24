@@ -78,6 +78,10 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Leaderboard', ['top_teams' => Team::all(), 'top_players' => TeamMember::all(), 'top_scores' => Score::all()]);
 
     });
+
+    Route::get('settings', function () {
+        return Inertia::render('Settings');
+    });
 });
 
 require __DIR__ . '/auth.php';

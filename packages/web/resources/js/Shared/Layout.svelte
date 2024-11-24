@@ -127,23 +127,20 @@
                         <p class="text-xs text-gray-400">@stanrunge</p>
                     </Link>
                 </div>
-                <button
-                    class="ml-auto rounded bg-primary p-2 hover:bg-opacity-75 focus:outline-none"
-                    aria-label="Settings"
-                >
-                    <!-- Settings Icon -->
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-white"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                <Link href="/settings">
+                    <button
+                        class="ml-auto rounded bg-primary p-2 hover:bg-opacity-75 focus:outline-none"
+                        aria-label="Settings"
                     >
-                        <!-- SVG path for the settings icon -->
-                        <path
-                            d="M11.3 1.046a1 1 0 00-2.6 0l-.5 2a1 1 0 01-.9.654l-2.05.146a1 1 0 00-.554 1.706l1.483 1.484a1 1 0 01.291.958l-.396 1.984a1 1 0 00.972 1.194l2.07-.147a1 1 0 01.957.29l1.483 1.483a1 1 0 001.706-.554l.146-2.05a1 1 0 01.654-.9l2-.5a1 1 0 000-2.6l-2-.5a1 1 0 01-.654-.9l-.146-2.05a1 1 0 00-1.706-.554L12.247 3.09a1 1 0 01-.958.291l-1.984-.396a1 1 0 00-1.194.972l.147 2.07a1 1 0 01-.29.957L7.387 9.345a1 1 0 00.554 1.706l2.05.146a1 1 0 01.9.654l.5 2a1 1 0 002.6 0l.5-2a1 1 0 01.9-.654l2.05-.146a1 1 0 00.554-1.706l-1.483-1.484a1 1 0 01-.291-.958l.396-1.984a1 1 0 00-.972-1.194l-2.07.147a1 1 0 01-.957-.29L9.86 2.6a1 1 0 00-1.706.554l-.146 2.05a1 1 0 01-.654.9l-2 .5z"
-                        />
-                    </svg>
-                </button>
+                        <!-- Settings Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                            ><path
+                                fill="currentColor"
+                                d="m9.25 22l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.338v.674q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375t-.6.3l-.4 3.2zm2.8-6.5q1.45 0 2.475-1.025T15.55 12t-1.025-2.475T12.05 8.5q-1.475 0-2.488 1.025T8.55 12t1.013 2.475T12.05 15.5"
+                            /></svg
+                        >
+                    </button>
+                </Link>
             </div>
         </div>
     </aside>
