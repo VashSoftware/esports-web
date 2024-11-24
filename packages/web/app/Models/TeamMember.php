@@ -10,7 +10,7 @@ class TeamMember extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['team_id', 'user_id'];
+    protected $fillable = ['team_id', 'profile_id'];
 
     public function team(): BelongsTo
     {

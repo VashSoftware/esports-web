@@ -104,13 +104,17 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        DB::table('profiles')->insert([[
+            'user_id' => 1,
+        ]]);
+
         DB::table('organisations')->insert([[
             'name' => 'Test Organisation',
         ]]);
 
         DB::table('organisation_members')->insert([[
             'organisation_id' => 1,
-            'user_id' => 1,
+            'profile_id' => 1,
         ]]);
 
         DB::table('event_groups')->insert([[
@@ -124,7 +128,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('team_members')->insert([[
             'team_id' => 1,
-            'user_id' => 1,
+            'profile_id' => 1,
         ]]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrganisationMember;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Models\Organisation;
 
@@ -38,7 +39,7 @@ class OrganisationController extends Controller
 
         OrganisationMember::create([
             'organisation_id' => $organisation->id,
-            'user_id' => $request->user()->id,
+            'profile_id' => $request->user()->profile->id,
         ]);
 
         return redirect('/organisations/' . $organisation->id);

@@ -38,7 +38,7 @@ class TeamController extends Controller
 
         TeamMember::create([
             'team_id' => $team->id,
-            'user_id' => $request->user()->id,
+            'profile_id' => $request->user()->profile->id,
         ]);
 
         return redirect('/teams/' . $team->id);

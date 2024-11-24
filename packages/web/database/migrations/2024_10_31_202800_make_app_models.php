@@ -33,7 +33,7 @@ return new class () extends Migration {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->string('profile_picture');
+            $table->string('profile_picture')->nullable();
             $table->timestamps();
         });
 

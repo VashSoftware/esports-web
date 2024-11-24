@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -64,6 +65,6 @@ class ProfileController extends Controller
 
     public function show(string $id)
     {
-        return Inertia::render('Profile', ['profile' => User::with('teamMembers.team')->with('organisationMembers.organisation')->find($id)]);
+        return Inertia::render('Profile', ['profile' => Profile::with('teamMembers.team')->with('organisationMembers.organisation')->find($id)]);
     }
 }

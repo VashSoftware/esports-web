@@ -3,6 +3,7 @@
     import Layout from '../Shared/Layout.svelte'
 
     let { profile } = $props()
+    console.log(profile)
 </script>
 
 <Layout>
