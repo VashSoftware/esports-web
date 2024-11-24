@@ -54,8 +54,8 @@
                     >
                         <img src={map.cover} alt="" class="h-10 w-10 flex-shrink-0 rounded object-cover" />
                         <div class="flex-1 text-sm text-gray-800">
-                            <div class="font-semibold">{map.map_sets.artist}</div>
-                            <div>{map.map_sets.title}</div>
+                            <div class="font-semibold">{map.artist}</div>
+                            <div>{map.title}</div>
                         </div>
                     </li>
                 {/each}

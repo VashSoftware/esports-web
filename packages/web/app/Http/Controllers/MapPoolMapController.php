@@ -10,6 +10,7 @@ use App\Models\Mod;
 use App\Services\OsuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class MapPoolMapController extends Controller
@@ -82,12 +83,13 @@ class MapPoolMapController extends Controller
             ]);
         }
 
-        $mapPoolMap = MapPoolMap::find($validated['map_pool_map_id']);
+        $mapPoolMap = MapPoolMap::with('mapPool')->find($validated['map_pool_map_id']);
+
         $mapPoolMap->map_id = $validated['map_id'];
 
         $mapPoolMap->save();
 
-        return redirect()->route('map_pools.edit', $validated['map_pool_id']);
+        return redirect('map_pools/' . $mapPoolMap->mapPool->id. '/edit', 303);
     }
 
     /**
