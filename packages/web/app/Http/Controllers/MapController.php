@@ -79,9 +79,25 @@ class MapController extends Controller
             'query' => 'required|string',
         ]);
 
-        if (is_numeric($validated['query'])) {
-            if (!Map::where('osu_id', $validated['query'])->exists()) {
-                $beatmap = $this->osuService->get('beatmaps/' . $validated['query']);
+        $query = $validated['query'];
+
+    if (filter_var($query, FILTER_VALIDATE_URL)) {
+        if (preg_match('/beatmapsets\/(\d+)(?:#osu\/(\d+))?/', $query, $matches)) {
+            $mapsetId = $matches[1] ?? null;
+            $mapId = $matches[2] ?? null;
+
+            if (!$mapId) {
+                return response()->json(['error' => 'Invalid map URL: Map ID missing'], 400);
+            }
+
+            $query = $mapId; // Use map ID for further processing
+        } else {
+            return response()->json(['error' => 'Invalid map URL format'], 400);
+        }
+    }
+        if (is_numeric($query)) {
+            if (!Map::where('osu_id', $query)->exists()) {
+                $beatmap = $this->osuService->get('beatmaps/' . $query);
 
                 $mapSet = MapSet::where('osu_id', $beatmap['beatmapset_id'])->first();
                 if (!$mapSet) {
@@ -100,7 +116,7 @@ class MapController extends Controller
             }
         }
 
-        $maps = Map::search($validated['query'])->query(function ($query) {
+        $maps = Map::search($query)->query(function ($query) {
             $query->join('map_sets', 'maps.map_set_id', 'map_sets.id')
                 ->select(['maps.id as map_id', 'maps.osu_id', 'maps.difficulty_name', 'map_sets.id', 'map_sets.artist', 'map_sets.title']);
         })->get();
