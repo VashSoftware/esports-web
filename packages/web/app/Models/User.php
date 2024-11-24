@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -50,23 +51,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function badges(): MorphMany
+    public function profile(): HasOne
     {
-        return $this->morphMany(Badge::class, 'badgeable');
-    }
-
-    public function organisationMembers(): HasMany
-    {
-        return $this->hasMany(OrganisationMember::class);
-    }
-
-    public function teamMembers(): HasMany
-    {
-        return $this->hasMany(TeamMember::class);
-    }
-
-    public function ratings(): MorphMany
-    {
-        return $this->morphMany(Rating::class, 'rateable');
+        return $this->hasOne(Profile::class);
     }
 }

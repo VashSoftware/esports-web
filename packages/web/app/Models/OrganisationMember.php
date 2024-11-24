@@ -17,8 +17,8 @@ class OrganisationMember extends Model
         return $this->belongsTo(Organisation::class);
     }
 
-    public function user(): BelongsTo
+    public function profile(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Profile::class);
     }
 }

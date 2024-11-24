@@ -1,12 +1,16 @@
 <?php
 
+use App\Models\GameMode;
 use App\Models\Map;
 use App\Models\MapPool;
 use App\Models\MapSet;
 use App\Models\EventGroup;
+use App\Models\Event;
 use App\Models\Game;
-use App\Models\GameMode;
+use App\Models\MatchParticipant;
+use App\Models\Profile;
 use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\VashMatch;
 use App\Models\Organisation;
 use App\Models\User;
@@ -26,9 +30,32 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(User::class);
+            $table->string('profile_picture');
+            $table->timestamps();
+        });
+
+        Schema::create('ratings', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Profile::class);
+            $table->foreignIdFor(Game::class);
+            $table->integer('rating');
+            $table->timestamps();
+        });
+
+        Schema::create('badges', function (Blueprint $table) {
+            $table->id();
+            $table->string('picture');
+            $table->string('name');
+            $table->foreignIdFor(Profile::class);
+            $table->timestamps();
+        });
+
         Schema::create('game_modes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_id')->constrained();
+            $table->foreignIdFor(Game::class)->constrained();
             $table->string('name');
             $table->timestamps();
         });
@@ -42,7 +69,7 @@ return new class () extends Migration {
         Schema::create('team_members', function (Blueprint $table) {
             $table->id();
             $table->foreignId('team_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('profile_id')->constrained();
             $table->timestamps();
         });
 
@@ -72,14 +99,14 @@ return new class () extends Migration {
         Schema::create('organisation_members', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Organisation::class)->constrained();
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(Profile::class)->constrained();
             $table->timestamps();
         });
 
         Schema::create('event_game_mode', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained();
-            $table->foreignId('game_mode_id')->constrained();
+            $table->foreignIdFor(Event::class)->constrained();
+            $table->foreignIdFor(GameMode::class)->constrained();
             $table->timestamps();
         });
 
@@ -135,6 +162,13 @@ return new class () extends Migration {
             $table->id();
             $table->foreignIdFor(VashMatch::class);
             $table->foreignIdFor(Team::class);
+            $table->timestamps();
+        });
+
+        Schema::create('match_participant_players', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(MatchParticipant::class);
+            $table->foreignIdFor(TeamMember::class);
             $table->timestamps();
         });
 

@@ -17,8 +17,8 @@ class TeamMember extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function user(): BelongsTo
+    public function profile(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Profile::class);
     }
 }
