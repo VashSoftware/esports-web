@@ -60,7 +60,7 @@
                         class="flex cursor-pointer items-center space-x-3 p-2 hover:bg-gray-100"
                         onclick={() => {
                             router.patch(`/map_pool_maps/${mapPoolMap.id}`, {
-                                map_id: map.id,
+                                map_id: map.map_id,
                             })
 
                             foundMaps = []

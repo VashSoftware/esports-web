@@ -82,9 +82,10 @@ class MapController extends Controller
         $query = $validated['query'];
 
     if (filter_var($query, FILTER_VALIDATE_URL)) {
-        if (preg_match('/beatmapsets\/(\d+)(?:#osu\/(\d+))?/', $query, $matches)) {
+        if (preg_match('/beatmapsets\/(\d+)(?:#(\w+)\/(\d+))?/', $query, $matches)) {
             $mapsetId = $matches[1] ?? null;
-            $mapId = $matches[2] ?? null;
+            $mode = $matches[2] ?? null;
+            $mapId = $matches[3] ?? null;
 
             if (!$mapId) {
                 return response()->json(['error' => 'Invalid map URL: Map ID missing'], 400);
