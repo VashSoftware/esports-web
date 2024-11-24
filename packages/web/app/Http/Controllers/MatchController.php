@@ -11,19 +11,23 @@ class MatchController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Matches/Index', ['matches' => VashMatch::all()]);
+        return Inertia::render('Matches/Index', ['matches' => VashMatch::with('matchParticipants')->get()]);
     }
 
     public function store(Request $request)
     {
-        $mapPool = MapPool::find($request->input('map_pool_id'));
-
-
-        $match = VashMatch::create([
-            'map_pool_id' => $mapPool->id,
+        $validated = $request->validate([
+            'event_id' => 'nullable|exists:events,id',
+            'round_id' => 'nullable|exists:rounds,id',
+            'map_pool_id' => 'required|exists:map_pools,id',
+            'match_participants' => 'required|array',
         ]);
 
-        $mapPool->matches()->save($match);
+        $mapPool = MapPool::find($validated['map_pool_id']);
+
+        $match = $mapPool->vashMatches()->create();
+
+        return redirect('/matches/' . $match->id . '/play', status: 303);
     }
 
     public function play(VashMatch $match)

@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
         return Inertia::render('Home', [
-            'matches' => VashMatch::all()
+            'matches' => VashMatch::with('matchParticipants')->get()
         ]);
     });
 

@@ -6,6 +6,8 @@ use App\Models\MapSet;
 use App\Models\EventGroup;
 use App\Models\Game;
 use App\Models\GameMode;
+use App\Models\Team;
+use App\Models\VashMatch;
 use App\Models\Organisation;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -126,6 +128,13 @@ return new class () extends Migration {
         Schema::create('vash_matches', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(MapPool::class);
+            $table->timestamps();
+        });
+
+        Schema::create('match_participants', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(VashMatch::class);
+            $table->foreignIdFor(Team::class);
             $table->timestamps();
         });
 
