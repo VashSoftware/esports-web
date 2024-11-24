@@ -29,14 +29,27 @@
 </script>
 
 <div class="relative flex flex-col items-center">
-    <input
-        name="map"
-        type="text"
-        bind:value={cursor_string}
-        on:input={fetchMaps}
-        class="w-full rounded border border-gray-300 px-4 py-2 text-black focus:border-blue-500 focus:outline-none"
-        placeholder="Search for a map..."
-    />
+    {#if !mapPoolMap.map}
+        <input
+            name="map"
+            type="text"
+            bind:value={cursor_string}
+            oninput={fetchMaps}
+            class="w-full rounded border border-gray-300 px-4 py-2 text-black focus:border-blue-500 focus:outline-none"
+            placeholder="Search for a map..."
+        />
+    {:else}
+        <div>
+            <b>{mapPoolMap.map?.map_set.artist} - {mapPoolMap.map?.map_set.title}</b>
+            <button
+                onclick={() =>
+                    router.patch(`/map_pool_maps/${mapPoolMap.id}`, {
+                        map_id: null,
+                    })}
+                class="m-2 rounded bg-red-500 p-2">X</button
+            >
+        </div>
+    {/if}
     {#if foundMaps.length > 0}
         <div
             class="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded border border-gray-200 bg-white shadow-lg"
@@ -45,11 +58,12 @@
                 {#each foundMaps as map}
                     <li
                         class="flex cursor-pointer items-center space-x-3 p-2 hover:bg-gray-100"
-                        on:click={() => {
+                        onclick={() => {
                             router.patch(`/map_pool_maps/${mapPoolMap.id}`, {
-                                map_pool_map_id: mapPoolMap.id,
                                 map_id: map.id,
                             })
+
+                            foundMaps = []
                         }}
                     >
                         <img src={map.cover} alt="" class="h-10 w-10 flex-shrink-0 rounded object-cover" />

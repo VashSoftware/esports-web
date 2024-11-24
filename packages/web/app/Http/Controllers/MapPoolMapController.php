@@ -66,9 +66,17 @@ class MapPoolMapController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'map_pool_map_id' => 'required|exists:map_pool_maps,id',
-            'map_id' => 'required',
+            'map_id' => 'nullable',
         ]);
+
+
+        $mapPoolMap = MapPoolMap::with('mapPool')->find($id);
+
+        if (!$validated['map_id']) {
+            $mapPoolMap->map_id = null;
+            $mapPoolMap->save();
+            return back(status: 303);
+        }
 
         $map = Map::find($validated['map_id']);
         if (!$map) {
@@ -83,13 +91,11 @@ class MapPoolMapController extends Controller
             ]);
         }
 
-        $mapPoolMap = MapPoolMap::with('mapPool')->find($validated['map_pool_map_id']);
-
-        $mapPoolMap->map_id = $validated['map_id'];
+        $mapPoolMap->map_id = $map->id;
 
         $mapPoolMap->save();
 
-        return redirect('map_pools/' . $mapPoolMap->mapPool->id. '/edit', 303);
+        return back(status: 303);
     }
 
     /**
@@ -97,6 +103,10 @@ class MapPoolMapController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $mapPoolMap = MapPoolMap::find($id);
+
+        $mapPoolMap->delete();
+
+        return back(status: 303);
     }
 }
