@@ -1,6 +1,8 @@
 <script>
     import { Link, page } from '@inertiajs/svelte'
 
+    console.log($page.props.user)
+
     let { children } = $props()
 </script>
 
@@ -120,7 +122,11 @@
         <!-- Profile Section -->
         <div class="bg-secondary p-6">
             <div class="flex items-center">
-                <img src="https://via.placeholder.com/40" alt="Profile" class="h-10 w-10 rounded-full object-cover" />
+                <img
+                    src={'/storage/' + $page.props.user?.profile.profile_picture}
+                    alt="Profile"
+                    class="h-10 w-10 rounded-full object-cover"
+                />
                 <div class="ml-3">
                     <Link href="/users/{$page.props.user?.id}">
                         <p class="text-sm font-medium">Stan</p>
