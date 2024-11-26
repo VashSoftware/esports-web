@@ -1,26 +1,27 @@
 <?php
 
-use App\Http\Controllers\GameModeController;
-use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventGroupController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\GameModeController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MapPoolMapController;
 use App\Http\Controllers\MatchController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\TeamController;
+use App\Http\Controllers\MatchQueueController;
 use App\Http\Controllers\ModController;
-use App\Http\Controllers\RoundController;
 use App\Http\Controllers\OrganisationController;
-use App\Http\Controllers\EventGroupController;
+use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoundController;
+use App\Http\Controllers\TeamController;
 use App\Models\Mod;
 use App\Models\Score;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\VashMatch;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,18 +31,19 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
         return Inertia::render('Home', [
-            'matches' => VashMatch::with('matchParticipants')->get()
+            'matches' => VashMatch::with('matchParticipants')->get(),
         ]);
     });
 
     Route::get('admin', function () {
         return Inertia::render('Admin', [
-            'mods' => Mod::all()
+            'mods' => Mod::all(),
         ]);
     });
 
     Route::resource('matches', MatchController::class);
-    Route::post('matches/queue', [MatchController::class, 'queue'])->name('matches.queue');
+    Route::post('matches/queue', [MatchQueueController::class, 'join'])->name('matches.queue.join');
+    Route::delete('matches/queue', [MatchQueueController::class, 'leave'])->name('matches.queue.leave');
     Route::get('/matches/{match}/play', [MatchController::class, 'play'])->name('matches.play');
 
     Route::resource('map_pools', MapPoolController::class);
@@ -86,4 +88,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

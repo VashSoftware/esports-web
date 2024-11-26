@@ -1,8 +1,8 @@
 <script>
-    import { useForm } from '@inertiajs/svelte'
+    import { router, useForm } from '@inertiajs/svelte'
     import Layout from '../../Shared/Layout.svelte'
 
-    let { matches } = $props()
+    let { matches, user } = $props()
 
     let form = useForm({
         map_pool_id: null,
@@ -14,7 +14,7 @@
     })
 
     function createMatch() {
-        $form.post('/matches')
+        $form.post('/matches/queue')
     }
 
     let createMatchModalHidden = $state(true)
@@ -56,7 +56,19 @@
         </table>
     </div>
 
-    <div class="fixed inset-0 bg-black bg-opacity-50" class:hidden={createMatchModalHidden}>
+    <div class="fixed inset-0 flex justify-around bg-black bg-opacity-50 py-32" class:hidden={createMatchModalHidden}>
+        <div>
+            <h1>Matchmaking</h1>
+
+            <button
+                class="rounded bg-green-500 px-8 py-4"
+                onclick={() =>
+                    router.post('/matches/queue', {
+                        team_id: user.profile.personal_team_id,
+                    })}>Join Queue</button
+            >
+        </div>
+
         <form
             onsubmit={(e) => {
                 e.preventDefault()

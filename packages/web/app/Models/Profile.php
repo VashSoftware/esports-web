@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Profile extends Model
 {
     protected $fillable = ['username', 'display_name', 'profile_picture'];
 
-    public function user(): HasOne {
+    public function user(): HasOne
+    {
         return $this->hasOne(User::class);
     }
 
@@ -30,13 +32,15 @@ class Profile extends Model
         return $this->hasMany(TeamMember::class);
     }
 
-    public function personalTeam(){
-        return $this->teamMembers()->firstWhere('team.personal_team', true)->team();
+    public function personalTeam(): ?Team
+    {
+        return Team::whereHas('teamMembers', function (Builder $query) {
+            $query->where('profile_id', $this->id);
+        })->where('is_personal_team', true)->first();
     }
 
     public function ratings(): MorphMany
     {
         return $this->morphMany(Rating::class, 'rateable');
     }
-
 }
