@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
                     $personalTeam = $user->profile->personalTeam();
 
                     if ($personalTeam) {
-                        return Redis::sismember('match_queue', $personalTeam->id);
+                        return Redis::exists('match_queue:1v1:'.$personalTeam->id);
                     }
                 }
 

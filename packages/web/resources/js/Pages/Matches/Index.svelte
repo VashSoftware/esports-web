@@ -14,7 +14,8 @@
     })
 
     function createMatch() {
-        $form.post('/matches/queue')
+        $form.post('/match-queue')
+        createMatchModalHidden = true
     }
 
     let createMatchModalHidden = $state(true)
@@ -62,10 +63,12 @@
 
             <button
                 class="rounded bg-green-500 px-8 py-4"
-                onclick={() =>
-                    router.post('/matches/queue', {
+                onclick={() => {
+                    router.post('/match-queue', {
                         team_id: user.profile.personal_team_id,
-                    })}>Join Queue</button
+                    })
+                    createMatchModalHidden = true
+                }}>Join Queue</button
             >
         </div>
 

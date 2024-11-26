@@ -42,7 +42,7 @@ return new class extends Migration
 
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Profile::class);
+            $table->foreignIdFor(Team::class);
             $table->foreignIdFor(Game::class);
             $table->integer('rating');
             $table->timestamps();

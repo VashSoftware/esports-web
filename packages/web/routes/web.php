@@ -41,9 +41,9 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 
-    Route::resource('matches', MatchController::class);
-    Route::post('matches/queue', [MatchQueueController::class, 'join'])->name('matches.queue.join');
-    Route::delete('matches/queue', [MatchQueueController::class, 'leave'])->name('matches.queue.leave');
+    Route::resource('/matches', MatchController::class);
+    Route::post('/match-queue', [MatchQueueController::class, 'join'])->name('match-queue.join');
+    Route::delete('/match-queue', [MatchQueueController::class, 'leave'])->name('match-queue.leave');
     Route::get('/matches/{match}/play', [MatchController::class, 'play'])->name('matches.play');
 
     Route::resource('map_pools', MapPoolController::class);
@@ -85,6 +85,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings', function () {
         return Inertia::render('Settings');
+    });
+
+    Route::get('premium', function () {
+        return Inertia::render('Premium');
     });
 });
 

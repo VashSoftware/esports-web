@@ -11,6 +11,8 @@ class VashMatch extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['map_pool_id'];
+
     public function mapPool(): BelongsTo
     {
         return $this->belongsTo(MapPool::class);

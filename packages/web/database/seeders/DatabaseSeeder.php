@@ -131,5 +131,11 @@ class DatabaseSeeder extends Seeder
             'team_id' => 1,
             'profile_id' => 1,
         ]]);
+
+        DB::table('ratings')->insert([[
+            'team_id' => 1,
+            'game_id' => 1,
+            'rating' => 1000,
+        ]]);
     }
 }

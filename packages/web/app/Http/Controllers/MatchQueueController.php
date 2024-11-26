@@ -10,11 +10,13 @@ class MatchQueueController extends Controller
 {
     public function join(Request $request)
     {
-        $isMember = Redis::sismember('match_queue', $request->user()->profile->personalTeam()->id);
+        $teamId = $request->user()->profile->personalTeam()->id;
+
+        $isMember = Redis::exists('match_queue:1v1:'.$teamId);
         Log::debug($isMember);
 
-        if (!$isMember) {
-            Redis::sadd('match_queue', $request->user()->profile->personalTeam()->id);
+        if (! $isMember) {
+            Redis::hset('match_queue:1v1:'.$teamId, 'team_id', $teamId, 'rating', $request->user()->profile->personalTeam()->ratings->firstWhere('game_id', 1)->rating);
         }
 
         return back(status: 303);
@@ -22,7 +24,9 @@ class MatchQueueController extends Controller
 
     public function leave(Request $request)
     {
-        Redis::srem('match_queue', $request->input('team_id'));
+        $teamId = $request->user()->profile->personalTeam()->id;
+
+        Redis::del('match_queue:1v1:'. $teamId);
 
         return back(status: 303);
     }
