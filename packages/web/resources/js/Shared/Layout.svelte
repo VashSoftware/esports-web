@@ -150,7 +150,10 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 overflow-auto bg-primary p-6 text-white">
+    <main class="flex-1 overflow-auto bg-primary text-white">
+        {#if $page.props.match_queue}
+            <div class="bg-yellow-500 p-2 text-center text-xl font-bold text-black">You're in the queue!</div>
+        {/if}
         <!-- Content goes here -->
         {@render children?.()}
     </main>
