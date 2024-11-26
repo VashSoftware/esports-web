@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
+use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -55,6 +57,16 @@ class RegisteredUserController extends Controller
         $profile = $user->profile()->create([
             'username' => $validated['username'],
             'display_name' => $validated['display_name'],
+        ]);
+
+        $team = Team::create([
+            'name' => $validated['display_name'],
+            'is_personal_team' => true,
+        ]);
+
+        $teamMember = TeamMember::create([
+            'team_id' => $team->id,
+            'profile_id' => $profile->id
         ]);
 
         event(new Registered($user));

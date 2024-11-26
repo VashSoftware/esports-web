@@ -125,6 +125,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('teams')->insert([[
             'name' => 'Test Team',
+            'is_personal_team' => true
         ]]);
 
         DB::table('team_members')->insert([[

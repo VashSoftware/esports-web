@@ -30,6 +30,10 @@ class Profile extends Model
         return $this->hasMany(TeamMember::class);
     }
 
+    public function personalTeam(){
+        return $this->teamMembers()->firstWhere('team.personal_team', true)->team();
+    }
+
     public function ratings(): MorphMany
     {
         return $this->morphMany(Rating::class, 'rateable');
