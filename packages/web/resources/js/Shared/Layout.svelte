@@ -1,8 +1,6 @@
 <script>
     import { Link, page } from '@inertiajs/svelte'
 
-    console.log($page.props.user)
-
     let { children } = $props()
 </script>
 
