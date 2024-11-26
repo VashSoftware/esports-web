@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Organisation;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\GameMode;
-use Illuminate\Support\Facades\Log;
+use App\Models\Organisation;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class EventController extends Controller
 {
@@ -70,10 +69,9 @@ class EventController extends Controller
     {
         return Inertia::render('Events/Register', [
             'event' => Event::find($id),
-            'team_members' => Auth::user()->teamMembers()->with('team')->get()
+            'team_members' => Auth::user()->teamMembers()->with('team')->get(),
         ]);
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -98,7 +96,7 @@ class EventController extends Controller
 
         $event->update($validated);
 
-        return redirect('events/' . $id . '/manage', 303);
+        return redirect('events/'.$id.'/manage', 303);
     }
 
     /**

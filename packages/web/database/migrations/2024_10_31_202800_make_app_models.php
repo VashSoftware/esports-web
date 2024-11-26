@@ -1,24 +1,25 @@
 <?php
 
+use App\Models\Event;
+use App\Models\EventGroup;
+use App\Models\Game;
 use App\Models\GameMode;
 use App\Models\Map;
 use App\Models\MapPool;
 use App\Models\MapSet;
-use App\Models\EventGroup;
-use App\Models\Event;
-use App\Models\Game;
 use App\Models\MatchParticipant;
+use App\Models\Organisation;
 use App\Models\Profile;
 use App\Models\Team;
 use App\Models\TeamMember;
-use App\Models\VashMatch;
-use App\Models\Organisation;
 use App\Models\User;
+use App\Models\VashMatch;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */

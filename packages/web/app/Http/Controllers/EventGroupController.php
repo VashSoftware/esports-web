@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Log;
 use App\Models\Organisation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class EventGroupController extends Controller
 {
@@ -20,9 +19,7 @@ class EventGroupController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.

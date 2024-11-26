@@ -27,7 +27,7 @@ class MatchController extends Controller
 
         $match = $mapPool->vashMatches()->create();
 
-        return redirect('/matches/' . $match->id . '/play', status: 303);
+        return redirect('/matches/'.$match->id.'/play', status: 303);
     }
 
     public function play(VashMatch $match)

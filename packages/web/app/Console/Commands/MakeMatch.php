@@ -29,7 +29,7 @@ class MakeMatch extends Command
         $teams = $this->arguments();
 
         VashMatch::create([
-            'match_participants' => $teams
+            'match_participants' => $teams,
         ]);
     }
 }

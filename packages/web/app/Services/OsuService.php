@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class OsuService
 {
@@ -14,11 +13,11 @@ class OsuService
             return Cache::get('osu_access_token');
         }
 
-        $response = Http::asForm()->acceptJson()->post("https://osu.ppy.sh/oauth/token", [
+        $response = Http::asForm()->acceptJson()->post('https://osu.ppy.sh/oauth/token', [
             'client_id' => env('OSU_CLIENT_ID'),
             'client_secret' => env('OSU_CLIENT_SECRET'),
             'grant_type' => 'client_credentials',
-            'scope' => 'public'
+            'scope' => 'public',
         ]);
 
         if ($response->successful()) {

@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'osu!catch',
         ], [
             'name' => 'osu!mania',
-            ]]);
+        ]]);
 
         DB::table('game_modes')->insert([[
             'name' => 'osu!standard',
@@ -38,8 +38,7 @@ class DatabaseSeeder extends Seeder
         ], [
             'name' => 'osu!mania',
             'game_id' => 4,
-         ]]);
-
+        ]]);
 
         DB::table('mods')->insert([
             'name' => 'No Mod',
@@ -76,14 +75,14 @@ class DatabaseSeeder extends Seeder
             'title' => 'Test Title',
             'osu_id' => 12345,
         ], [
-           'artist' => 'Test Artist 2',
-           'title' => 'Test Title 2',
-           'osu_id' => 12346,
+            'artist' => 'Test Artist 2',
+            'title' => 'Test Title 2',
+            'osu_id' => 12346,
         ], [
-           'artist' => 'Test Artist 3',
-           'title' => 'Test Title 3',
-           'osu_id' => 12347,
-            ]]);
+            'artist' => 'Test Artist 3',
+            'title' => 'Test Title 3',
+            'osu_id' => 12347,
+        ]]);
 
         DB::table('maps')->insert([[
             'difficulty_name' => 'Test Difficulty',
@@ -106,7 +105,7 @@ class DatabaseSeeder extends Seeder
         DB::table('profiles')->insert([[
             'user_id' => 1,
             'username' => 'stanrunge',
-            'display_name' => 'Stan'
+            'display_name' => 'Stan',
         ]]);
 
         DB::table('organisations')->insert([[
@@ -125,7 +124,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('teams')->insert([[
             'name' => 'Test Team',
-            'is_personal_team' => true
+            'is_personal_team' => true,
         ]]);
 
         DB::table('team_members')->insert([[

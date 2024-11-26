@@ -41,7 +41,7 @@ class TeamController extends Controller
             'profile_id' => $request->user()->profile->id,
         ]);
 
-        return redirect('/teams/' . $team->id);
+        return redirect('/teams/'.$team->id);
 
     }
 

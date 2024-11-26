@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -30,14 +29,14 @@ class ProfileController extends Controller
 
     public function picture(Request $request)
     {
-         $validated = $request->validate([
+        $validated = $request->validate([
             'profile_picture' => ['nullable', File::image()],
         ]);
 
         if ($request->file('profile_picture')) {
             $path = $request->file('profile_picture')->store('profile_pictures', 'public');
             $request->user()->profile()->update([
-                'profile_picture' => $path
+                'profile_picture' => $path,
             ]);
         }
 
@@ -60,7 +59,7 @@ class ProfileController extends Controller
         if ($request->file('profile_picture')) {
             $path = $request->file('profile_picture')->store('profile_pictures');
             $request->user()->profile()->update([
-                'profile_picture' => $path
+                'profile_picture' => $path,
             ]);
         }
 

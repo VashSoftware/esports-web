@@ -6,28 +6,21 @@ use App\Models\Map;
 use App\Models\MapPool;
 use App\Models\MapPoolMap;
 use App\Models\MapSet;
-use App\Models\Mod;
 use App\Services\OsuService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
 
 class MapPoolMapController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -48,9 +41,7 @@ class MapPoolMapController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-    }
+    public function show(string $id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -69,18 +60,18 @@ class MapPoolMapController extends Controller
             'map_id' => 'nullable',
         ]);
 
-
         $mapPoolMap = MapPoolMap::with('mapPool')->find($id);
 
-        if (!$validated['map_id']) {
+        if (! $validated['map_id']) {
             $mapPoolMap->map_id = null;
             $mapPoolMap->save();
+
             return back(status: 303);
         }
 
         $map = Map::find($validated['map_id']);
-        if (!$map) {
-            $osuService = new OsuService();
+        if (! $map) {
+            $osuService = new OsuService;
             $mapData = $osuService->get("beatmaps/$validated[map_id]");
             Log::info($mapData);
 

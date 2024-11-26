@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\OsuService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Models\Map;
 use App\Models\MapSet;
+use App\Services\OsuService;
+use Illuminate\Http\Request;
 
 class MapController extends Controller
 {
@@ -81,28 +80,28 @@ class MapController extends Controller
 
         $query = $validated['query'];
 
-    if (filter_var($query, FILTER_VALIDATE_URL)) {
-        if (preg_match('/beatmapsets\/(\d+)(?:#(\w+)\/(\d+))?/', $query, $matches)) {
-            $mapsetId = $matches[1] ?? null;
-            $mode = $matches[2] ?? null;
-            $mapId = $matches[3] ?? null;
+        if (filter_var($query, FILTER_VALIDATE_URL)) {
+            if (preg_match('/beatmapsets\/(\d+)(?:#(\w+)\/(\d+))?/', $query, $matches)) {
+                $mapsetId = $matches[1] ?? null;
+                $mode = $matches[2] ?? null;
+                $mapId = $matches[3] ?? null;
 
-            if (!$mapId) {
-                return response()->json(['error' => 'Invalid map URL: Map ID missing'], 400);
+                if (! $mapId) {
+                    return response()->json(['error' => 'Invalid map URL: Map ID missing'], 400);
+                }
+
+                $query = $mapId; // Use map ID for further processing
+            } else {
+                return response()->json(['error' => 'Invalid map URL format'], 400);
             }
-
-            $query = $mapId; // Use map ID for further processing
-        } else {
-            return response()->json(['error' => 'Invalid map URL format'], 400);
         }
-    }
         if (is_numeric($query)) {
-            if (!Map::where('osu_id', $query)->exists()) {
-                $beatmap = $this->osuService->get('beatmaps/' . $query);
+            if (! Map::where('osu_id', $query)->exists()) {
+                $beatmap = $this->osuService->get('beatmaps/'.$query);
 
                 $mapSet = MapSet::where('osu_id', $beatmap['beatmapset_id'])->first();
-                if (!$mapSet) {
-                    $mapSet = $this->osuService->get('beatmapsets/' . $beatmap['beatmapset_id']);
+                if (! $mapSet) {
+                    $mapSet = $this->osuService->get('beatmapsets/'.$beatmap['beatmapset_id']);
                     $mapSet = MapSet::create([
                         'artist' => $mapSet['artist'],
                         'title' => $mapSet['title'],
@@ -121,7 +120,6 @@ class MapController extends Controller
             $query->join('map_sets', 'maps.map_set_id', 'map_sets.id')
                 ->select(['maps.id as map_id', 'maps.osu_id', 'maps.difficulty_name', 'map_sets.id', 'map_sets.artist', 'map_sets.title']);
         })->get();
-
 
         return response()->json($maps);
     }

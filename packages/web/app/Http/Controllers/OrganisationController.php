@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Organisation;
 use App\Models\OrganisationMember;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use App\Models\Organisation;
 
 class OrganisationController extends Controller
 {
@@ -42,7 +41,7 @@ class OrganisationController extends Controller
             'profile_id' => $request->user()->profile->id,
         ]);
 
-        return redirect('/organisations/' . $organisation->id);
+        return redirect('/organisations/'.$organisation->id);
     }
 
     /**

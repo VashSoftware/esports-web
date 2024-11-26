@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -39,7 +38,7 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'username' => 'required|string',
-            'display_name' => 'required|string'
+            'display_name' => 'required|string',
         ]);
 
         Log::debug($validated);
@@ -66,7 +65,7 @@ class RegisteredUserController extends Controller
 
         $teamMember = TeamMember::create([
             'team_id' => $team->id,
-            'profile_id' => $profile->id
+            'profile_id' => $profile->id,
         ]);
 
         event(new Registered($user));
