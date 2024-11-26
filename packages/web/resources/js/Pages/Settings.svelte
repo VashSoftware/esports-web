@@ -1,6 +1,6 @@
 <script>
     import Layout from '@/Shared/Layout.svelte'
-    import { useForm } from '@inertiajs/svelte'
+    import { router, useForm } from '@inertiajs/svelte'
 
     let form = useForm({
         profile_picture: null,
@@ -19,4 +19,6 @@
             $form.post('/profile/picture')
         }}
     />
+
+    <button onclick={() => router.post('/logout')}>Log Out</button>
 </Layout>

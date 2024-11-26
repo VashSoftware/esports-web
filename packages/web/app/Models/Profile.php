@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Profile extends Model
 {
-    protected $fillable = ['profile_picture'];
+    protected $fillable = ['username', 'display_name', 'profile_picture'];
 
     public function user(): HasOne {
         return $this->hasOne(User::class);

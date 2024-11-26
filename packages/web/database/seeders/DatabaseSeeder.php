@@ -100,12 +100,13 @@ class DatabaseSeeder extends Seeder
         ]]);
 
         User::factory()->create([
-            'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
         DB::table('profiles')->insert([[
             'user_id' => 1,
+            'username' => 'stanrunge',
+            'display_name' => 'Stan'
         ]]);
 
         DB::table('organisations')->insert([[

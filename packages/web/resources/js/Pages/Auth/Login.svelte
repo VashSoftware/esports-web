@@ -5,8 +5,9 @@
     import InputLabel from '../../Components/InputLabel.svelte'
     import PrimaryButton from '../../Components/PrimaryButton.svelte'
     import TextInput from '../../Components/TextInput.svelte'
-    import { inertia, useForm } from '@inertiajs/svelte'
+    import { inertia, useForm, Link } from '@inertiajs/svelte'
     import { route } from 'momentum-trail'
+    import SecondaryButton from '@/Components/SecondaryButton.svelte'
 
     let {
         canResetPassword,
@@ -95,6 +96,10 @@
             <PrimaryButton class="ms-4 {$form.processing && 'opacity-25'}" disabled={$form.processing}
                 >Log in</PrimaryButton
             >
+
+            <Link href="/register">
+                <SecondaryButton class="ml-4">Register</SecondaryButton>
+            </Link>
         </div>
     </form>
 </GuestLayout>

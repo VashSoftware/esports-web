@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('matches', MatchController::class);
+    Route::post('matches/queue', [MatchController::class, 'queue'])->name('matches.queue');
     Route::get('/matches/{match}/play', [MatchController::class, 'play'])->name('matches.play');
 
     Route::resource('map_pools', MapPoolController::class);

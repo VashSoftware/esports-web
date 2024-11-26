@@ -34,6 +34,8 @@ return new class () extends Migration {
             $table->id();
             $table->foreignIdFor(User::class);
             $table->string('profile_picture')->nullable();
+            $table->string('username');
+            $table->string('display_name')->nullable();
             $table->timestamps();
         });
 

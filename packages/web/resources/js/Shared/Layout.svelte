@@ -129,8 +129,8 @@
                 />
                 <div class="ml-3">
                     <Link href="/users/{$page.props.user?.id}">
-                        <p class="text-sm font-medium">Stan</p>
-                        <p class="text-xs text-gray-400">@stanrunge</p>
+                        <p class="text-sm font-medium">{$page.props.user?.profile.display_name}</p>
+                        <p class="text-xs text-gray-400">@{$page.props.user?.profile.username}</p>
                     </Link>
                 </div>
                 <Link href="/settings">
