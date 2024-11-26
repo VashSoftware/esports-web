@@ -11,6 +11,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
@@ -41,8 +42,7 @@ class RegisteredUserController extends Controller
             'display_name' => 'required|string',
         ]);
 
-        Log::debug($validated);
-
+        DB::beginTransaction();
         $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -67,6 +67,12 @@ class RegisteredUserController extends Controller
             'team_id' => $team->id,
             'profile_id' => $profile->id,
         ]);
+
+        $profile->personalTeam()->ratings()->createMany([[
+            'game_id' => 1,
+            'rating' => 1000,
+        ]]);
+        DB::commit();
 
         event(new Registered($user));
 

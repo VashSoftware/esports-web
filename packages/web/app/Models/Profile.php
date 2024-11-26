@@ -39,8 +39,8 @@ class Profile extends Model
         })->where('is_personal_team', true)->first();
     }
 
-    public function ratings(): MorphMany
+    public function ratings(): HasMany
     {
-        return $this->morphMany(Rating::class, 'rateable');
+        return $this->hasMany(Rating::class);
     }
 }
