@@ -1,5 +1,5 @@
 <script>
-    import { Link, page } from '@inertiajs/svelte'
+    import { Link, page, router } from '@inertiajs/svelte'
 
     let { children } = $props()
 </script>
@@ -113,6 +113,14 @@
                             Map Pools
                         </Link>
                     </li>
+                    <li>
+                        <Link
+                            href="/premium"
+                            class="block rounded px-4 py-2 transition-colors hover:bg-primary hover:bg-opacity-75"
+                        >
+                            Premium
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -152,7 +160,13 @@
     <!-- Main Content Area -->
     <main class="flex-1 overflow-auto bg-primary text-white">
         {#if $page.props.match_queue}
-            <div class="bg-yellow-500 p-2 text-center text-xl font-bold text-black">You're in the queue!</div>
+            <div class="flex items-center justify-between bg-yellow-500 p-2 text-center text-xl font-bold text-black">
+                <div></div>
+                <p>You're in the queue!</p>
+                <button onclick={() => router.delete('/match-queue')} class="mx-1 rounded bg-black px-2 py-1 text-white"
+                    >X</button
+                >
+            </div>
         {/if}
         <!-- Content goes here -->
         {@render children?.()}

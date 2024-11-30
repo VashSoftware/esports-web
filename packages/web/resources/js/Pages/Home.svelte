@@ -1,4 +1,5 @@
 <script>
+    import { router } from '@inertiajs/svelte'
     import Layout from '../Shared/Layout.svelte'
 
     let { matches } = $props()
@@ -24,7 +25,7 @@
             </thead>
             <tbody>
                 {#each matches as match}
-                    <tr>
+                    <tr onclick={() => router.visit(`/matches/${match.id}`)}>
                         <td>{match.time}</td>
                         <td>{match.match_participants[0]} - {match.match_participants[1]}</td>
                     </tr>

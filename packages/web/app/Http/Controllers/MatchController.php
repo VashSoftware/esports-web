@@ -14,6 +14,11 @@ class MatchController extends Controller
         return Inertia::render('Matches/Index', ['matches' => VashMatch::with('matchParticipants')->get()]);
     }
 
+    public function show(string $id)
+    {
+        return Inertia::render('Matches/Show', ['match' => VashMatch::with('matchParticipants.team')->find($id)]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

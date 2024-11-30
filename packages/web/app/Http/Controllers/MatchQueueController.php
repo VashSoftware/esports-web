@@ -26,7 +26,7 @@ class MatchQueueController extends Controller
     {
         $teamId = $request->user()->profile->personalTeam()->id;
 
-        Redis::del('match_queue:1v1:'. $teamId);
+        Redis::del('match_queue:1v1:'.$teamId);
 
         return back(status: 303);
     }

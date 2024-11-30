@@ -137,5 +137,46 @@ class DatabaseSeeder extends Seeder
             'game_id' => 1,
             'rating' => 1000,
         ]]);
+
+        User::factory()->create([
+            'email' => 'test2@example.com',
+        ]);
+
+        DB::table('profiles')->insert([[
+            'user_id' => 2,
+            'username' => 'stanrunge2',
+            'display_name' => 'Stan 2',
+        ]]);
+
+        DB::table('organisations')->insert([[
+            'name' => 'Test Organisation 2',
+        ]]);
+
+        DB::table('organisation_members')->insert([[
+            'organisation_id' => 2,
+            'profile_id' => 2,
+        ]]);
+
+        DB::table('event_groups')->insert([[
+            'organisation_id' => 2,
+            'name' => 'Test Event Group 2',
+        ]]);
+
+        DB::table('teams')->insert([[
+            'name' => 'Test Team 2',
+            'is_personal_team' => true,
+        ]]);
+
+        DB::table('team_members')->insert([[
+            'team_id' => 1,
+            'profile_id' => 1,
+        ]]);
+
+        DB::table('ratings')->insert([[
+            'team_id' => 2,
+            'game_id' => 1,
+            'rating' => 1100,
+        ]]);
+
     }
 }

@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\VashMatch;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class StartQueuedMatch extends Command
@@ -32,38 +31,46 @@ class StartQueuedMatch extends Command
         $teamSize = $this->argument('team_size');
 
         $matchQueue = Redis::keys("match_queue:{$teamSize}v{$teamSize}:*");
-        Log::debug($matchQueue);
 
         if (count($matchQueue) < 2) {
             return;
         }
 
         $matchups = [];
-        foreach ($matchQueue as $team1Key) {
-            foreach ($matchQueue as $team2Key) {
-                Log::debug($team1Key);
+        foreach ($matchQueue as $index1 => $team1Key) {
+            $team1 = Redis::hgetall($team1Key);
 
-                $team1 = Redis::hgetall($team1Key);
+            for ($index2 = $index1 + 1; $index2 < count($matchQueue); $index2++) {
+                $team2Key = $matchQueue[$index2];
                 $team2 = Redis::hgetall($team2Key);
 
-                Log::debug($team1);
-                Log::debug($team2);
-
-                if ($team1['team_id'] == $team2['team_id']) {
-                    continue;
-                }
-
-                $matchups[] = ['team1' => $team1['team_id'], 'team2' => $team2['team_id'], 'rating_difference' => abs($team1['rating'] - $team2['rating'])];
+                $matchups[] = [
+                    'team1' => $team1['team_id'],
+                    'team2' => $team2['team_id'],
+                    'rating_difference' => abs($team1['rating'] - $team2['rating']),
+                ];
             }
-        }
-
-        usort($matchups, function ($a, $b) {
-            return $a['rating'] <=> $b['rating'];
+        }        usort($matchups, function ($a, $b) {
+            return $a['rating_difference'] <=> $b['rating_difference'];
         });
 
-        VashMatch::create([
+        $match = VashMatch::create([
             'map_pool_id' => 1,
         ]);
 
+        $matchParticipants = $match->matchParticipants()->createMany([
+            [
+                'team_id' => $matchups[0]['team1'],
+            ],
+            [
+                'team_id' => $matchups[0]['team2'],
+            ],
+        ]);
+
+        foreach ($matchParticipants as $i => $matchParticipant) {
+            $matchParticipant->matchParticipantPlayers;
+
+            Redis::del("match_queue:{$teamSize}v{$teamSize}:{$matchParticipant->team->id}");
+        }
     }
 }
