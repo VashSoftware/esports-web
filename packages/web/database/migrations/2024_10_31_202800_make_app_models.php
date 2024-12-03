@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('profile_picture')->nullable();
             $table->string('username');
             $table->string('display_name')->nullable();
+            $table->dateTime('banned_at')->nullable();
             $table->timestamps();
         });
 
