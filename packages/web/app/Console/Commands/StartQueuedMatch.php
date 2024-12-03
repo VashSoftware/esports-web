@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Models\MapPool;
+use App\Models\MatchParticipantPlayer;
 use App\Models\VashMatch;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class StartQueuedMatch extends Command
@@ -21,6 +24,16 @@ class StartQueuedMatch extends Command
      * @var string
      */
     protected $description = 'Picks the 2 teams in a given game mode queue closest in their rating.';
+
+    private function getMatchingMapPool($matchParticipants)
+    {
+        $ratings = array_map(fn ($matchParticipant) => $matchParticipant->team->rating);
+        $avgRating = array_sum($ratings) / count($ratings);
+
+        $mapPool = MapPool::where('verified', true)->orderBy('rating')->first();
+
+        return $mapPool;
+    }
 
     /**
      * Execute the console command.
@@ -66,6 +79,14 @@ class StartQueuedMatch extends Command
                 'team_id' => $matchups[0]['team2'],
             ],
         ]);
+
+        foreach ($matchParticipants as $participant) {
+            foreach ($participant->team->teamMembers as $member) {
+                $participant->matchParticipantPlayers()->create([
+                    'team_member_id' => $member->id
+                ]);
+            }
+        }
 
         foreach ($matchParticipants as $i => $matchParticipant) {
             $matchParticipant->matchParticipantPlayers;

@@ -98,6 +98,41 @@ class DatabaseSeeder extends Seeder
             'map_set_id' => 3,
         ]]);
 
+        DB::table('map_pools')->insert([
+            'name' => 'Test Map Pool',
+            'rating' => 1000,
+            'verified_at' => now(),
+        ]);
+
+        DB::table('map_pool_maps')->insert([[
+            'map_pool_id' => 1,
+            'map_id' => 1,
+        ], [
+            'map_pool_id' => 1,
+            'map_id' => 2,
+
+        ], [
+            'map_pool_id' => 1,
+            'map_id' => 3,
+
+        ], [
+            'map_pool_id' => 1,
+            'map_id' => 1,
+
+        ], [
+            'map_pool_id' => 1,
+            'map_id' => 1,
+
+        ], [
+            'map_pool_id' => 1,
+            'map_id' => 1,
+
+        ], [
+            'map_pool_id' => 1,
+            'map_id' => 1,
+
+        ]]);
+
         User::factory()->create([
             'email' => 'test@example.com',
         ]);
@@ -168,8 +203,8 @@ class DatabaseSeeder extends Seeder
         ]]);
 
         DB::table('team_members')->insert([[
-            'team_id' => 1,
-            'profile_id' => 1,
+            'team_id' => 2,
+            'profile_id' => 2,
         ]]);
 
         DB::table('ratings')->insert([[

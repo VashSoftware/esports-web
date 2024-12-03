@@ -11,7 +11,7 @@ class MatchController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Matches/Index', ['matches' => VashMatch::with('matchParticipants')->get()]);
+        return Inertia::render('Matches/Index', ['matches' => VashMatch::with('matchParticipants.team')->get()]);
     }
 
     public function show(string $id)
@@ -35,8 +35,8 @@ class MatchController extends Controller
         return redirect('/matches/'.$match->id.'/play', status: 303);
     }
 
-    public function play(VashMatch $match)
+    public function play(string $id)
     {
-        return Inertia::render('Matches/Play', ['match' => $match]);
+        return Inertia::render('Matches/Play', ['match' => VashMatch::with('mapPool.mapPoolMaps')->find($id)]);
     }
 }

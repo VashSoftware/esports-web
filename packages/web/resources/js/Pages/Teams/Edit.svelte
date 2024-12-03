@@ -10,9 +10,11 @@
         <h1 class=" text-2xl font-bold">{team.name}</h1>
         <p>Rating: {team.rating}</p>
     </div>
-    <Link href="/teams/{team.id}/edit">
-    <button>Manage</button>
-        </Link>
+
+    <form>
+        <label for="">Logo</label>
+        <input type="file" accept="image/*" />
+    </form>
 
     <h2 class=" text-xl font-bold">Team Members</h2>
     <table>

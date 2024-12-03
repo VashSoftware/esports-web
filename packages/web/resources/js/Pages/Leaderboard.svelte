@@ -1,4 +1,5 @@
 <script>
+    import { router } from '@inertiajs/svelte'
     import Layout from '../Shared/Layout.svelte'
 
     let { top_players, top_teams, top_scores } = $props()
@@ -11,8 +12,8 @@
         <div>
             <h2 class="my-4 text-xl">Top Players</h2>
             {#each top_players as player, index (player.id)}
-                <div>
-                    <h2>{index + 1}. {player.name}</h2>
+                <div onclick={() => router.visit(`/users/${player.profile.id}`)}>
+                    <h2>{index + 1}. {player.profile.display_name}</h2>
                     <p>{player.score}</p>
                 </div>
             {/each}
@@ -21,7 +22,7 @@
         <div>
             <h2 class="my-4 text-xl">Top Teams</h2>
             {#each top_teams as team, index (team.id)}
-                <div>
+                <div onclick={() => router.visit(`/teams/${team.id}`)}>
                     <h2>{index + 1}. {team.name}</h2>
                     <p>{team.score}</p>
                 </div>

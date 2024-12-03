@@ -11,6 +11,13 @@ class MatchParticipantPlayer extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['team_member_id', 'match_participant_id'];
+
+    public function teamMember(): BelongsTo
+    {
+        return $this->belongsTo(TeamMember::class);
+    }
+
     public function MatchParticipant(): BelongsTo
     {
         return $this->belongsTo(MatchParticipant::class);

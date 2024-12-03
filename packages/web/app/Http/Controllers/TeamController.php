@@ -50,7 +50,7 @@ class TeamController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('Teams/Show', ['team' => Team::find($id)]);
+        return Inertia::render('Teams/Show', ['team' => Team::with('teamMembers.profile')->find($id)]);
     }
 
     /**
@@ -58,7 +58,7 @@ class TeamController extends Controller
      */
     public function edit(string $id)
     {
-        //
+         return Inertia::render('Teams/Edit', ['team' => Team::with('teamMembers.profile')->find($id)]);       //
     }
 
     /**

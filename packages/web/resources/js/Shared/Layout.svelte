@@ -2,6 +2,8 @@
     import { Link, page, router } from '@inertiajs/svelte'
 
     let { children } = $props()
+
+    console.log($page.props)
 </script>
 
 <div class="flex h-screen">
@@ -167,6 +169,18 @@
                     >X</button
                 >
             </div>
+        {/if}
+
+        {#if $page.props.current_matches.length > 0}
+            <Link href="/matches/{$page.props.current_matches[0].id}/play">
+                <div
+                    class="flex items-center justify-between bg-yellow-500 p-2 text-center text-xl font-bold text-black"
+                >
+                    <div></div>
+                    <p>You're in a match!</p>
+                    <button class="mx-1 rounded bg-black px-2 py-1 text-white">X</button>
+                </div>
+            </Link>
         {/if}
         <!-- Content goes here -->
         {@render children?.()}

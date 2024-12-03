@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
         return Inertia::render('Home', [
-            'matches' => VashMatch::with('matchParticipants')->get(),
+            'matches' => VashMatch::with('matchParticipants.team')->get(),
         ]);
     });
 
@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::inertia('privacy', 'Privacy');
 
     Route::get('leaderboard', function () {
-        return Inertia::render('Leaderboard', ['top_teams' => Team::all(), 'top_players' => TeamMember::all(), 'top_scores' => Score::all()]);
+        return Inertia::render('Leaderboard', ['top_teams' => Team::all(), 'top_players' => TeamMember::with('profile')->get(), 'top_scores' => Score::all()]);
 
     });
 

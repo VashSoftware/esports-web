@@ -27,7 +27,7 @@
                 {#each matches as match}
                     <tr onclick={() => router.visit(`/matches/${match.id}`)}>
                         <td>{match.time}</td>
-                        <td>{match.match_participants[0]} - {match.match_participants[1]}</td>
+                        <td>{match.match_participants[0].team.name} - {match.match_participants[1].team.name}</td>
                     </tr>
                 {/each}
             </tbody>

@@ -21,4 +21,9 @@ class MapPool extends Model
     {
         return $this->hasMany(VashMatch::class);
     }
+
+    public function calculateRating()
+    {
+        $maps = $this->mapPoolMaps();
+    }
 }
