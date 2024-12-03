@@ -6,6 +6,7 @@ use App\Models\Game;
 use App\Models\GameMode;
 use App\Models\Map;
 use App\Models\MapPool;
+use App\Models\MapPoolMap;
 use App\Models\MapSet;
 use App\Models\MatchParticipant;
 use App\Models\Organisation;
@@ -130,6 +131,8 @@ return new class extends Migration
         Schema::create('map_pools', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer('rating')->nullable();
+            $table->dateTime('verified_at')->nullable();
             $table->timestamps();
         });
 
@@ -158,7 +161,8 @@ return new class extends Migration
 
         Schema::create('vash_matches', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(MapPool::class);
+            $table->foreignIdFor(MapPool::class)->constrained();
+            $table->dateTime('finished_at')->nullable();
             $table->timestamps();
         });
 
@@ -187,6 +191,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('vash_match_id')->constrained();
             $table->integer('score');
+            $table->timestamps();
+        });
+
+        Schema::create('match_maps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(VashMatch::class);
+            $table->foreignIdFor(MapPoolMap::class);
             $table->timestamps();
         });
     }

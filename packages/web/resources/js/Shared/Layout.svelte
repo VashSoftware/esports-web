@@ -2,8 +2,6 @@
     import { Link, page, router } from '@inertiajs/svelte'
 
     let { children } = $props()
-
-    console.log($page.props)
 </script>
 
 <div class="flex h-screen">
@@ -161,7 +159,7 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 overflow-auto bg-primary text-white">
-        {#if $page.props.match_queue}
+        {#if $page.component != 'Matches/Play' && $page.props.match_queue}
             <div class="flex items-center justify-between bg-yellow-500 p-2 text-center text-xl font-bold text-black">
                 <div></div>
                 <p>You're in the queue!</p>
@@ -171,7 +169,7 @@
             </div>
         {/if}
 
-        {#if $page.props.current_matches.length > 0}
+        {#if $page.component != 'Matches/Play' && $page.props.current_matches.length > 0}
             <Link href="/matches/{$page.props.current_matches[0].id}/play">
                 <div
                     class="flex items-center justify-between bg-yellow-500 p-2 text-center text-xl font-bold text-black"
