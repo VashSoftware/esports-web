@@ -4,12 +4,11 @@ namespace App\Providers;
 
 use App\Models\VashMatch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Vite;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
-
 
 class AppServiceProvider extends ServiceProvider
 {

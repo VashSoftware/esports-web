@@ -58,7 +58,7 @@ class TeamController extends Controller
      */
     public function edit(string $id)
     {
-         return Inertia::render('Teams/Edit', ['team' => Team::with('teamMembers.profile')->find($id)]);       //
+        return Inertia::render('Teams/Edit', ['team' => Team::with('teamMembers.profile')->find($id)]);       //
     }
 
     /**

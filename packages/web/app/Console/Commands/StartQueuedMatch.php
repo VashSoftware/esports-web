@@ -3,10 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\MapPool;
-use App\Models\MatchParticipantPlayer;
 use App\Models\VashMatch;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class StartQueuedMatch extends Command
@@ -83,7 +81,7 @@ class StartQueuedMatch extends Command
         foreach ($matchParticipants as $participant) {
             foreach ($participant->team->teamMembers as $member) {
                 $participant->matchParticipantPlayers()->create([
-                    'team_member_id' => $member->id
+                    'team_member_id' => $member->id,
                 ]);
             }
         }

@@ -1,8 +1,8 @@
 <script lang="ts">
     import Layout from '@/Shared/Layout.svelte'
+    import { onMount } from 'svelte'
 
     let { match } = $props()
-    console.log(match)
 
     function getPickableMods() {
         return match.map_pool.maps
@@ -14,6 +14,11 @@
 
     let canPickMaps = $state(false)
     let shareModalShown = $state(false)
+
+    onMount(() => {
+        const channel = window.Echo.channel('match.1')
+        channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
+    })
 </script>
 
 <Layout>
