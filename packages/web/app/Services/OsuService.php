@@ -4,9 +4,15 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use WebSocket;
 
 class OsuService
 {
+    public function __construct()
+    {
+        // $this->listenForMessages();
+    }
+
     public function getAccessToken()
     {
         if (Cache::has('osu_access_token')) {
@@ -30,6 +36,23 @@ class OsuService
         $response->throw();
     }
 
+    public function listenForMessages()
+    {
+        $client = new WebSocket\Client('wss://osu.ppy.sh/api/v2');
+
+        $accessToken = $this->getAccessToken();
+        $client
+            ->addMiddleware(new WebSocket\Middleware\CloseHandler)
+            ->addMiddleware(new WebSocket\Middleware\PingResponder)
+            ->addHeader('Authorization', "Bearer {$accessToken}");
+
+        $data = [
+            'event' => 'chat.start',
+        ];
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+        $client->text($json);
+    }
+
     public function get($endpoint, $params = [])
     {
         $accessToken = $this->getAccessToken();
@@ -41,5 +64,12 @@ class OsuService
         }
 
         $response->throw();
+    }
+
+    public function sendIRCMessage(string $channel, string $message){
+        Http::post('osu:3000/send-message', [
+            'channel' => $channel,
+            'message' => $message,
+        ]);
     }
 }

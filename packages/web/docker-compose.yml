@@ -65,6 +65,14 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    osu:
+        build: ../osu
+        ports:
+            - '3000:3000'
+        networks:
+            - sail
+        depends_on:
+            - laravel.test
 networks:
     sail:
         driver: bridge
