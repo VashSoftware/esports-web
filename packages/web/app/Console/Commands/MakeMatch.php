@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\VashMatch;
 use Illuminate\Console\Command;
+use App\Services\MatchService;
 
 class MakeMatch extends Command
 {
@@ -12,7 +12,7 @@ class MakeMatch extends Command
      *
      * @var string
      */
-    protected $signature = 'match:make {team*}';
+    protected $signature = 'match:make {map_pool_id} {teams*}';
 
     /**
      * The console command description.
@@ -24,12 +24,11 @@ class MakeMatch extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(MatchService $matchService)
     {
-        $teams = $this->arguments();
+        $mapPoolId = $this->argument('map_pool_id');
+        $teams = $this->argument('teams');
 
-        VashMatch::create([
-            'match_participants' => $teams,
-        ]);
+        $matchService->createMatch($mapPoolId, $teams);
     }
 }

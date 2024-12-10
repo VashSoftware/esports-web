@@ -25,7 +25,7 @@ class StartQueuedMatch extends Command
 
     private function getMatchingMapPool($matchParticipants)
     {
-        $ratings = array_map(fn ($matchParticipant) => $matchParticipant->team->rating);
+        $ratings = array_map(fn($matchParticipant) => $matchParticipant->team->rating);
         $avgRating = array_sum($ratings) / count($ratings);
 
         $mapPool = MapPool::where('verified', true)->orderBy('rating')->first();
@@ -61,30 +61,10 @@ class StartQueuedMatch extends Command
                     'rating_difference' => abs($team1['rating'] - $team2['rating']),
                 ];
             }
-        }        usort($matchups, function ($a, $b) {
+        }
+        usort($matchups, function ($a, $b) {
             return $a['rating_difference'] <=> $b['rating_difference'];
         });
-
-        $match = VashMatch::create([
-            'map_pool_id' => 1,
-        ]);
-
-        $matchParticipants = $match->matchParticipants()->createMany([
-            [
-                'team_id' => $matchups[0]['team1'],
-            ],
-            [
-                'team_id' => $matchups[0]['team2'],
-            ],
-        ]);
-
-        foreach ($matchParticipants as $participant) {
-            foreach ($participant->team->teamMembers as $member) {
-                $participant->matchParticipantPlayers()->create([
-                    'team_member_id' => $member->id,
-                ]);
-            }
-        }
 
         foreach ($matchParticipants as $i => $matchParticipant) {
             $matchParticipant->matchParticipantPlayers;
