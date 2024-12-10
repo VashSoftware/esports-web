@@ -14,10 +14,12 @@ class MatchService
         $this->osuService = $osuService;
     }
 
-    public function createMatch(int $mapPoolId, array $teams)
+    public function createMatch(int $mapPoolId, array $teams, int $bans_per_team)
     {
         $match = VashMatch::create([
             'map_pool_id' => $mapPoolId,
+            'bans_per_team' => $bans_per_team,
+            'is_banning' => $bans_per_team > 0
         ]);
 
         $matchParticipants = $match->matchParticipants()->createMany([
@@ -36,6 +38,15 @@ class MatchService
                 ]);
             }
         }
+    }
+
+    public function endBanning(int $matchId)
+    {
+        $match = VashMatch::find($matchId);
+
+        $match->is_banning = false;
+
+        $match->save();
     }
 
     public function createOsuLobby()

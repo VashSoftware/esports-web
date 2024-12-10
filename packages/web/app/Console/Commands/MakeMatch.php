@@ -12,7 +12,7 @@ class MakeMatch extends Command
      *
      * @var string
      */
-    protected $signature = 'match:make {map_pool_id} {teams*}';
+    protected $signature = 'match:make {map_pool_id} {bans_per_team} {teams*}';
 
     /**
      * The console command description.
@@ -27,8 +27,9 @@ class MakeMatch extends Command
     public function handle(MatchService $matchService)
     {
         $mapPoolId = $this->argument('map_pool_id');
+        $bansPerTeam = $this->argument('bans_per_team');
         $teams = $this->argument('teams');
 
-        $matchService->createMatch($mapPoolId, $teams);
+        $matchService->createMatch($mapPoolId, $teams, $bansPerTeam);
     }
 }

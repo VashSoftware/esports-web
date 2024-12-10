@@ -163,6 +163,8 @@ return new class extends Migration
         Schema::create('vash_matches', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(MapPool::class)->constrained();
+            $table->integer('bans_per_team');
+            $table->boolean('is_banning');
             $table->dateTime('finished_at')->nullable();
             $table->timestamps();
         });

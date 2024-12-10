@@ -11,7 +11,7 @@ class VashMatch extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['map_pool_id'];
+    protected $fillable = ['map_pool_id', 'bans_per_team', 'is_banning'];
 
     public function mapPool(): BelongsTo
     {
