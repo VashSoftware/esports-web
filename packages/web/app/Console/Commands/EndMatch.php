@@ -5,29 +5,29 @@ namespace App\Console\Commands;
 use App\Models\VashMatch;
 use Illuminate\Console\Command;
 
-class ListMatches extends Command
+class EndMatch extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'match:list';
+    protected $signature = 'match:end {id}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Lists all ongoing matches.';
+    protected $description = 'Ends a match.';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $matches = VashMatch::whereNull('finished_at')->get(['id', 'map_pool_id', 'created_at'])->toArray();
-
-        $this->table(['ID', 'Map Pool ID', 'Created At'], $matches);
+        VashMatch::find($this->argument('id'))->update([
+            'finished_at' => now()
+        ]);
     }
 }
