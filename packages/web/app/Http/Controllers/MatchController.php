@@ -32,11 +32,11 @@ class MatchController extends Controller
 
         $match = $mapPool->vashMatches()->create();
 
-        return redirect('/matches/'.$match->id.'/play', status: 303);
+        return redirect('/matches/' . $match->id . '/play', status: 303);
     }
 
     public function play(string $id)
     {
-        return Inertia::render('Matches/Play', ['match' => VashMatch::with(['mapPool.mapPoolMaps', 'matchMaps.mapPoolMap.map.mapSet', 'matchParticipants.team'])->find($id)]);
+        return Inertia::render('Matches/Play', ['match' => VashMatch::with(['mapPool.mapPoolMaps.mods.mod', 'matchMaps.mapPoolMap.map.mapSet', 'matchParticipants.team'])->find($id)]);
     }
 }

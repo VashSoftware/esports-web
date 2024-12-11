@@ -1,5 +1,6 @@
 <script lang="ts">
     import Layout from '@/Shared/Layout.svelte'
+    import { router } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
 
     let { match } = $props()
@@ -74,6 +75,45 @@
                 value="https://esports.vash.software/matches/{match.id}"
                 readonly
             />
+        </div>
+    </div>
+{/if}
+
+{#if match.is_banning}
+    <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
+    <div class="fixed inset-0 z-20 flex items-center justify-center">
+        <div class="relative w-1/3 rounded-xl bg-white p-8 text-center shadow-xl" onclick={(e) => e.stopPropagation()}>
+            <h3 class="text-xl font-bold">Ban Map</h3>
+            <p>You can ban {match.bans_per_team} maps.</p>
+
+            {#each Object.entries(match.map_pool.map_pool_maps.reduce((acc, map) => {
+                    const modsKey = map.mods.sort().join(',') || 'No Mod'
+
+                    if (!acc[modsKey]) {
+                        acc[modsKey] = []
+                    }
+
+                    acc[modsKey].push(map)
+
+                    return acc
+                }, {})) as [modsKey, maps]}
+                <p><strong>Mod Combination:</strong> {modsKey}</p>
+                <ul>
+                    {#each maps as map}
+                        <li
+                            onclick={() => {
+                                router.post('/match_bans', {
+                                    match_id: match.id,
+                                    map_pool_map_id: map.id,
+                                })
+                            }}
+                        >
+                            Map ID: {map.id}
+                        </li>
+                        <!-- Adjust property as needed -->
+                    {/each}
+                </ul>
+            {/each}
         </div>
     </div>
 {/if}

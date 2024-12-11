@@ -7,6 +7,7 @@ use App\Http\Controllers\GameModeController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MapPoolMapController;
+use App\Http\Controllers\MatchBanController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\MatchQueueController;
 use App\Http\Controllers\ModController;
@@ -46,6 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/match-queue', [MatchQueueController::class, 'leave'])->name('match-queue.leave');
     Route::get('/matches/{match}/play', [MatchController::class, 'play'])->name('matches.play');
 
+    Route::resource('/match_bans', MatchBanController::class);
+
     Route::resource('map_pools', MapPoolController::class);
 
     Route::resource('map_pool_maps', MapPoolMapController::class);
@@ -80,7 +83,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('leaderboard', function () {
         return Inertia::render('Leaderboard', ['top_teams' => Team::all(), 'top_players' => TeamMember::with('profile')->get(), 'top_scores' => Score::all()]);
-
     });
 
     Route::get('settings', function () {
@@ -92,4 +94,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

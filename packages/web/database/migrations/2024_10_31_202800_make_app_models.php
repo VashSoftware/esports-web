@@ -9,6 +9,7 @@ use App\Models\MapPool;
 use App\Models\MapPoolMap;
 use App\Models\MapSet;
 use App\Models\MatchParticipant;
+use App\Models\Mod;
 use App\Models\Organisation;
 use App\Models\Profile;
 use App\Models\Team;
@@ -157,6 +158,20 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(MapPool::class);
             $table->foreignIdFor(Map::class)->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('map_pool_map_mod', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(MapPoolMap::class);
+            $table->foreignIdFor(Mod::class);
+            $table->timestamps();
+        });
+
+        Schema::create('match_bans', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(VashMatch::class);
+            $table->foreignIdFor(MapPoolMap::class);
             $table->timestamps();
         });
 
