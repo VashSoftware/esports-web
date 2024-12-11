@@ -68,7 +68,7 @@ services:
     osu:
         build: ../osu
         ports:
-            - '3000:3000'
+            - '${OSU_PORT:-3000}:3000'
         networks:
             - sail
         depends_on:
