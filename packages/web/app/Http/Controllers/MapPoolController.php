@@ -40,7 +40,7 @@ class MapPoolController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('MapPools/Show', ['mapPool' => MapPool::find($id), 'mods' => Mod::all()]);
+        return Inertia::render('MapPools/Show', ['mapPool' => MapPool::with(['mapPoolMaps.map.mapSet', 'mapPoolMaps.mods'])->find($id), 'mods' => Mod::all()]);
     }
 
     /**
