@@ -6,7 +6,6 @@
     let { match, user } = $props()
     console.log(match)
 
-    let canPickMaps = $state(false)
     let shareModalShown = $state(false)
     let forfeitModalShown = $state(false)
 
@@ -15,9 +14,26 @@
         channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
     })
 
+    function userCanBan() {
+        console.log(user)
+        if (
+            user.profile.team_members.find((tm) =>
+                tm.team.match_participants.find((mp) => mp.id == match.current_banner),
+            )
+        ) {
+            return true
+        }
+
+        return false
+    }
+
+    function userCanPick() {
+        return false
+    }
+
     function getMapPoolStatus() {
         if (match.is_banning) {
-            if (match.current_banner == user.profile) {
+            if (userCanBan()) {
                 return `You have ${match.action_limit - Date.now()} to ban a map.`
             }
 
@@ -75,7 +91,7 @@
         {/each}
     </div>
 
-    <div class="flex justify-evenly">
+    <div class="grid grid-cols-2">
         <div>
             <h2 class="text-center text-xl font-bold">Match Maps</h2>
 
@@ -91,7 +107,7 @@
             </div>
 
             {#each Object.entries(match.map_pool.map_pool_maps.reduce((acc, map) => {
-                    const modsKey = map.mods.sort().join(',') || 'No Mod'
+                    const modsKey = map.mods.sort().join(',') || 'NM'
 
                     if (!acc[modsKey]) {
                         acc[modsKey] = []
@@ -101,21 +117,30 @@
 
                     return acc
                 }, {})) as [modsKey, maps]}
-                <p><strong>Mod Combination:</strong> {modsKey}</p>
-                <ul>
-                    {#each maps as map}
-                        <li
-                            onclick={() => {
-                                router.post('/match_bans', {
-                                    match_id: match.id,
-                                    map_pool_map_id: map.id,
-                                })
-                            }}
-                        >
-                            Map ID: {map.id}
-                        </li>
-                    {/each}
-                </ul>
+                <div class="mx-8 my-2 flex items-center rounded-xl bg-secondary p-2">
+                    <h3 class="mx-4 text-xl font-bold">{modsKey}</h3>
+
+                    <div class="flex flex-wrap">
+                        {#each maps as map}
+                            <div
+                                class="bg-secondary p-2"
+                                onclick={() => {
+                                    router.post('/match_bans', {
+                                        match_id: match.id,
+                                        map_pool_map_id: map.id,
+                                    })
+                                }}
+                            >
+                                <p>{map.map.map_set.artist} - {map.map.map_set.title}</p>
+                                <p>[{map.map.difficulty_name}]</p>
+
+                                {#if userCanBan()}
+                                    <button class="rounded bg-red-500 px-4 py-2">BAN</button>
+                                {/if}
+                            </div>
+                        {/each}
+                    </div>
+                </div>
             {/each}
         </div>
     </div>

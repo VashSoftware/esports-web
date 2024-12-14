@@ -179,7 +179,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(MapPool::class)->constrained();
             $table->integer('bans_per_team');
-            $table->boolean('is_banning');
+            $table->integer('current_banner')->nullable();
+            $table->integer('current_picker')->nullable();
+            $table->dateTime('action_limit')->nullable();
             $table->dateTime('finished_at')->nullable();
             $table->timestamps();
         });

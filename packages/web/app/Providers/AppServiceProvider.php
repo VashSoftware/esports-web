@@ -12,8 +12,7 @@ use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public $singletons = [
-    ];
+    public $singletons = [];
 
     /**
      * Register any application services.
@@ -28,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         Inertia::share([
             'user' => (function (Request $request) {
                 return $request->user()
-                    ? $request->user()->load('profile.teamMembers.team')->only('id', 'name', 'email', 'profile')
+                    ? $request->user()->load('profile.teamMembers.team.matchParticipants')->only('id', 'name', 'email', 'profile')
                     : null;
             }),
             'match_queue' => (function (Request $request) {
@@ -36,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
                     $personalTeam = $user->profile->personalTeam();
 
                     if ($personalTeam) {
-                        return Redis::exists('match_queue:1v1:'.$personalTeam->id);
+                        return Redis::exists('match_queue:1v1:' . $personalTeam->id);
                     }
                 }
 
