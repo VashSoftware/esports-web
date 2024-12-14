@@ -3,88 +3,92 @@
     import { router } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
 
-    let { match } = $props()
-
-    function getPickableMods() {
-        return match.map_pool.maps
-    }
-
-    function getPickableMaps(id: number) {
-        return match.map_pool.maps
-    }
+    let { match, user } = $props()
+    console.log(match)
 
     let canPickMaps = $state(false)
     let shareModalShown = $state(false)
+    let forfeitModalShown = $state(false)
 
     onMount(() => {
         const channel = window.Echo.channel('match.1')
         channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
     })
+
+    function getMapPoolStatus() {
+        if (match.is_banning) {
+            if (match.current_banner == user.profile) {
+                return `You have ${match.action_limit - Date.now()} to ban a map.`
+            }
+
+            return `Waiting for ${match.current_banner} to a ban a map.`
+        }
+
+        if (match.current_picker == user.profile) {
+            return `You have ${match.action_limit - Date.now()} to pick a map`
+        }
+
+        return ''
+    }
 </script>
 
 <Layout>
-    <div class="flex justify-around">
+    <div class="mx-8 my-8 flex justify-between rounded-xl bg-secondary p-4">
         <div></div>
-        <h1 class="my-4 text-center text-2xl font-bold">Match Play</h1>
-        <button onclick={() => (shareModalShown = true)} class="bg-gray-500 p-2">Share</button>
-    </div>
-
-    <h2 class="text-center text-xl font-bold">Maps</h2>
-    {#each match.match_maps as map}
-        <div class="flex">
-            <div>
-                Scores Team 1
-                {#each map.scores as score}{/each}
-            </div>
-            <div>
-                <img src="" alt="" />
-                <div>
-                    {map.map_pool_map.map.map_set.artist} - {map.map_pool_map.map.map_set.title} [{map.map_pool_map.map
-                        .difficulty_name}]
-                </div>
-            </div>
-            <div>
-                Scores Team 2
-                {#each map.scores as score}{/each}
-            </div>
-        </div>
-    {/each}
-</Layout>
-
-{#if canPickMaps}
-    <div class="fixed inset-0 bg-black opacity-50">
-        <form>
-            {#each getPickableMods() as mod}
-                {#each getPickableMaps(mod.id) as map}
-                    {map.id}
-                {/each}
+        <div class="flex justify-center">
+            {#each match.match_participants as participant, i}
+                <h1 class="mx-1 text-4xl font-black">
+                    0
+                    {#if i != match.match_participants.length - 1}-{/if}
+                </h1>
             {/each}
-        </form>
-    </div>
-{/if}
-
-{#if shareModalShown}
-    <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
-    <div class="fixed inset-0 z-20 flex items-center justify-center" onclick={() => (shareModalShown = false)}>
-        <div class="relative w-1/3 rounded-xl bg-white p-8 text-center shadow-xl" onclick={(e) => e.stopPropagation()}>
-            <h3 class="text-xl font-bold">Share Match</h3>
-            <p>Your share URL is:</p>
-            <input
-                type="text"
-                class="my-8 w-full text-center"
-                value="https://esports.vash.software/matches/{match.id}"
-                readonly
-            />
+        </div>
+        <div>
+            <button onclick={() => (shareModalShown = true)} class="bg-gray-500 p-2"
+                ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    ><path
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8m-4-6l-4-4l-4 4m4-4v13"
+                    /></svg
+                ></button
+            >
+            <button onclick={() => (forfeitModalShown = true)} class="bg-red-500 p-2">Forfeit</button>
         </div>
     </div>
-{/if}
 
-{#if match.is_banning}
-    <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
-    <div class="fixed inset-0 z-20 flex items-center justify-center">
-        <div class="relative w-1/3 rounded-xl bg-white p-8 text-center shadow-xl" onclick={(e) => e.stopPropagation()}>
-            <h3 class="text-xl font-bold">Ban Map</h3>
-            <p>You can ban {match.bans_per_team} maps.</p>
+    <div class="m-8 flex justify-evenly">
+        {#each match.match_participants as participant}
+            <div class="rounded-xl bg-secondary p-4">
+                <h2 class="text-xl font-bold">{participant.team.name}</h2>
+                <img src="/public/" alt="Team Logo" />
+                {#each participant.players as player}
+                    <div>
+                        <img src="" alt="Player" />
+                        <p>{player.profile?.name}</p>
+                    </div>
+                {/each}
+            </div>
+        {/each}
+    </div>
+
+    <div class="flex justify-evenly">
+        <div>
+            <h2 class="text-center text-xl font-bold">Match Maps</h2>
+
+            {#each match.match_maps as map}
+                <div class="rounded-xl bg-secondary p-8">bruh</div>
+            {/each}
+        </div>
+
+        <div>
+            <div class="my-4 text-center">
+                <h2 class="text-center text-xl font-bold">Map Pool</h2>
+                <p>{getMapPoolStatus()}</p>
+            </div>
 
             {#each Object.entries(match.map_pool.map_pool_maps.reduce((acc, map) => {
                     const modsKey = map.mods.sort().join(',') || 'No Mod'
@@ -110,10 +114,41 @@
                         >
                             Map ID: {map.id}
                         </li>
-                        <!-- Adjust property as needed -->
                     {/each}
                 </ul>
             {/each}
+        </div>
+    </div>
+</Layout>
+
+{#if shareModalShown}
+    <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
+    <div class="fixed inset-0 z-20 flex items-center justify-center" onclick={() => (shareModalShown = false)}>
+        <div class="relative w-1/3 rounded-xl bg-white p-8 text-center shadow-xl" onclick={(e) => e.stopPropagation()}>
+            <h3 class="text-xl font-bold">Share Match</h3>
+            <p>Your share URL is:</p>
+            <input
+                type="text"
+                class="my-8 w-full text-center"
+                value="https://esports.vash.software/matches/{match.id}"
+                readonly
+            />
+        </div>
+    </div>
+{/if}
+
+{#if forfeitModalShown}
+    <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
+    <div class="fixed inset-0 z-20 flex items-center justify-center" onclick={() => (forfeitModalShown = false)}>
+        <div class="relative w-1/3 rounded-xl bg-white p-8 text-center shadow-xl" onclick={(e) => e.stopPropagation()}>
+            <h3 class="text-xl font-bold">Are You Sure?</h3>
+            <p>coward lol</p>
+
+            <div class="my-8 flex justify-around">
+                <button class="rounded bg-red-500 px-4 py-2">Yes</button>
+                <button class="rounded bg-gray-500 px-4 py-2" onclick={() => (forfeitModalShown = false)}>Cancel</button
+                >
+            </div>
         </div>
     </div>
 {/if}
