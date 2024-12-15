@@ -72,7 +72,7 @@
                 </h1>
             {/each}
         </div>
-        <div>
+        <div class="flex items-center gap-2">
             <button onclick={() => (shareModalShown = true)} class="bg-gray-500 p-2"
                 ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                     ><path
