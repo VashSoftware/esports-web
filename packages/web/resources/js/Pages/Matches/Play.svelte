@@ -8,40 +8,53 @@
 
     let shareModalShown = $state(false)
     let forfeitModalShown = $state(false)
+    let mapPoolStatus = $state(getMapPoolStatus())
 
     onMount(() => {
         const channel = window.Echo.channel('match.1')
         channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
+
+        const matchTimerInterval = setInterval(() => {
+            mapPoolStatus = getMapPoolStatus()
+        }, 1000)
+
+        return () => {
+            clearInterval(matchTimerInterval)
+        }
     })
 
     function userCanBan() {
-        console.log(user)
-        if (
-            user.profile.team_members.find((tm) =>
-                tm.team.match_participants.find((mp) => mp.id == match.current_banner),
-            )
-        ) {
-            return true
-        }
-
-        return false
+        return user.profile.team_members.find((tm) =>
+            tm.team.match_participants.find((mp) => mp.id == match.current_banner),
+        )
     }
 
     function userCanPick() {
         return false
     }
 
+    function formatTime(milliseconds: number) {
+        const totalSeconds = Math.floor(milliseconds / 1000)
+        const minutes = Math.floor(totalSeconds / 60)
+            .toString()
+            .padStart(2, '0')
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0')
+        return `${minutes}:${seconds}`
+    }
+
     function getMapPoolStatus() {
-        if (match.is_banning) {
+        if (match.current_banner) {
             if (userCanBan()) {
-                return `You have ${match.action_limit - Date.now()} to ban a map.`
+                const timeLeft = Math.max(0, new Date(match.action_limit) - Date.now())
+                return `You have ${formatTime(timeLeft)} to ban a map.`
             }
 
             return `Waiting for ${match.current_banner} to a ban a map.`
         }
 
         if (match.current_picker == user.profile) {
-            return `You have ${match.action_limit - Date.now()} to pick a map`
+            const timeLeft = Math.max(0, new Date(match.action_limit) - Date.now())
+            return `You have ${formatTime(timeLeft)} to pick a map.`
         }
 
         return ''
@@ -103,7 +116,7 @@
         <div>
             <div class="my-4 text-center">
                 <h2 class="text-center text-xl font-bold">Map Pool</h2>
-                <p>{getMapPoolStatus()}</p>
+                <p>{mapPoolStatus}</p>
             </div>
 
             {#each Object.entries(match.map_pool.map_pool_maps.reduce((acc, map) => {

@@ -39,7 +39,7 @@ return new class extends Migration
             $table->string('profile_picture')->nullable();
             $table->string('username');
             $table->string('display_name')->nullable();
-            $table->dateTime('banned_at')->nullable();
+            $table->dateTimeTz('banned_at')->nullable();
             $table->timestamps();
         });
 
@@ -134,7 +134,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('rating')->nullable();
-            $table->dateTime('verified_at')->nullable();
+            $table->dateTimeTz('verified_at')->nullable();
             $table->timestamps();
         });
 
@@ -181,8 +181,8 @@ return new class extends Migration
             $table->integer('bans_per_team');
             $table->integer('current_banner')->nullable();
             $table->integer('current_picker')->nullable();
-            $table->dateTime('action_limit')->nullable();
-            $table->dateTime('finished_at')->nullable();
+            $table->dateTimeTz('action_limit')->nullable();
+            $table->dateTimeTz('finished_at')->nullable();
             $table->timestamps();
         });
 
