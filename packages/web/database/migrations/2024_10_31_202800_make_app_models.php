@@ -188,6 +188,7 @@ return new class extends Migration
 
         Schema::create('match_participants', function (Blueprint $table) {
             $table->id();
+            $table->integer('index');
             $table->foreignIdFor(VashMatch::class);
             $table->foreignIdFor(Team::class);
             $table->timestamps();
