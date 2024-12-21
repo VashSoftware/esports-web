@@ -55,12 +55,12 @@
             return `Waiting for ${match.current_banner} to a ban a map.`
         }
 
-        if (match.current_picker == user.profile) {
+        if (userCanPick()) {
             const timeLeft = Math.max(0, new Date(match.action_limit) - Date.now())
             return `You have ${formatTime(timeLeft)} to pick a map.`
         }
 
-        return ''
+        return `${''} has ${''} to pick a map.`
     }
 </script>
 
