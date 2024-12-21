@@ -10,10 +10,25 @@
         "sourceMap": true,
         "strict": true,
         "moduleResolution": "bundler",
+        "baseUrl": ".",
         "paths": {
-            "@/*": ["./resources/js/*"],
-            "ziggy-js": ["./vendor/tightenco/ziggy"]
+            "@/*": [
+                "./resources/js/*"
+            ],
+            "ziggy-js": [
+                "./vendor/tightenco/ziggy"
+            ],
+            "$lib": [
+                "./src/lib"
+            ],
+            "$lib/*": [
+                "./src/lib/*"
+            ]
         }
     },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.d.ts", "resources/js/**/*.svelte"]
+    "include": [
+        "resources/js/**/*.ts",
+        "resources/js/**/*.d.ts",
+        "resources/js/**/*.svelte"
+    ]
 }

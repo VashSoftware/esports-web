@@ -3,8 +3,14 @@ import laravel from 'laravel-vite-plugin'
 import { defineConfig } from 'vite'
 import { run } from 'vite-plugin-run'
 import { watch } from 'vite-plugin-watch'
+import path from 'path'
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            $lib: path.resolve('./resources/js/Components')
+        }
+    },
     plugins: [
         laravel({
             input: 'resources/js/app.ts',
