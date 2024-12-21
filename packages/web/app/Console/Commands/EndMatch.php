@@ -27,7 +27,7 @@ class EndMatch extends Command
     public function handle()
     {
         VashMatch::find($this->argument('id'))->update([
-            'finished_at' => now()
+            'finished_at' => now(),
         ]);
     }
 }

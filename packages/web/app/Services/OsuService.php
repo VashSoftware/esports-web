@@ -68,7 +68,7 @@ class OsuService
 
     public function sendIRCMessage(string $channel, string $message)
     {
-        Http::post('osu:' . env('OSU_PORT') . '/send-message', [
+        Http::post('osu:'.env('OSU_PORT').'/send-message', [
             'channel' => $channel,
             'message' => $message,
         ]);

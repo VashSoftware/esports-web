@@ -11,7 +11,7 @@ class MatchParticipant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['team_id'];
+    protected $fillable = ['team_id', 'index'];
 
     public function vashMatch(): BelongsTo
     {

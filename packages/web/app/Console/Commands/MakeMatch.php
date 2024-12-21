@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\MatchService;
+use Illuminate\Console\Command;
 
 class MakeMatch extends Command
 {

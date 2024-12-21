@@ -27,7 +27,7 @@ class SetMatchPicker extends Command
     public function handle()
     {
         VashMatch::find($this->argument('match-id'))->update([
-            'current_picker' => $this->argument('match-participant-id')
+            'current_picker' => $this->argument('match-participant-id'),
         ]);
     }
 }

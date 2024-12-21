@@ -7,8 +7,8 @@ use App\Http\Controllers\GameModeController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MapPoolMapController;
-use App\Http\Controllers\MatchController;
 use App\Http\Controllers\MatchBanController;
+use App\Http\Controllers\MatchController;
 use App\Http\Controllers\MatchMapController;
 use App\Http\Controllers\MatchQueueController;
 use App\Http\Controllers\ModController;
@@ -96,4 +96,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

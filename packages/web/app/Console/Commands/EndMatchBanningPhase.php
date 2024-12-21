@@ -29,7 +29,7 @@ class EndMatchBanningPhase extends Command
         $matchId = $this->argument('id');
 
         VashMatch::find($matchId)->update([
-            'current_banner' => null
+            'current_banner' => null,
         ]);
     }
 }

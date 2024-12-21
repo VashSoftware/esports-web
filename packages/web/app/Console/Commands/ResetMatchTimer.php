@@ -29,7 +29,7 @@ class ResetMatchTimer extends Command
         $seconds = $this->argument('seconds');
 
         VashMatch::find($this->argument('match-id'))->update([
-            'action_limit' => now()->modify('+' . $seconds . ' seconds')
+            'action_limit' => now()->modify('+'.$seconds.' seconds'),
         ]);
     }
 }

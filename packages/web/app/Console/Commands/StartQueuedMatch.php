@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\MapPool;
-use App\Models\VashMatch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 
@@ -25,7 +24,7 @@ class StartQueuedMatch extends Command
 
     private function getMatchingMapPool($matchParticipants)
     {
-        $ratings = array_map(fn($matchParticipant) => $matchParticipant->team->rating);
+        $ratings = array_map(fn ($matchParticipant) => $matchParticipant->team->rating);
         $avgRating = array_sum($ratings) / count($ratings);
 
         $mapPool = MapPool::where('verified', true)->orderBy('rating')->first();

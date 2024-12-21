@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\MatchParticipant;
-use App\Models\VashMatch;
 use Illuminate\Console\Command;
 
 class SetMatchBanner extends Command
@@ -32,7 +31,7 @@ class SetMatchBanner extends Command
         $matchParticipant = MatchParticipant::find($matchParticipantId);
 
         $matchParticipant->vashMatch()->update([
-            'current_banner' => $matchParticipantId
+            'current_banner' => $matchParticipantId,
         ]);
     }
 }
