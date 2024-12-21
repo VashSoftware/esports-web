@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MatchMap;
+use App\Services\MatchService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class MatchMapController extends Controller
 {
@@ -27,16 +26,14 @@ class MatchMapController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, MatchService $matchService)
     {
         $validated = $request->validate([
             'vash_match_id' => 'required|exists:vash_matches,id',
-            'map_pool_map_id' => 'required|exists:map_pool_maps,id'
+            'map_pool_map_id' => 'required|exists:map_pool_maps,id',
         ]);
 
-        $matchMap = MatchMap::create($validated);
-
-        Log::debug($matchMap);
+        $matchService->pickMap($validated['vash_match_id'], $validated['map_pool_map_id']);
 
         return back(status: 303);
     }
