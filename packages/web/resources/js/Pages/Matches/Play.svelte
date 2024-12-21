@@ -1,6 +1,6 @@
 <script lang="ts">
     import Layout from '@/Shared/Layout.svelte'
-    import { router } from '@inertiajs/svelte'
+    import { router, Link } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
 
     let { match, user } = $props()
@@ -12,6 +12,7 @@
 
     onMount(() => {
         const channel = window.Echo.channel('match.1')
+        channel.listen('MatchUpdated', (e) => {})
         channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
 
         const matchTimerInterval = setInterval(() => {
@@ -30,7 +31,9 @@
     }
 
     function userCanPick() {
-        return false
+        return user.profile.team_members.find((tm) =>
+            tm.team.match_participants.find((mp) => mp.id == match.current_picker),
+        )
     }
 
     function formatTime(milliseconds: number) {
@@ -62,8 +65,13 @@
 </script>
 
 <Layout>
-    <div class="mx-8 my-8 flex justify-between rounded-xl bg-secondary p-4">
-        <div></div>
+    <div class="mx-8 my-8 flex items-center justify-between rounded-xl bg-secondary p-4">
+        <div>
+            <Link href="/events/1">
+                <h1 class="text-2xl font-bold">{match.event?.name}</h1>
+                <h2 class="text-xl font-bold">{match.round?.name}</h2>
+            </Link>
+        </div>
         <div class="flex justify-center">
             {#each match.match_participants as participant, i}
                 <h1 class="mx-1 text-4xl font-black">
@@ -149,6 +157,20 @@
 
                                 {#if userCanBan()}
                                     <button class="rounded bg-red-500 px-4 py-2">BAN</button>
+                                {/if}
+
+                                {#if userCanPick()}
+                                    <form
+                                        onsubmit={(e) => {
+                                            e.preventDefault()
+                                            router.post('/match_maps', {
+                                                vash_match_id: match.id,
+                                                map_pool_map_id: map.id,
+                                            })
+                                        }}
+                                    >
+                                        <button class="rounded bg-green-500 px-4 py-2">PICK</button>
+                                    </form>
                                 {/if}
                             </div>
                         {/each}

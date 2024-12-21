@@ -11,7 +11,7 @@ class MatchMap extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['map_pool_map_id', 'match_id'];
+    protected $fillable = ['map_pool_map_id', 'vash_match_id'];
 
     public function scores(): HasMany
     {

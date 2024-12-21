@@ -7,8 +7,9 @@ use App\Http\Controllers\GameModeController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MapPoolMapController;
-use App\Http\Controllers\MatchBanController;
 use App\Http\Controllers\MatchController;
+use App\Http\Controllers\MatchBanController;
+use App\Http\Controllers\MatchMapController;
 use App\Http\Controllers\MatchQueueController;
 use App\Http\Controllers\ModController;
 use App\Http\Controllers\OrganisationController;
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/matches/{match}/play', [MatchController::class, 'play'])->name('matches.play');
 
     Route::resource('/match_bans', MatchBanController::class);
+    Route::resource('/match_maps', MatchMapController::class);
 
     Route::resource('map_pools', MapPoolController::class);
 
