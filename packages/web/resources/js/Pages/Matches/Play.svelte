@@ -117,7 +117,20 @@
             <h2 class="text-center text-xl font-bold">Match Maps</h2>
 
             {#each match.match_maps as map}
-                <div class="rounded-xl bg-secondary p-8">bruh</div>
+                <div>
+                    <div>
+                        {#each map.scores as score}{/each}
+                    </div>
+                    <div class="mx-8 my-2 rounded-xl bg-secondary p-8 text-center">
+                        <h1 class="text-l font-bold">
+                            {map.map_pool_map.map.map_set.artist} - {map.map_pool_map.map.map_set.title} [{map
+                                .map_pool_map.map.difficulty_name}]
+                        </h1>
+                    </div>
+                    <div>
+                        {#each map.scores as score}{/each}
+                    </div>
+                </div>
             {/each}
         </div>
 

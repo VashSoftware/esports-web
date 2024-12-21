@@ -37,6 +37,6 @@ class MatchController extends Controller
 
     public function play(string $id)
     {
-        return Inertia::render('Matches/Play', ['match' => VashMatch::with(['mapPool.mapPoolMaps.mods.mod', 'mapPool.mapPoolMaps.map.mapSet', 'matchMaps.mapPoolMap.map.mapSet', 'matchParticipants.team'])->find($id)]);
+        return Inertia::render('Matches/Play', ['match' => VashMatch::with(['mapPool.mapPoolMaps.mods.mod', 'mapPool.mapPoolMaps.map.mapSet', 'matchMaps.mapPoolMap.mods.mod',  'matchMaps.mapPoolMap.map.mapSet', 'matchParticipants.team'])->find($id)]);
     }
 }
