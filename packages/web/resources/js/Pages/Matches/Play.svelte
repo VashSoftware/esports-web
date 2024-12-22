@@ -62,6 +62,10 @@
 
         return `${''} has ${''} to pick a map.`
     }
+
+    function getPlayerStatusIcon() {
+        return '👍'
+    }
 </script>
 
 <Layout>
@@ -97,15 +101,19 @@
         </div>
     </div>
 
-    <div class="m-8 flex justify-evenly">
+    <div class="m-8 flex justify-evenly text-center">
         {#each match.match_participants as participant}
-            <div class="rounded-xl bg-secondary p-4">
-                <h2 class="text-xl font-bold">{participant.team.name}</h2>
-                <img src="/public/" alt="Team Logo" />
-                {#each participant.players as player}
-                    <div>
+            <div class="flex flex-col gap-2">
+                <div class="rounded-xl bg-secondary p-4">
+                    <h2 class="text-xl font-bold">{participant.team.name}</h2>
+                    <img src="/public/" alt="Team Logo" />
+                </div>
+
+                {#each participant.match_participant_players as player}
+                    <div class="flex justify-between gap-2 rounded bg-secondary p-2">
                         <img src="" alt="Player" />
-                        <p>{player.profile?.name}</p>
+                        <h3>{player.team_member.profile?.username}</h3>
+                        <p>{getPlayerStatusIcon()}</p>
                     </div>
                 {/each}
             </div>
@@ -114,7 +122,7 @@
 
     <div class="grid grid-cols-2">
         <div>
-            <h2 class="text-center text-xl font-bold">Match Maps</h2>
+            <h2 class="my-4 text-center text-xl font-bold">Match Maps</h2>
 
             {#each match.match_maps as map}
                 <div>
