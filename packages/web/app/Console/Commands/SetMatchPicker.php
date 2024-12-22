@@ -28,6 +28,7 @@ class SetMatchPicker extends Command
     {
         VashMatch::find($this->argument('match-id'))->update([
             'current_picker' => $this->argument('match-participant-id'),
+            'action_limit' => now()->addMinute(),
         ]);
     }
 }
