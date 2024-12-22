@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\MatchMap;
+use App\Models\Score;
 use App\Models\VashMatch;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MatchService
 {
@@ -63,38 +66,46 @@ class MatchService
 
     public function pickMap(int $matchId, int $mapPoolMapId)
     {
-        $matchMap = MatchMap::create([
-            'vash_match_id' => $matchId,
-            'map_pool_map_id' => $mapPoolMapId,
-        ]);
+        DB::transaction(function () use ($matchId, $mapPoolMapId) {
+            $matchMap = MatchMap::create([
+                'vash_match_id' => $matchId,
+                'map_pool_map_id' => $mapPoolMapId,
+            ]);
+            Log::debug($matchMap->id);
 
-        // Retrieve the VashMatch instance
-        $match = VashMatch::with('matchParticipants')->findOrFail($matchId);
+            $match = VashMatch::with('matchParticipants.matchParticipantPlayers')->findOrFail($matchId);
 
-        // Get all match participants ordered by 'id' or any other relevant field
-        $participants = $match->matchParticipants->sortBy('id')->values();
+            foreach ($match->matchParticipants as $participant) {
+                foreach ($participant->matchParticipantPlayers as $player) {
+                    $score = new Score([
+                        'score' => 0,
+                        'match_map_id' => $matchMap->id,
+                    ]);
 
-        // Get the current picker ID
-        $currentPickerId = $match->current_picker;
+                    $player->scores()->save($score);
+                }
+            }
 
-        // Find the index of the current picker
-        $currentIndex = $participants->search(function ($participant) use ($currentPickerId) {
-            return $participant->id === $currentPickerId;
+            $participants = $match->matchParticipants->sortBy('id')->values();
+
+            $currentPickerId = $match->current_picker;
+
+            $currentIndex = $participants->search(function ($participant) use ($currentPickerId) {
+                return $participant->id === $currentPickerId;
+            });
+
+            if ($currentIndex === false || $currentIndex === $participants->count() - 1) {
+                $nextPicker = $participants->first();
+            } else {
+                $nextPicker = $participants->get($currentIndex + 1);
+            }
+
+            $matchMap->vashMatch()->update([
+                'action_limit' => now()->addMinute(),
+                'current_picker' => $nextPicker->id,
+            ]);
+
         });
-
-        // Determine the next picker
-        if ($currentIndex === false || $currentIndex === $participants->count() - 1) {
-            // If there's no current picker or it's the last participant, cycle to the first
-            $nextPicker = $participants->first();
-        } else {
-            // Otherwise, select the next participant in the list
-            $nextPicker = $participants->get($currentIndex + 1);
-        }
-
-        $matchMap->vashMatch()->update([
-            'action_limit' => now()->addMinute(),
-            'current_picker' => $nextPicker->id,
-        ]);
     }
 
     public function addParticipantPlayer() {}

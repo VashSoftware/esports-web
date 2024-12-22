@@ -8,7 +8,9 @@ use App\Models\Map;
 use App\Models\MapPool;
 use App\Models\MapPoolMap;
 use App\Models\MapSet;
+use App\Models\MatchMap;
 use App\Models\MatchParticipant;
+use App\Models\MatchParticipantPlayer;
 use App\Models\Mod;
 use App\Models\Organisation;
 use App\Models\Profile;
@@ -208,19 +210,21 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('scores', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('vash_match_id')->constrained();
-            $table->integer('score');
-            $table->timestamps();
-        });
-
         Schema::create('match_maps', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(VashMatch::class);
             $table->foreignIdFor(MapPoolMap::class);
             $table->timestamps();
         });
+
+        Schema::create('scores', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(MatchParticipantPlayer::class)->constrained();
+            $table->foreignIdFor(MatchMap::class)->constrained();
+            $table->integer('score');
+            $table->timestamps();
+        });
+
     }
 
     /**

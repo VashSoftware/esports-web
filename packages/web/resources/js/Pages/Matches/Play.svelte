@@ -66,6 +66,12 @@
     function getPlayerStatusIcon() {
         return '👍'
     }
+
+    function getMatchParticipantScores(match_map_id: number, match_participant_id: number) {
+        return match.match_maps
+            .find((mm) => mm.id == match_map_id)
+            .scores.filter((s) => s.match_participant_player.match_participant_id == match_participant_id)
+    }
 </script>
 
 <Layout>
@@ -125,18 +131,28 @@
             <h2 class="my-4 text-center text-xl font-bold">Match Maps</h2>
 
             {#each match.match_maps as map}
-                <div>
-                    <div>
-                        {#each map.scores as score}{/each}
+                <div class="flex justify-center">
+                    <div class="flex gap-2">
+                        {#each getMatchParticipantScores(map.id, match.match_participants[0].id) as score}
+                            <div class="rounded bg-secondary p-2">
+                                <img src="" class="rounded-full" alt="" />
+                                <h1 class="text-l font-bold">{score.score}</h1>
+                            </div>
+                        {/each}
                     </div>
-                    <div class="mx-8 my-2 rounded-xl bg-secondary p-8 text-center">
+                    <div class="mx-8 my-2 rounded-xl bg-secondary px-8 py-4 text-center">
                         <h1 class="text-l font-bold">
                             {map.map_pool_map.map.map_set.artist} - {map.map_pool_map.map.map_set.title} [{map
                                 .map_pool_map.map.difficulty_name}]
                         </h1>
                     </div>
-                    <div>
-                        {#each map.scores as score}{/each}
+                    <div class="flex gap-2">
+                        {#each getMatchParticipantScores(map.id, match.match_participants[1].id) as score}
+                            <div class="rounded bg-secondary p-2">
+                                <img src="" class="rounded-full" alt="" />
+                                <h1 class="text-l font-bold">{score.score}</h1>
+                            </div>
+                        {/each}
                     </div>
                 </div>
             {/each}
