@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\VashMatch;
 use Illuminate\Console\Command;
+use App\Events\MatchEnded;
 
 class EndMatch extends Command
 {
@@ -26,8 +27,12 @@ class EndMatch extends Command
      */
     public function handle()
     {
-        VashMatch::find($this->argument('id'))->update([
+        $matchId = $this->argument('id');
+
+        VashMatch::find($matchId)->update([
             'finished_at' => now(),
         ]);
+
+        event(new MatchEnded($matchId));
     }
 }

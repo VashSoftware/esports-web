@@ -8,12 +8,18 @@
 
     let shareModalShown = $state(false)
     let forfeitModalShown = $state(false)
+    let matchEndedModalShown = $state(false)
     let mapPoolStatus = $state(getMapPoolStatus())
 
     onMount(() => {
-        const channel = window.Echo.channel('match.1')
+        const channel = window.Echo.channel('match.' + match.id)
         channel.listen('MatchUpdated', (e) => {})
         channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
+        channel.listen('MatchEnded', (e) => {
+            match.finished_at = e.match.finished_at
+            matchEndedModalShown = true
+            console.log(match)
+        })
 
         const matchTimerInterval = setInterval(() => {
             mapPoolStatus = getMapPoolStatus()
@@ -239,6 +245,22 @@
     <div class="fixed inset-0 z-20 flex items-center justify-center" onclick={() => (forfeitModalShown = false)}>
         <div class="relative w-1/3 rounded-xl bg-white p-8 text-center shadow-xl" onclick={(e) => e.stopPropagation()}>
             <h3 class="text-xl font-bold">Are You Sure?</h3>
+            <p>coward lol</p>
+
+            <div class="my-8 flex justify-around">
+                <button class="rounded bg-red-500 px-4 py-2">Yes</button>
+                <button class="rounded bg-gray-500 px-4 py-2" onclick={() => (forfeitModalShown = false)}>Cancel</button
+                >
+            </div>
+        </div>
+    </div>
+{/if}
+
+{#if matchEndedModalShown}
+    <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
+    <div class="fixed inset-0 z-20 flex items-center justify-center" onclick={() => (forfeitModalShown = false)}>
+        <div class="relative w-1/3 rounded-xl bg-white p-8 text-center shadow-xl" onclick={(e) => e.stopPropagation()}>
+            <h3 class="text-xl font-bold">Match Ended</h3>
             <p>coward lol</p>
 
             <div class="my-8 flex justify-around">

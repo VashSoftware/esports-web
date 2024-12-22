@@ -5,23 +5,24 @@ namespace App\Events;
 use App\Models\VashMatch;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
-class ScoreUpdated implements ShouldBroadcast
+class MatchEnded implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $match;
-
+    public VashMatch $match;
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        VashMatch $match,
-    ) {
-        $this->match = $match;
+    public function __construct(int $matchId)
+    {
+        $this->match = VashMatch::find($matchId);
     }
 
     /**
