@@ -2,6 +2,7 @@
     import Layout from '@/Shared/Layout.svelte'
     import { router, Link } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
+    import type { TeamMember, MatchParticipant, MatchMap, Score } from '@/Types/app'
 
     let { match, user } = $props()
     console.log(match)
@@ -30,14 +31,14 @@
     })
 
     function userCanBan() {
-        return user.profile.team_members.find((tm) =>
-            tm.team.match_participants.find((mp) => mp.id == match.current_banner),
+        return user.profile.team_members.find((tm: TeamMember) =>
+            tm.team?.match_participants?.find((mp: MatchParticipant) => mp.id == match.current_banner),
         )
     }
 
     function userCanPick() {
-        return user.profile.team_members.find((tm) =>
-            tm.team.match_participants.find((mp) => mp.id == match.current_picker),
+        return user.profile.team_members.find((tm: TeamMember) =>
+            tm.team?.match_participants?.find((mp: MatchParticipant) => mp.id == match.current_picker),
         )
     }
 
@@ -53,7 +54,8 @@
     function getMapPoolStatus() {
         if (match.current_banner) {
             if (userCanBan()) {
-                const timeLeft = Math.max(0, new Date(match.action_limit) - Date.now())
+                const actionLimitDate = new Date(match.action_limit)
+                const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
                 return `You have ${formatTime(timeLeft)} to ban a map.`
             }
 
@@ -61,7 +63,8 @@
         }
 
         if (userCanPick()) {
-            const timeLeft = Math.max(0, new Date(match.action_limit) - Date.now())
+            const actionLimitDate = new Date(match.action_limit)
+            const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
             return `You have ${formatTime(timeLeft)} to pick a map.`
         }
 
@@ -74,13 +77,13 @@
 
     function getMatchParticipantScores(match_map_id: number, match_participant_id: number) {
         return match.match_maps
-            .find((mm) => mm.id == match_map_id)
-            .scores.filter((s) => s.match_participant_player.match_participant_id == match_participant_id)
+            .find((mm: MatchMap) => mm.id == match_map_id)
+            .scores.filter((s: Score) => s.match_participant_player?.match_participant_id == match_participant_id)
     }
 </script>
 
 <Layout>
-    <div class="mx-8 my-8 flex items-center justify-between rounded-xl bg-secondary p-4">
+    <div class="bg-secondary mx-8 my-8 flex items-center justify-between rounded-xl p-4">
         <div>
             <Link href="/events/1">
                 <h1 class="text-2xl font-bold">{match.event?.name}</h1>
@@ -96,7 +99,7 @@
             {/each}
         </div>
         <div class="flex items-center gap-2">
-            <button onclick={() => (shareModalShown = true)} class="bg-gray-500 p-2"
+            <button onclick={() => (shareModalShown = true)} class="bg-gray-500 p-2" aria-label="Share"
                 ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                     ><path
                         fill="none"
@@ -108,20 +111,22 @@
                     /></svg
                 ></button
             >
-            <button onclick={() => (forfeitModalShown = true)} class="bg-red-500 p-2">Forfeit</button>
+            <button onclick={() => (forfeitModalShown = true)} class="bg-red-500 p-2" aria-label="Forfeit"
+                >Forfeit</button
+            >
         </div>
     </div>
 
     <div class="m-8 flex justify-evenly text-center">
         {#each match.match_participants as participant}
             <div class="flex flex-col gap-2">
-                <div class="rounded-xl bg-secondary p-4">
+                <div class="bg-secondary rounded-xl p-4">
                     <h2 class="text-xl font-bold">{participant.team.name}</h2>
                     <img src="/public/" alt="Team Logo" />
                 </div>
 
                 {#each participant.match_participant_players as player}
-                    <div class="flex justify-between gap-2 rounded bg-secondary p-2">
+                    <div class="bg-secondary flex justify-between gap-2 rounded p-2">
                         <img src="" alt="Player" />
                         <h3>{player.team_member.profile?.username}</h3>
                         <p>{getPlayerStatusIcon()}</p>
@@ -139,13 +144,13 @@
                 <div class="flex justify-center">
                     <div class="flex gap-2">
                         {#each getMatchParticipantScores(map.id, match.match_participants[0].id) as score}
-                            <div class="rounded bg-secondary p-2">
+                            <div class="bg-secondary rounded p-2">
                                 <img src="" class="rounded-full" alt="" />
                                 <h1 class="text-l font-bold">{score.score}</h1>
                             </div>
                         {/each}
                     </div>
-                    <div class="mx-8 my-2 rounded-xl bg-secondary px-8 py-4 text-center">
+                    <div class="bg-secondary mx-8 my-2 rounded-xl px-8 py-4 text-center">
                         <h1 class="text-l font-bold">
                             {map.map_pool_map.map.map_set.artist} - {map.map_pool_map.map.map_set.title} [{map
                                 .map_pool_map.map.difficulty_name}]
@@ -153,7 +158,7 @@
                     </div>
                     <div class="flex gap-2">
                         {#each getMatchParticipantScores(map.id, match.match_participants[1].id) as score}
-                            <div class="rounded bg-secondary p-2">
+                            <div class="bg-secondary rounded p-2">
                                 <img src="" class="rounded-full" alt="" />
                                 <h1 class="text-l font-bold">{score.score}</h1>
                             </div>
@@ -180,7 +185,7 @@
 
                     return acc
                 }, {})) as [modsKey, maps]}
-                <div class="mx-8 my-2 flex items-center rounded-xl bg-secondary p-2">
+                <div class="bg-secondary mx-8 my-2 flex items-center rounded-xl p-2">
                     <h3 class="mx-4 text-xl font-bold">{modsKey}</h3>
 
                     <div class="flex flex-wrap">
