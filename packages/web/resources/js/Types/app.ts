@@ -37,12 +37,33 @@ export interface Map {
 export interface Match {
     id: number
     match_participants?: MatchParticipant[]
-    match_maps?: MatchMap[]
+    match_maps?: MatchMap[],
+    finished_at: string | null,
+    current_picker: number | null,
+    current_banner: number | null,
+    action_limit: string | null
 }
 
-export interface Score { 
+export interface Score {
     id: number
     match_participant_player_id: number
     match_participant_player?: MatchParticipantPlayer
     score: number
+}
+
+export interface User {
+    id: number,
+    profile_id: number,
+    profile: Profile
+}
+
+export interface Organisation {
+    id: number,
+}
+
+export interface Profile {
+    id: number,
+    user_id: number,
+    user?: User
+    team_members?: TeamMember[]
 }
