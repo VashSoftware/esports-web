@@ -1,8 +1,9 @@
 import { Client } from "irc";
 import express from "express";
+import axios from "axios";
 
 function setupIrc() {
-  const client = new Client("irc.ppy.sh", process.env.IRC_USERNAME, {
+  const client = new Client("irc.ppy.sh", process.env.IRC_USERNAME!, {
     channels: ["#osu"],
     userName: process.env.IRC_USERNAME,
     password: process.env.IRC_PASSWORD,
@@ -16,14 +17,18 @@ function setupIrc() {
     console.log("Registered", message);
   });
 
-  client.addListener("message", function (from, to, message) {
-    console.log(from + " => " + to + ": " + message);
+  client.addListener("message", async function (from, to, message) {
+    await axios.post("http://laravel.test/api/osu_messages", {
+      username: from,
+      channel: to,
+      message,
+    });
   });
 
   return client;
 }
 
-function setupExpress(ircClient) {
+function setupExpress(ircClient: Client) {
   const app = express();
   app.use(express.json());
 

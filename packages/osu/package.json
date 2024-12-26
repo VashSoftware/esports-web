@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/express": "^5.0.0",
     "@types/irc": "^0.5.4",
+    "axios": "^1.7.9",
     "express": "^4.21.2",
     "irc": "0.5.0"
   }

@@ -225,6 +225,15 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('osu_messages', function (Blueprint $table) {
+            $table->id();
+            $table->string('message');
+            $table->string('channel');
+            $table->string('username');
+            $table->foreignIdFor(Profile::class)->nullable();
+            $table->timestamps();
+        });
+
     }
 
     /**

@@ -8,10 +8,7 @@ use WebSocket;
 
 class OsuService
 {
-    public function __construct()
-    {
-        // $this->listenForMessages();
-    }
+    public function __construct() {}
 
     public function getAccessToken()
     {
