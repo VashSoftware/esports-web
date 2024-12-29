@@ -35,7 +35,7 @@ function setupExpress(ircClient: Client) {
   app.post("/send-message", (req, res) => {
     const data = req.body;
 
-    ircClient.say("#osu", data.message);
+    ircClient.say(data.channel, data.message);
 
     res.send("Message sent");
   });

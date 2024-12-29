@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\OsuMessage;
+use App\Models\VashMatch;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class OsuMessageController extends Controller
 {
@@ -24,18 +24,44 @@ class OsuMessageController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        Log::debug($request);
-
         $validated = $request->validate([
             'username' => 'required',
             'channel' => 'required',
             'message' => 'required',
         ]);
+
+        if ($validated['username'] === 'BanchoBot' && str_contains($validated['message'], 'Created the tournament match')) {
+            $pattern = '/Created the tournament match https:\/\/osu\.ppy\.sh\/mp\/(\d+)\s+(.+)/';
+
+            if (preg_match($pattern, $validated['message'], $matches)) {
+                $lobbyId = $matches[1];
+                $title = $matches[2];
+
+                if (preg_match('/^VASH:\s*\((.*?)\)\s*vs\s*\((.*?)\)$/', $title, $teamMatches)) {
+                    $teamA = $teamMatches[1];
+                    $teamB = $teamMatches[2];
+
+                    $vashMatch = VashMatch::whereNull('osu_lobby')
+                        ->whereHas('matchParticipants', function ($q) use ($teamA) {
+                            $q->whereHas('team', function ($t) use ($teamA) {
+                                $t->where('name', $teamA);
+                            });
+                        })
+                        ->whereHas('matchParticipants', function ($q) use ($teamB) {
+                            $q->whereHas('team', function ($t) use ($teamB) {
+                                $t->where('name', $teamB);
+                            });
+                        })
+                        ->first();
+
+                    if ($vashMatch) {
+                        $vashMatch->update(['osu_lobby' => $lobbyId]);
+                    }
+                }
+            }
+        }
 
         OsuMessage::create($validated);
     }

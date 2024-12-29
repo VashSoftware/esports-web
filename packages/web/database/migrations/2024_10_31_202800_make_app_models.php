@@ -180,6 +180,7 @@ return new class extends Migration
         Schema::create('vash_matches', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(MapPool::class)->constrained();
+            $table->string('osu_lobby')->nullable();
             $table->integer('bans_per_team');
             $table->integer('current_banner')->nullable();
             $table->integer('current_picker')->nullable();

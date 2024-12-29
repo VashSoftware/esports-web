@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\MatchParticipantPlayer;
+use App\Models\VashMatch;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use WebSocket;
 
 class OsuService
 {
@@ -33,23 +34,6 @@ class OsuService
         $response->throw();
     }
 
-    public function listenForMessages()
-    {
-        $client = new WebSocket\Client('wss://osu.ppy.sh/api/v2');
-
-        $accessToken = $this->getAccessToken();
-        $client
-            ->addMiddleware(new WebSocket\Middleware\CloseHandler)
-            ->addMiddleware(new WebSocket\Middleware\PingResponder)
-            ->addHeader('Authorization', "Bearer {$accessToken}");
-
-        $data = [
-            'event' => 'chat.start',
-        ];
-        $json = json_encode($data, JSON_PRETTY_PRINT);
-        $client->text($json);
-    }
-
     public function get($endpoint, $params = [])
     {
         $accessToken = $this->getAccessToken();
@@ -69,5 +53,68 @@ class OsuService
             'channel' => $channel,
             'message' => $message,
         ]);
+    }
+
+    public function makeOsuLobby(int $matchId)
+    {
+        $match = VashMatch::with('matchParticipants.team')->find($matchId);
+
+        $teamA = $match->matchParticipants[0]->team->name;
+        $teamB = $match->matchParticipants[1]->team->name;
+        $title = 'VASH: ('.$teamA.') vs ('.$teamB.')';
+
+        $this->sendIRCMessage('BanchoBot', '!mp make '.$title);
+    }
+
+    public function getMatchSettings(int $matchId)
+    {
+        $match = VashMatch::find($matchId);
+
+        $this->sendIRCMessage($match->osu_lobby, '!mp settings');
+    }
+
+    public function inviteMatchPlayer(int $matchParticipantPlayerId)
+    {
+        $matchParticipantPlayer = MatchParticipantPlayer::find($matchParticipantPlayerId);
+
+        $this->sendIRCMessage($matchParticipantPlayer->matchParticipant()->vashMatch()->osu_lobby, '!mp invite ');
+    }
+
+    public function updatePlayerStatus(int $matchParticipantPlayerId)
+    {
+        $matchParticipantPlayer = MatchParticipantPlayer::find($matchParticipantPlayerId);
+
+        $this->sendIRCMessage($matchParticipantPlayer->matchParticipant()->vashMatch()->osu_lobby, '!mp status Stan');
+    }
+
+    public function setPlayerTeam(int $playerId, int $teamColor)
+    {
+        $this->sendIRCMessage('BanchoBot', '!mp move Stan 0');
+    }
+
+    public function movePlayer(int $playerId, int $position)
+    {
+        $this->sendIRCMessage('BanchoBot', '!mp move Stan 0');
+    }
+
+    public function setMap(array $modIds)
+    {
+        $match = VashMatch::find($matchId);
+
+        $this->sendIRCMessage('BanchoBot', '!mp map '.'1'.'0');
+    }
+
+    public function setMods(array $modIds)
+    {
+        $match = VashMatch::find($matchId);
+
+        $this->sendIRCMessage('BanchoBot', '!mp make '.'VASH'.': ('.'Stan'.') vs ('.'Stan'.')');
+    }
+
+    public function abortMap(int $matchId)
+    {
+        $match = VashMatch::find($matchId);
+
+        $this->sendIRCMessage($match->osu_lobby, '!mp abort');
     }
 }
