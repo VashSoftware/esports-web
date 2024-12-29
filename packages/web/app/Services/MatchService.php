@@ -19,30 +19,43 @@ class MatchService
 
     public function createMatch(int $mapPoolId, array $teams, int $bans_per_team)
     {
-        $match = VashMatch::create([
-            'map_pool_id' => $mapPoolId,
-            'bans_per_team' => $bans_per_team,
-        ]);
+        $match = null;
+        $playerIds = [];
 
-        $matchParticipants = $match->matchParticipants()->createMany([
-            [
-                'team_id' => $teams[0],
-                'index' => 1,
-            ],
-            [
-                'team_id' => $teams[1],
-                'index' => 2,
-            ],
-        ]);
+        DB::transaction(function () use ($mapPoolId, $teams, $bans_per_team, &$match, &$playerIds) {
+            $match = VashMatch::create([
+                'map_pool_id' => $mapPoolId,
+                'bans_per_team' => $bans_per_team,
+            ]);
 
-        $this->setBanner($match->id, $matchParticipants->random()->id);
+            $matchParticipants = $match->matchParticipants()->createMany([
+                [
+                    'team_id' => $teams[0],
+                    'index' => 1,
+                ],
+                [
+                    'team_id' => $teams[1],
+                    'index' => 2,
+                ],
+            ]);
 
-        foreach ($matchParticipants as $participant) {
-            foreach ($participant->team->teamMembers as $member) {
-                $participant->matchParticipantPlayers()->create([
-                    'team_member_id' => $member->id,
-                ]);
+            $this->setBanner($match->id, $matchParticipants->random()->id);
+
+            $this->osuService->makeOsuLobby($match->id);
+
+            foreach ($matchParticipants as $participant) {
+                foreach ($participant->team->teamMembers as $member) {
+                    $player = $participant->matchParticipantPlayers()->create([
+                        'team_member_id' => $member->id,
+                    ]);
+
+                    $playerIds[] = $player->id;
+                }
             }
+        });
+
+        foreach ($playerIds as $playerId) {
+            $this->osuService->inviteMatchPlayer($playerId);
         }
 
         return $match;

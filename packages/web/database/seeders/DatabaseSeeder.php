@@ -14,8 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         DB::table('games')->insert([[
             'name' => 'osu!',
         ], [
@@ -143,6 +141,16 @@ class DatabaseSeeder extends Seeder
             'display_name' => 'Stan',
         ]]);
 
+        User::factory()->create([
+            'email' => 'test2@example.com',
+        ]);
+
+        DB::table('profiles')->insert([[
+            'user_id' => 2,
+            'username' => 'stanrunge2',
+            'display_name' => 'Stan 2',
+        ]]);
+
         DB::table('platforms')->insert([[
             'name' => 'osu!',
         ]]);
@@ -152,6 +160,31 @@ class DatabaseSeeder extends Seeder
             'platform_id' => 1,
             'id' => 11212255,
             'name' => 'Stan',
+        ], [
+            'profile_id' => 2,
+            'platform_id' => 1,
+            'id' => 11212255,
+            'name' => 'Stan',
+            ]]);
+
+        DB::table('teams')->insert([[
+            'name' => 'Test Team',
+            'is_personal_team' => true,
+        ]]);
+
+        DB::table('team_members')->insert([[
+            'team_id' => 1,
+            'profile_id' => 1,
+        ]]);
+
+        DB::table('teams')->insert([[
+            'name' => 'Test Team 2',
+            'is_personal_team' => true,
+        ]]);
+
+        DB::table('team_members')->insert([[
+            'team_id' => 2,
+            'profile_id' => 2,
         ]]);
 
         DB::table('organisations')->insert([[
@@ -168,32 +201,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test Event Group',
         ]]);
 
-        DB::table('teams')->insert([[
-            'name' => 'Test Team',
-            'is_personal_team' => true,
-        ]]);
-
-        DB::table('team_members')->insert([[
-            'team_id' => 1,
-            'profile_id' => 1,
-        ]]);
-
-        DB::table('ratings')->insert([[
-            'team_id' => 1,
-            'game_id' => 1,
-            'rating' => 1000,
-        ]]);
-
-        User::factory()->create([
-            'email' => 'test2@example.com',
-        ]);
-
-        DB::table('profiles')->insert([[
-            'user_id' => 2,
-            'username' => 'stanrunge2',
-            'display_name' => 'Stan 2',
-        ]]);
-
         DB::table('organisations')->insert([[
             'name' => 'Test Organisation 2',
         ]]);
@@ -208,14 +215,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test Event Group 2',
         ]]);
 
-        DB::table('teams')->insert([[
-            'name' => 'Test Team 2',
-            'is_personal_team' => true,
-        ]]);
-
-        DB::table('team_members')->insert([[
-            'team_id' => 2,
-            'profile_id' => 2,
+        DB::table('ratings')->insert([[
+            'team_id' => 1,
+            'game_id' => 1,
+            'rating' => 1000,
         ]]);
 
         DB::table('ratings')->insert([[
@@ -223,6 +226,7 @@ class DatabaseSeeder extends Seeder
             'game_id' => 1,
             'rating' => 1100,
         ]]);
+
 
     }
 }
