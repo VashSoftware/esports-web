@@ -67,6 +67,7 @@ services:
             timeout: 5s
     osu:
         build: ../osu
+        restart: unless-stopped
         ports:
             - '${OSU_PORT:-3000}:3000'
         networks:
