@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Services\OsuService;
 use Illuminate\Console\Command;
 
-class CheckOsuLobbies extends Command
+class MakeMatchOsuLobby extends Command
 {
     /**
      * The name and signature of the console command.
