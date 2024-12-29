@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Events\MatchEnded;
 use App\Models\VashMatch;
 use Illuminate\Console\Command;
-use App\Events\MatchEnded;
 
 class EndMatch extends Command
 {

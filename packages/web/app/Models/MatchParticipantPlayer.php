@@ -18,7 +18,7 @@ class MatchParticipantPlayer extends Model
         return $this->belongsTo(TeamMember::class);
     }
 
-    public function MatchParticipant(): BelongsTo
+    public function matchParticipant(): BelongsTo
     {
         return $this->belongsTo(MatchParticipant::class);
     }

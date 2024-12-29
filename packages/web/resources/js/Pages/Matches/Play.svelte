@@ -2,7 +2,7 @@
     import Layout from '@/Shared/Layout.svelte'
     import { router, Link } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
-    import type { Match, TeamMember, User, MatchParticipant, MatchMap, Score } from '@/Types/app'
+    import type { Match, User } from '@/Types/app'
 
     let { match, user }: { match: Match; user: User } = $props()
     console.log(match)
@@ -52,7 +52,7 @@
     }
 
     function getMapPoolStatus() {
-        if (match.current_banner) {
+        if (match.current_banner && match.action_limit) {
             if (userCanBan()) {
                 const actionLimitDate = new Date(match.action_limit)
                 const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
@@ -62,7 +62,7 @@
             return `Waiting for ${match.current_banner} to a ban a map.`
         }
 
-        if (userCanPick()) {
+        if (userCanPick() && match.action_limit) {
             const actionLimitDate = new Date(match.action_limit)
             const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
             return `You have ${formatTime(timeLeft)} to pick a map.`
@@ -77,8 +77,8 @@
 
     function getMatchParticipantScores(match_map_id: number, match_participant_id: number) {
         return match.match_maps
-            .find((mm: MatchMap) => mm.id == match_map_id)
-            .scores.filter((s: Score) => s.match_participant_player?.match_participant_id == match_participant_id)
+            ?.find((mm) => mm.id == match_map_id)
+            .scores.filter((s) => s.match_participant_player?.match_participant_id == match_participant_id)
     }
 </script>
 
@@ -91,10 +91,10 @@
             </Link>
         </div>
         <div class="flex justify-center">
-            {#each match.match_participants as participant, i}
+            {#each match.match_participants! as participant, i}
                 <h1 class="mx-1 text-4xl font-black">
                     0
-                    {#if i != match.match_participants.length - 1}-{/if}
+                    {#if i != match.match_participants!.length - 1}-{/if}
                 </h1>
             {/each}
         </div>
@@ -118,7 +118,7 @@
     </div>
 
     <div class="m-8 flex justify-evenly text-center">
-        {#each match.match_participants as participant}
+        {#each match.match_participants! as participant}
             <div class="flex flex-col gap-2">
                 <div class="rounded-xl bg-secondary p-4">
                     <h2 class="text-xl font-bold">{participant.team.name}</h2>
@@ -140,7 +140,7 @@
         <div>
             <h2 class="my-4 text-center text-xl font-bold">Match Maps</h2>
 
-            {#each match.match_maps as map}
+            {#each match.match_maps! as map}
                 <div class="flex justify-center">
                     <div class="flex gap-2">
                         {#each getMatchParticipantScores(map.id, match.match_participants[0].id) as score}
