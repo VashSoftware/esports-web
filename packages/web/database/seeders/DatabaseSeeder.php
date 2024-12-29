@@ -143,6 +143,17 @@ class DatabaseSeeder extends Seeder
             'display_name' => 'Stan',
         ]]);
 
+        DB::table('platforms')->insert([[
+            'name' => 'osu!',
+        ]]);
+
+        DB::table('platform_profile')->insert([[
+            'profile_id' => 1,
+            'platform_id' => 1,
+            'id' => 11212255,
+            'name' => 'Stan',
+        ]]);
+
         DB::table('organisations')->insert([[
             'name' => 'Test Organisation',
         ]]);

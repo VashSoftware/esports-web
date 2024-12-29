@@ -77,7 +77,9 @@ class OsuService
     {
         $matchParticipantPlayer = MatchParticipantPlayer::find($matchParticipantPlayerId);
 
-        $this->sendIRCMessage($matchParticipantPlayer->matchParticipant()->vashMatch()->osu_lobby, '!mp invite ');
+        $playerOsuName = $matchParticipantPlayer->teamMember->profile->platforms()->where('platforms.name', 'osu!')->first()->pivot->name;
+
+        $this->sendIRCMessage('#mp_'.$matchParticipantPlayer->matchParticipant->vashMatch->osu_lobby, '!mp invite '.$playerOsuName);
     }
 
     public function updatePlayerStatus(int $matchParticipantPlayerId)
@@ -116,5 +118,12 @@ class OsuService
         $match = VashMatch::find($matchId);
 
         $this->sendIRCMessage($match->osu_lobby, '!mp abort');
+    }
+
+    public function closeLobby(int $matchId)
+    {
+        $match = VashMatch::find($matchId);
+
+        $this->sendIRCMessage('#mp_'.$match->osu_lobby, '!mp close');
     }
 }

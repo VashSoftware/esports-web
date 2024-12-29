@@ -45,6 +45,20 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('platforms', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('platform_profile', function (Blueprint $table) {
+            $table->foreignId('platform_id')->constrained();
+            $table->foreignId('profile_id')->constrained();
+            $table->string('id')->nullable();
+            $table->string('name')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Team::class);
