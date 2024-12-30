@@ -66,6 +66,13 @@ class OsuService
         $this->sendIRCMessage('BanchoBot', '!mp make '.$title);
     }
 
+    public function setSettings(int $matchId, int $teamMode, int $scoreMode, int $size)
+    {
+        $match = VashMatch::find($matchId);
+
+        $this->sendIRCMessage('#mp_'.$match->osu_lobby, '!mp set '.$teamMode.' '.$scoreMode.' '.$size);
+    }
+
     public function getMatchSettings(int $matchId)
     {
         $match = VashMatch::find($matchId);

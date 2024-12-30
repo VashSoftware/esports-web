@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OsuLobbyCreated;
 use App\Models\OsuMessage;
 use App\Models\VashMatch;
 use Illuminate\Http\Request;
@@ -58,6 +59,8 @@ class OsuMessageController extends Controller
 
                     if ($vashMatch) {
                         $vashMatch->update(['osu_lobby' => $lobbyId]);
+
+                        OsuLobbyCreated::dispatch($vashMatch);
                     }
                 }
             }

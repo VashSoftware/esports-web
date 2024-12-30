@@ -20,7 +20,6 @@ class MatchService
     public function createMatch(int $mapPoolId, array $teams, int $bans_per_team)
     {
         $match = null;
-        $playerIds = [];
 
         DB::transaction(function () use ($mapPoolId, $teams, $bans_per_team, &$match, &$playerIds) {
             $match = VashMatch::create([
@@ -48,15 +47,9 @@ class MatchService
                     $player = $participant->matchParticipantPlayers()->create([
                         'team_member_id' => $member->id,
                     ]);
-
-                    $playerIds[] = $player->id;
                 }
             }
         });
-
-        foreach ($playerIds as $playerId) {
-            $this->osuService->inviteMatchPlayer($playerId);
-        }
 
         return $match;
     }
