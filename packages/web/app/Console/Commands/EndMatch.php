@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\MatchEnded;
 use App\Models\VashMatch;
+use App\Services\OsuService;
 use Illuminate\Console\Command;
 
 class EndMatch extends Command
@@ -25,13 +26,15 @@ class EndMatch extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(OsuService $osuService)
     {
         $matchId = $this->argument('id');
 
         VashMatch::find($matchId)->update([
             'finished_at' => now(),
         ]);
+
+        $osuService->closeLobby($matchId);
 
         event(new MatchEnded($matchId));
     }
