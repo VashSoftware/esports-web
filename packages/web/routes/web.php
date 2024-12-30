@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
         return Inertia::render('Home', [
-            'matches' => VashMatch::with('matchParticipants.team')->get(),
+            'matches' => VashMatch::with('matchParticipants.team')->whereNull('finished_at')->get(),
         ]);
     });
 
