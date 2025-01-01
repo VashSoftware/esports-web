@@ -177,7 +177,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('map_pool_map_mod', function (Blueprint $table) {
+        Schema::create('map_pool_map_mods', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(MapPoolMap::class);
             $table->foreignIdFor(Mod::class);

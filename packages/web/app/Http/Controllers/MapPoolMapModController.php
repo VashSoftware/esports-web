@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MapPoolMap;
+use App\Models\MapPoolMapMod;
 use Illuminate\Http\Request;
 
 class MapPoolMapModController extends Controller
@@ -33,7 +33,7 @@ class MapPoolMapModController extends Controller
             'mod_id' => 'required|exists:mods,id'
         ]);
 
-        MapPoolMap::find($validated['map_pool_map_id'])->mods()->attach($validated['mod_id']);
+        MapPoolMapMod::create($validated);
 
         return back(status: 303);
     }
@@ -67,6 +67,8 @@ class MapPoolMapModController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        MapPoolMapMod::find($id)->delete();
+
+        return back(status: 303);
     }
 }
