@@ -9,6 +9,8 @@ export interface TeamMember {
     id: number
     team_id: number
     team: Team
+    profile_id: number | null
+    profile: Profile | null
 }
 
 export interface MatchParticipant {
@@ -17,6 +19,7 @@ export interface MatchParticipant {
     match: Match
     team_id: number
     team: Team
+    match_participant_players: MatchParticipantPlayer[]
 }
 
 export interface MatchParticipantPlayer {
@@ -31,8 +34,8 @@ export interface MatchMap {
     id: number
     match_id: number
     match: Match
-    map_id: number
-    map: Map
+    map_pool_map_id: number
+    map_pool_map: MapPoolMap
     scores: Score[]
 }
 
@@ -115,6 +118,7 @@ export interface Organisation {
 
 export interface Profile {
     id: number,
+    username: string
     user_id: number,
     user: User
     team_members: TeamMember[]

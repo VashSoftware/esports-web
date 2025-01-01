@@ -2,10 +2,9 @@
     import Layout from '@/Shared/Layout.svelte'
     import { router, Link } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
-    import type { Match, User } from '@/Types/app'
+    import type { Match, User, MapPoolMap } from '@/Types/app'
 
     let { match, user }: { match: Match; user: User } = $props()
-    console.log(match)
 
     let shareModalShown = $state(false)
     let forfeitModalShown = $state(false)
@@ -76,8 +75,7 @@
     }
 
     function getMatchParticipantScores(match_map_id: number, match_participant_id: number) {
-        return match.match_maps
-            ?.find((mm) => mm.id == match_map_id)
+        return match.match_maps?.find((mm) => mm.id == match_map_id)
             .scores.filter((s) => s.match_participant_player?.match_participant_id == match_participant_id)
     }
 </script>
@@ -152,8 +150,8 @@
                     </div>
                     <div class="mx-8 my-2 rounded-xl bg-secondary px-8 py-4 text-center">
                         <h1 class="text-l font-bold">
-                            {map.map_pool_map.map.map_set.artist} - {map.map_pool_map.map.map_set.title} [{map
-                                .map_pool_map.map.difficulty_name}]
+                            {map.map_pool_map.map?.map_set.artist} - {map.map_pool_map.map?.map_set.title} [{map
+                                .map_pool_map.map?.difficulty_name}]
                         </h1>
                     </div>
                     <div class="flex gap-2">
@@ -174,11 +172,11 @@
                 <p>{mapPoolStatus}</p>
             </div>
 
-            {#each Object.entries(match.map_pool.map_pool_maps.reduce((acc, map) => {
-                    const modsKey = map.mods
-                            .map((mod) => mod.code)
+            {#each Object.entries(match.map_pool.map_pool_maps.reduce((acc: Record<string, MapPoolMap[]>, map) => {
+                    const modsKey = map.map_pool_map_mods
+                            .map((mod) => mod.mod.code)
                             .sort()
-                            .join(',') || 'NM'
+                            .join(', ') || 'NM'
 
                     if (!acc[modsKey]) {
                         acc[modsKey] = []
@@ -202,8 +200,8 @@
                                     })
                                 }}
                             >
-                                <p>{map.map.map_set.artist} - {map.map.map_set.title}</p>
-                                <p>[{map.map.difficulty_name}]</p>
+                                <p>{map.map?.map_set.artist} - {map.map?.map_set.title}</p>
+                                <p>[{map.map?.difficulty_name}]</p>
 
                                 {#if userCanBan()}
                                     <button class="rounded bg-red-500 px-4 py-2">BAN</button>
