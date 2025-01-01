@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MapPool;
-use App\Models\Mod;
+use App\Models\MapPoolMap;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
-class MapPoolController extends Controller
+class MapPoolMapModController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('MapPools/Index', ['mapPools' => MapPool::all()]);
+        //
     }
 
     /**
@@ -22,7 +20,7 @@ class MapPoolController extends Controller
      */
     public function create()
     {
-        return Inertia::render('MapPools/Create');
+        //
     }
 
     /**
@@ -30,9 +28,14 @@ class MapPoolController extends Controller
      */
     public function store(Request $request)
     {
-        MapPool::create($request->all());
+        $validated = $request->validate([
+            'map_pool_map_id' => 'required|exists:map_pool_maps,id',
+            'mod_id' => 'required|exists:mods,id'
+        ]);
 
-        return redirect('/map_pools');
+        MapPoolMap::find($validated['map_pool_map_id'])->mods()->attach($validated['mod_id']);
+
+        return back(status: 303);
     }
 
     /**
@@ -40,7 +43,7 @@ class MapPoolController extends Controller
      */
     public function show(string $id)
     {
-        return Inertia::render('MapPools/Show', ['mapPool' => MapPool::with(['mapPoolMaps.map.mapSet', 'mapPoolMaps.mods'])->find($id), 'mods' => Mod::all()]);
+        //
     }
 
     /**
@@ -48,7 +51,7 @@ class MapPoolController extends Controller
      */
     public function edit(string $id)
     {
-        return Inertia::render('MapPools/Edit', ['mapPool' => MapPool::with(['mapPoolMaps.map.mapSet', 'mapPoolMaps.mods'])->find($id), 'mods' => Mod::get()]);
+        //
     }
 
     /**

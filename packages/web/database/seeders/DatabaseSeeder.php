@@ -39,11 +39,6 @@ class DatabaseSeeder extends Seeder
         ]]);
 
         DB::table('mods')->insert([
-            'name' => 'No Mod',
-            'code' => '',
-        ]);
-
-        DB::table('mods')->insert([
             'name' => 'Hidden',
             'code' => 'HD',
         ]);
@@ -165,7 +160,7 @@ class DatabaseSeeder extends Seeder
             'platform_id' => 1,
             'id' => 11212255,
             'name' => 'Stan',
-            ]]);
+        ]]);
 
         DB::table('teams')->insert([[
             'name' => 'Test Team',
@@ -226,7 +221,6 @@ class DatabaseSeeder extends Seeder
             'game_id' => 1,
             'rating' => 1100,
         ]]);
-
 
     }
 }

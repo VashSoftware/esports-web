@@ -10,6 +10,7 @@ use App\Http\Controllers\MapPoolMapController;
 use App\Http\Controllers\MatchBanController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\MatchMapController;
+use App\Http\Controllers\MapPoolMapModController;
 use App\Http\Controllers\MatchQueueController;
 use App\Http\Controllers\ModController;
 use App\Http\Controllers\OrganisationController;
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('map_pools', MapPoolController::class);
 
     Route::resource('map_pool_maps', MapPoolMapController::class);
+
+    Route::resource('map_pool_map_mods', MapPoolMapModController::class);
 
     Route::resource('mods', ModController::class);
 

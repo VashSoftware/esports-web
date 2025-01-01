@@ -17,7 +17,10 @@
 
     <h1 class="text-center text-2xl font-bold">Maps</h1>
     {#each Object.entries(mapPool.map_pool_maps.reduce((acc, map) => {
-            const modsKey = map.mods.sort().join(',') || 'NM'
+            const modsKey = map.mods
+                    .map((mod) => mod.code)
+                    .sort()
+                    .join(',') || 'NM'
 
             if (!acc[modsKey]) {
                 acc[modsKey] = []
