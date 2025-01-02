@@ -61,7 +61,7 @@ class MatchService
 
         // Check if all participants have rolled
         foreach ($match->matchParticipants as $participant) {
-            if (! $participant->roll) {
+            if (!$participant->roll) {
                 return;
             }
         }
@@ -72,10 +72,10 @@ class MatchService
         $highestRollers = []; // Array to handle ties
 
         foreach ($participants as $participant) {
-            if ($participant->roll > $highestRoll) {
-                $highestRoll = $participant->roll;
+            if ($participant->roll->roll > $highestRoll) {
+                $highestRoll = $participant->roll->roll;
                 $highestRollers = [$participant];
-            } elseif ($participant->roll === $highestRoll) {
+            } elseif ($participant->roll->roll === $highestRoll) {
                 $highestRollers[] = $participant;
             }
         }

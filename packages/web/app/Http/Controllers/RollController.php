@@ -46,11 +46,11 @@ class RollController extends Controller
             'roll' => $roll,
         ]);
 
-        $match = MatchParticipant::with('vashMatch')->find($validated['match_participant_id']);
+        $matchParticipant = MatchParticipant::with('vashMatch')->find($validated['match_participant_id']);
 
         ParticipantRolled::dispatch($validated['match_participant_id']);
 
-        $matchService->checkRolls($match->id);
+        $matchService->checkRolls($matchParticipant->vashMatch->id);
 
         return back(status: 303);
     }
