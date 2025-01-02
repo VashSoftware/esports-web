@@ -167,7 +167,7 @@ class MatchService
     {
         $match = VashMatch::find($matchId);
 
-        $this->osuService->sendIRCMessage($match->lobby_name, '!mp close');
+        $this->osuService->sendIRCMessage($match->osu_lobby, '!mp close');
     }
 
     public function invitePlayer(string $osuLobbyName, string $username)
@@ -176,4 +176,16 @@ class MatchService
     }
 
     public function invitePlayers() {}
+
+    public function resetOsuLobby(int $matchId) {
+        $match = VashMatch::find($matchId);
+
+        $this->osuService->sendIRCMessage($match->osu_lobby, '!mp close');
+
+        $match->update([
+            'osu_lobby'=> null
+        ]);
+
+        $this->osuService->makeOsuLobby($match->id);
+    }
 }
