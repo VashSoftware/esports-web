@@ -20,6 +20,8 @@ export interface MatchParticipant {
     team_id: number
     team: Team
     match_participant_players: MatchParticipantPlayer[]
+    roll_id: number | null
+    roll: Roll | null
 }
 
 export interface MatchParticipantPlayer {
@@ -93,9 +95,17 @@ export interface Match {
     round_id: number | null,
     round: Round,
     finished_at: string | null,
+    is_rolling: boolean
     current_picker: number | null,
     current_banner: number | null,
     action_limit: string | null
+}
+
+export interface Roll {
+    id: number
+    match_participant_id: number
+    match_participant: MatchParticipant
+    roll: number
 }
 
 export interface Score {
@@ -107,7 +117,6 @@ export interface Score {
 
 export interface User {
     id: number,
-    profile_id: number,
     profile: Profile
 }
 

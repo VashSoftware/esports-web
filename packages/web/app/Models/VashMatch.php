@@ -11,7 +11,7 @@ class VashMatch extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['finished_at', 'osu_lobby', 'map_pool_id', 'bans_per_team', 'current_banner', 'current_picker', 'action_limit'];
+    protected $fillable = ['finished_at', 'is_rolling', 'osu_lobby', 'map_pool_id', 'bans_per_team', 'current_banner', 'current_picker', 'action_limit'];
 
     public function mapPool(): BelongsTo
     {

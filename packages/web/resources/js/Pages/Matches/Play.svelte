@@ -6,18 +6,31 @@
 
     let { match, user }: { match: Match; user: User } = $props()
 
+    let matchState = $state(match)
+
     let shareModalShown = $state(false)
     let forfeitModalShown = $state(false)
-    let matchEndedModalShown = $state(match.finished_at ? true : false)
+    let matchEndedModalShown = $state(matchState.finished_at ? true : false)
+    let rollModalShown = $state(matchState.is_rolling)
     let mapPoolStatus = $state(getMapPoolStatus())
 
     onMount(() => {
-        const channel = window.Echo.channel('match.' + match.id)
+        const channel = window.Echo.channel('match.' + matchState.id)
         channel.listen('MatchUpdated', (e) => {})
         channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
         channel.listen('MatchEnded', (e) => {
-            match.finished_at = e.match.finished_at
+            matchState.finished_at = e.match.finished_at
             matchEndedModalShown = true
+        })
+
+        channel.listen('ParticipantRolled', (e) => {
+            const matchParticipant = matchState.match_participants.find((mp) => mp.id == e.matchParticipant.id)
+
+            if (!matchParticipant) {
+                return console.log('No match participant found with updated roll.')
+            }
+
+            matchState.match_participants.find((mp) => mp.id == e.matchParticipant.id).roll = e.matchParticipant.roll
         })
 
         const matchTimerInterval = setInterval(() => {
@@ -30,15 +43,27 @@
     })
 
     function userCanBan() {
-        return user.profile.team_members?.find((tm) =>
-            tm.team?.match_participants?.find((mp) => mp.id == match.current_banner),
+        return user.profile.team_members.find((tm) =>
+            tm.team.match_participants.find((mp) => mp.id == matchState.current_banner),
         )
     }
 
     function userCanPick() {
-        return user.profile.team_members?.find((tm) =>
-            tm.team?.match_participants?.find((mp) => mp.id == match.current_picker),
+        return user.profile.team_members.find((tm) =>
+            tm.team.match_participants.find((mp) => mp.id == matchState.current_picker),
         )
+    }
+
+    function getUserMatchParticipantPlayer() {
+        for (const participant of matchState.match_participants) {
+            const participantPlayer = participant.match_participant_players.find(
+                (mpp) => mpp.team_member.profile_id === user.profile.id,
+            )
+            if (participantPlayer) {
+                return participantPlayer
+            }
+        }
+        return null
     }
 
     function formatTime(milliseconds: number) {
@@ -51,18 +76,18 @@
     }
 
     function getMapPoolStatus() {
-        if (match.current_banner && match.action_limit) {
+        if (matchState.current_banner && matchState.action_limit) {
             if (userCanBan()) {
-                const actionLimitDate = new Date(match.action_limit)
+                const actionLimitDate = new Date(matchState.action_limit)
                 const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
                 return `You have ${formatTime(timeLeft)} to ban a map.`
             }
 
-            return `Waiting for ${match.current_banner} to a ban a map.`
+            return `Waiting for ${matchState.current_banner} to a ban a map.`
         }
 
-        if (userCanPick() && match.action_limit) {
-            const actionLimitDate = new Date(match.action_limit)
+        if (userCanPick() && matchState.action_limit) {
+            const actionLimitDate = new Date(matchState.action_limit)
             const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
             return `You have ${formatTime(timeLeft)} to pick a map.`
         }
@@ -75,7 +100,8 @@
     }
 
     function getMatchParticipantScores(match_map_id: number, match_participant_id: number) {
-        return match.match_maps?.find((mm) => mm.id == match_map_id)
+        return matchState.match_maps
+            ?.find((mm) => mm.id == match_map_id)
             .scores.filter((s) => s.match_participant_player?.match_participant_id == match_participant_id)
     }
 </script>
@@ -84,15 +110,15 @@
     <div class="mx-8 my-8 flex items-center justify-between rounded-xl bg-secondary p-4">
         <div>
             <Link href="/events/1">
-                <h1 class="text-2xl font-bold">{match.event?.name}</h1>
-                <h2 class="text-xl font-bold">{match.round?.name}</h2>
+                <h1 class="text-2xl font-bold">{matchState.event?.name}</h1>
+                <h2 class="text-xl font-bold">{matchState.round?.name}</h2>
             </Link>
         </div>
         <div class="flex justify-center">
-            {#each match.match_participants! as participant, i}
+            {#each matchState.match_participants! as participant, i}
                 <h1 class="mx-1 text-4xl font-black">
                     0
-                    {#if i != match.match_participants!.length - 1}-{/if}
+                    {#if i != matchState.match_participants!.length - 1}-{/if}
                 </h1>
             {/each}
         </div>
@@ -116,7 +142,7 @@
     </div>
 
     <div class="m-8 flex justify-evenly text-center">
-        {#each match.match_participants! as participant}
+        {#each matchState.match_participants! as participant}
             <div class="flex flex-col gap-2">
                 <div class="rounded-xl bg-secondary p-4">
                     <h2 class="text-xl font-bold">{participant.team.name}</h2>
@@ -138,10 +164,10 @@
         <div>
             <h2 class="my-4 text-center text-xl font-bold">Match Maps</h2>
 
-            {#each match.match_maps! as map}
+            {#each matchState.match_maps! as map}
                 <div class="flex justify-center">
                     <div class="flex gap-2">
-                        {#each getMatchParticipantScores(map.id, match.match_participants[0].id) as score}
+                        {#each getMatchParticipantScores(map.id, matchState.match_participants[0].id) as score}
                             <div class="rounded bg-secondary p-2">
                                 <img src="" class="rounded-full" alt="" />
                                 <h1 class="text-l font-bold">{score.score}</h1>
@@ -155,7 +181,7 @@
                         </h1>
                     </div>
                     <div class="flex gap-2">
-                        {#each getMatchParticipantScores(map.id, match.match_participants[1].id) as score}
+                        {#each getMatchParticipantScores(map.id, matchState.match_participants[1].id) as score}
                             <div class="rounded bg-secondary p-2">
                                 <img src="" class="rounded-full" alt="" />
                                 <h1 class="text-l font-bold">{score.score}</h1>
@@ -172,7 +198,7 @@
                 <p>{mapPoolStatus}</p>
             </div>
 
-            {#each Object.entries(match.map_pool.map_pool_maps.reduce((acc: Record<string, MapPoolMap[]>, map) => {
+            {#each Object.entries(matchState.map_pool.map_pool_maps.reduce((acc: Record<string, MapPoolMap[]>, map) => {
                     const modsKey = map.map_pool_map_mods
                             .map((mod) => mod.mod.code)
                             .sort()
@@ -195,7 +221,7 @@
                                 class="bg-secondary p-2"
                                 onclick={() => {
                                     router.post('/match_bans', {
-                                        match_id: match.id,
+                                        match_id: matchState.id,
                                         map_pool_map_id: map.id,
                                     })
                                 }}
@@ -212,7 +238,7 @@
                                         onsubmit={(e) => {
                                             e.preventDefault()
                                             router.post('/match_maps', {
-                                                vash_match_id: match.id,
+                                                vash_match_id: matchState.id,
                                                 map_pool_map_id: map.id,
                                             })
                                         }}
@@ -238,7 +264,7 @@
             <input
                 type="text"
                 class="my-8 w-full text-center"
-                value="https://esports.vash.software/matches/{match.id}"
+                value="https://esports.vash.software/matches/{matchState.id}"
                 readonly
             />
         </div>
@@ -272,6 +298,43 @@
                     <button class="rounded bg-green-500 px-4 py-2">Go Home</button>
                 </Link>
             </div>
+        </div>
+    </div>
+{/if}
+
+{#if rollModalShown}
+    <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
+    <div class="fixed inset-0 z-20 flex items-center justify-center">
+        <div class="relative w-11/12 max-w-md rounded-xl bg-white p-8 text-center shadow-xl">
+            <h3 class="mb-6 text-2xl font-bold">Roll</h3>
+
+            <div class="mb-6 flex h-48 justify-around">
+                {#each matchState.match_participants as participant}
+                    <div class="flex flex-col items-center">
+                        <div class="relative h-full w-8 rounded bg-gray-200">
+                            <div
+                                class="absolute bottom-0 left-0 right-0 rounded bg-blue-500"
+                                style="height: {participant.roll?.roll}%;"
+                            ></div>
+                        </div>
+                        <div class="mt-2">
+                            <div>{participant.team.name}</div>
+                            <div class="text-sm">{participant.roll?.roll || 'Waiting for roll...'}</div>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+
+            <button
+                class="mt-4 rounded bg-green-500 px-6 py-2 text-white transition hover:bg-green-600"
+                onclick={() => {
+                    router.post('/rolls', {
+                        match_participant_id: getUserMatchParticipantPlayer()?.match_participant_id,
+                    })
+                }}
+            >
+                Roll
+            </button>
         </div>
     </div>
 {/if}

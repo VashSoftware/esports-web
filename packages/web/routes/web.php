@@ -7,15 +7,16 @@ use App\Http\Controllers\GameModeController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\MapPoolController;
 use App\Http\Controllers\MapPoolMapController;
+use App\Http\Controllers\MapPoolMapModController;
 use App\Http\Controllers\MatchBanController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\MatchMapController;
-use App\Http\Controllers\MapPoolMapModController;
 use App\Http\Controllers\MatchQueueController;
 use App\Http\Controllers\ModController;
 use App\Http\Controllers\OrganisationController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RollController;
 use App\Http\Controllers\RoundController;
 use App\Http\Controllers\TeamController;
 use App\Models\Mod;
@@ -97,6 +98,8 @@ Route::middleware('auth')->group(function () {
     Route::get('premium', function () {
         return Inertia::render('Premium');
     });
+
+    Route::resource('rolls', RollController::class);
 });
 
 require __DIR__.'/auth.php';

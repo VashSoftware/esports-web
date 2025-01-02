@@ -198,6 +198,7 @@ return new class extends Migration
             $table->integer('bans_per_team');
             $table->integer('current_banner')->nullable();
             $table->integer('current_picker')->nullable();
+            $table->boolean('is_rolling');
             $table->dateTimeTz('action_limit')->nullable();
             $table->dateTimeTz('finished_at')->nullable();
             $table->timestamps();
@@ -242,13 +243,19 @@ return new class extends Migration
 
         Schema::create('osu_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('message');
+            $table->text('message');
             $table->string('channel');
             $table->string('username');
             $table->foreignIdFor(Profile::class)->nullable();
             $table->timestamps();
         });
 
+        Schema::create('rolls', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(MatchParticipant::class)->constrained();
+            $table->integer('roll');
+            $table->timestamps();
+        });
     }
 
     /**

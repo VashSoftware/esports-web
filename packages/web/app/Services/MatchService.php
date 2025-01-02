@@ -25,6 +25,7 @@ class MatchService
             $match = VashMatch::create([
                 'map_pool_id' => $mapPoolId,
                 'bans_per_team' => $bans_per_team,
+                'is_rolling' => true,
             ]);
 
             $matchParticipants = $match->matchParticipants()->createMany([
@@ -52,6 +53,45 @@ class MatchService
         });
 
         return $match;
+    }
+
+    public function checkRolls(int $matchId)
+    {
+        $match = VashMatch::find($matchId);
+
+        // Check if all participants have rolled
+        foreach ($match->matchParticipants as $participant) {
+            if (! $participant->roll) {
+                return;
+            }
+        }
+
+        // Determine the participant with the highest roll
+        $participants = $match->matchParticipants;
+        $highestRoll = 0;
+        $highestRollers = []; // Array to handle ties
+
+        foreach ($participants as $participant) {
+            if ($participant->roll > $highestRoll) {
+                $highestRoll = $participant->roll;
+                $highestRollers = [$participant];
+            } elseif ($participant->roll === $highestRoll) {
+                $highestRollers[] = $participant;
+            }
+        }
+
+        // Handle ties
+        if (count($highestRollers) === 1) {
+            $currentPicker = $highestRollers[0]->id;
+        } else {
+            $currentPicker = $highestRollers[array_rand($highestRollers)]->id;
+        }
+
+        // Update match
+        $match->update([
+            'is_rolling' => false,
+            'current_picker' => $currentPicker,
+        ]);
     }
 
     public function setBanner(int $matchId, int $participantId)
