@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\MapPicked;
 use App\Models\MatchMap;
 use App\Models\Score;
 use App\Models\VashMatch;
@@ -52,6 +53,10 @@ class MatchService
             }
         });
 
+//        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Welcome to Vash Esports!');
+//        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Please pick a map on the website to get started.');
+//        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Current rating: 0');
+
         return $match;
     }
 
@@ -94,6 +99,12 @@ class MatchService
         ]);
     }
 
+    public function setCurrentMap(VashMatch $match) {
+        $lastMatchMap = $match->matchMaps()->latest()->first();
+
+        $this->pickMap($match->id, $lastMatchMap->id);
+    }
+
     public function setBanner(int $matchId, int $participantId)
     {
         VashMatch::find($matchId)->update([
@@ -117,7 +128,6 @@ class MatchService
                 'vash_match_id' => $matchId,
                 'map_pool_map_id' => $mapPoolMapId,
             ]);
-            Log::debug($matchMap->id);
 
             $match = VashMatch::with('matchParticipants.matchParticipantPlayers')->findOrFail($matchId);
 
@@ -151,6 +161,9 @@ class MatchService
                 'current_picker' => $nextPicker->id,
             ]);
 
+            $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, '!mp map '.$matchMap->mapPoolMap->map->osu_id.' '.$matchMap->mapPoolMap->map->playmode);
+
+            MapPicked::dispatch($matchMap);
         });
     }
 
