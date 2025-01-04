@@ -26,8 +26,8 @@ class ListMatches extends Command
      */
     public function handle()
     {
-        $matches = VashMatch::whereNull('finished_at')->get(['id', 'map_pool_id', 'created_at'])->toArray();
+        $matches = VashMatch::whereNull('finished_at')->get(['id', 'map_pool_id', 'osu_lobby', 'created_at'])->toArray();
 
-        $this->table(['ID', 'Map Pool ID', 'Created At'], $matches);
+        $this->table(['ID', 'Map Pool ID', 'osu! lobby ID', 'Created At'], $matches);
     }
 }
