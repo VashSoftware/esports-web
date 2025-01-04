@@ -1,7 +1,21 @@
 <script>
     import { Link, page, router } from '@inertiajs/svelte'
+    import { onMount } from 'svelte'
 
     let { children } = $props()
+
+    let current_matches = $state($page.props.current_matches)
+
+    onMount(() => {
+        const channel = window.Echo.channel('profile.' + $page.props.user.profile.id)
+        console.log('Connected to channel:', channel)
+
+        channel.listen('NewMatch', (e) => {
+            current_matches = [...current_matches, e.match]
+
+            console.log(e)
+        })
+    })
 </script>
 
 <div class="flex h-screen">
@@ -170,8 +184,8 @@
             </div>
         {/if}
 
-        {#if $page.component != 'Matches/Play' && $page.props.current_matches.length > 0}
-            <Link href="/matches/{$page.props.current_matches[0].id}/play">
+        {#if $page.component != 'Matches/Play' && current_matches.length > 0}
+            <Link href="/matches/{current_matches[0].id}/play">
                 <div
                     class="flex items-center justify-between bg-yellow-500 p-2 text-center text-xl font-bold text-black"
                 >

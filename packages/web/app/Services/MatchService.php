@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Events\MapPicked;
+use App\Events\NewMatch;
+use App\Jobs\GetOsuSettings;
 use App\Models\MatchMap;
 use App\Models\Score;
 use App\Models\VashMatch;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class MatchService
 {
@@ -51,11 +52,15 @@ class MatchService
                     ]);
                 }
             }
+
+            NewMatch::dispatch($match);
+
+            GetOsuSettings::dispatch($match->id);
         });
 
-//        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Welcome to Vash Esports!');
-//        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Please pick a map on the website to get started.');
-//        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Current rating: 0');
+        //        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Welcome to Vash Esports!');
+        //        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Please pick a map on the website to get started.');
+        //        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Current rating: 0');
 
         return $match;
     }
@@ -66,7 +71,7 @@ class MatchService
 
         // Check if all participants have rolled
         foreach ($match->matchParticipants as $participant) {
-            if (!$participant->roll) {
+            if (! $participant->roll) {
                 return;
             }
         }
@@ -99,8 +104,13 @@ class MatchService
         ]);
     }
 
-    public function setCurrentMap(VashMatch $match) {
+    public function setCurrentMap(VashMatch $match)
+    {
         $lastMatchMap = $match->matchMaps()->latest()->first();
+
+        if (! $lastMatchMap) {
+            return;
+        }
 
         $this->pickMap($match->id, $lastMatchMap->id);
     }
@@ -190,13 +200,14 @@ class MatchService
 
     public function invitePlayers() {}
 
-    public function resetOsuLobby(int $matchId) {
+    public function resetOsuLobby(int $matchId)
+    {
         $match = VashMatch::find($matchId);
 
-        $this->osuService->sendIRCMessage($match->osu_lobby, '!mp close');
+        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, '!mp close');
 
         $match->update([
-            'osu_lobby'=> null
+            'osu_lobby' => null,
         ]);
 
         $this->osuService->makeOsuLobby($match->id);
