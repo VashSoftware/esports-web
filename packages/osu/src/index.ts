@@ -9,20 +9,24 @@ function setupIrc() {
     password: process.env.IRC_PASSWORD,
   });
 
-  client.addListener("error", function(message) {
+  client.addListener("error", function (message) {
     console.error("error: ", message);
   });
 
-  client.addListener("registered", function(message) {
+  client.addListener("registered", function (message) {
     console.log("Registered", message);
   });
 
-  client.addListener("message", async function(from, to, message) {
-    await axios.post("http://laravel.test/api/osu_messages", {
-      username: from,
-      channel: to,
-      message,
-    });
+  client.addListener("message", async function (from, to, message) {
+    try {
+      await axios.post("http://laravel.test/api/osu_messages", {
+        username: from,
+        channel: to,
+        message,
+      });
+    } catch (error) {
+      console.error("Failed to send message to Laravel API:", error.response ? error.response.data : error.message);
+    }
   });
 
   return client;
