@@ -142,18 +142,20 @@
 
         <!-- Profile Section -->
         <div class="bg-secondary p-6">
-            <div class="flex items-center">
-                <img
-                    src={'/storage/' + $page.props.user?.profile.profile_picture}
-                    alt="Profile"
-                    class="h-10 w-10 rounded-full object-cover"
-                />
-                <div class="ml-3">
-                    <Link href="/users/{$page.props.user?.id}">
-                        <p class="text-sm font-medium">{$page.props.user?.profile.display_name}</p>
-                        <p class="text-xs text-gray-400">@{$page.props.user?.profile.username}</p>
-                    </Link>
-                </div>
+            <div class="flex items-center justify-between">
+                <Link href="/users/{$page.props.user?.id}">
+                    <div class="flex">
+                        <img
+                            src={'/storage/' + $page.props.user?.profile.profile_picture}
+                            alt="Profile"
+                            class="h-10 w-10 rounded-full object-cover"
+                        />
+                        <div class="ml-3">
+                            <p class="text-sm font-medium">{$page.props.user?.profile.display_name}</p>
+                            <p class="text-xs text-gray-400">@{$page.props.user?.profile.username}</p>
+                        </div>
+                    </div>
+                </Link>
                 <Link href="/settings">
                     <button
                         class="ml-auto rounded bg-primary p-2 hover:bg-opacity-75 focus:outline-none"
