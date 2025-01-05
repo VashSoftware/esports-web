@@ -70,8 +70,15 @@
             match = {
                 ...match,
                 match_maps: [...match.match_maps, e.matchMap],
-                current_picker: e.matchMap.vash_match.current_picker,
-                action_limit: e.matchMap.vash_match.action_limit,
+            }
+        })
+
+        channel.listen('NewPicker', (e: { participant: MatchParticipant }) => {
+            console.log(e)
+            match = {
+                ...match,
+                current_picker: e.participant.id,
+                action_limit: e.participant.vash_match.action_limit,
             }
         })
 

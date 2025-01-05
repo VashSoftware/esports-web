@@ -22,8 +22,6 @@ class MapPicked implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param \App\Models\MatchMap $matchMap
      */
     public function __construct(MatchMap $matchMap)
     {
@@ -33,8 +31,6 @@ class MapPicked implements ShouldBroadcast
 
     /**
      * Get the data to broadcast.
-     *
-     * @return array
      */
     public function broadcastWith(): array
     {
@@ -51,7 +47,7 @@ class MapPicked implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('match.' . $this->matchMap->vashMatch->id),
+            new Channel('match.'.$this->matchMap->vashMatch->id),
         ];
     }
 }

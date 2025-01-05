@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Events\MapPicked;
 use App\Events\MatchParticipantPlayerUpdated;
 use App\Events\NewMatch;
+use App\Events\NewPicker;
 use App\Models\MatchMap;
 use App\Models\MatchParticipantPlayer;
 use App\Models\OsuLobbyState;
@@ -95,16 +96,19 @@ class MatchService
 
         // Handle ties
         if (count($highestRollers) === 1) {
-            $currentPicker = $highestRollers[0]->id;
+            $currentPicker = $highestRollers[0];
         } else {
-            $currentPicker = $highestRollers[array_rand($highestRollers)]->id;
+            $currentPicker = $highestRollers[array_rand($highestRollers)];
         }
 
         // Update match
         $match->update([
             'is_rolling' => false,
-            'current_picker' => $currentPicker,
+            'current_picker' => $currentPicker->id,
+            'action_limit' => now()->addMinute(),
         ]);
+
+        NewPicker::dispatch($currentPicker);
     }
 
     public function setCurrentMap(VashMatch $match)
@@ -180,9 +184,36 @@ class MatchService
                 '#mp_'.$match->osu_lobby,
                 '!mp map '.$matchMap->mapPoolMap->map->osu_id.' '.$matchMap->mapPoolMap->map->playmode
             );
+
+            $modCodes = $matchMap->mapPoolMap->mapPoolMapMods->map(function ($mapPoolMapMod) {
+                return $mapPoolMapMod->mod->code;
+            })->toArray();
+            $modCodes[] = 'NF';
+            $modsString = implode(' ', $modCodes);
+            $this->osuService->sendIRCMessage(
+                '#mp_'.$match->osu_lobby,
+                '!mp mods '.$modsString
+            );
+
+            broadcast(new MapPicked($matchMap))->toOthers();
+            NewPicker::dispatch($nextPicker);
         });
 
-        broadcast(new MapPicked($matchMap))->toOthers();
+    }
+
+    public function startMatchMap(MatchMap $matchMap)
+    {
+        $this->osuService->sendIRCMessage('#mp_'.$matchMap->vashMatch->osu_lobby, '!mp start 5');
+
+        $matchMap->update([
+            'started_at' => now(),
+        ]);
+
+        foreach ($matchMap->vashMatch->matchParticipants as $participant) {
+            foreach ($participant->matchParticipantPlayers as $player) {
+
+            }
+        }
     }
 
     public function addParticipantPlayer() {}
@@ -198,7 +229,7 @@ class MatchService
     {
         $match = VashMatch::find($matchId);
 
-        $this->osuService->sendIRCMessage($match->osu_lobby, '!mp close');
+        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, '!mp close');
     }
 
     public function inviteMatchPlayer(MatchParticipantPlayer $matchParticipantPlayer)
@@ -297,6 +328,17 @@ class MatchService
             }
 
             MatchParticipantPlayerUpdated::dispatch($player);
+        }
+
+        $allPlayers = $vashMatch->matchParticipants
+        ->flatMap->matchParticipantPlayers;
+
+        $allReady = $allPlayers->every(function ($player) {
+            return $player->in_lobby && $player->ready;
+        });
+
+        if ($allReady) {
+            $this->startMatchMap($vashMatch->matchMaps()->latest()->first());
         }
 
         $osuLobbyState->update([
