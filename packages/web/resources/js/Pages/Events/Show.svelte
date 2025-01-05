@@ -2,14 +2,18 @@
     import Layout from '../../Shared/Layout.svelte'
     import { Link } from '@inertiajs/svelte'
 
-    export let event
-    export let matches
+    let { event } = $props()
 </script>
 
 <Layout>
-    {event}
+    <h1>{event.title}</h1>
+
     <Link href="/events/{event.id}/manage">
         <button>Manage</button>
+    </Link>
+
+    <Link href="/events/{event.id}/register">
+        <button>Register</button>
     </Link>
 
     <h2>Matches</h2>
@@ -21,7 +25,7 @@
             </tr>
         </thead>
         <tbody>
-            {#each matches as match}
+            {#each event.matches as match}
                 <tr>
                     <td>{match.time}</td>
                     <td>{match.match_participants[0]} - {match.match_participants[1]}</td>

@@ -12,7 +12,12 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'has_qualifier_stage', 'has_group_stage'];
+
+    public function organisation(): BelongsTo
+    {
+        return $this->belongsTo(Organisation::class);
+    }
 
     public function rounds(): HasMany
     {
@@ -27,5 +32,10 @@ class Event extends Model
     public function teams(): BelongsToMany
     {
         return $this->belongsToMany(Team::class);
+    }
+
+    public function gameModes(): BelongsToMany
+    {
+        return $this->belongsToMany(GameMode::class);
     }
 }

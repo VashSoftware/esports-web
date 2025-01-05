@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\File;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,20 +27,45 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function picture(Request $request)
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validate([
+            'profile_picture' => ['nullable', File::image()],
+        ]);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($request->file('profile_picture')) {
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $request->user()->profile()->update([
+                'profile_picture' => $path,
+            ]);
         }
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return back(status: 303);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(Request $request)
+    {
+        $validated = $request->validate([
+            'profile_picture' => ['nullable', File::image()],
+        ]);
+
+        Log::debug($request);
+
+        if ($request->file('profile_picture')) {
+            $path = $request->file('profile_picture')->store('profile_pictures');
+            $request->user()->profile()->update([
+                'profile_picture' => $path,
+            ]);
+        }
+
+        $request->user()->save();
+
+        return back(status: 303);
     }
 
     /**
@@ -64,6 +91,6 @@ class ProfileController extends Controller
 
     public function show(string $id)
     {
-        return Inertia::render('Profile', ['profile' => User::find($id)]);
+        return Inertia::render('Profile', ['profile' => Profile::with('teamMembers.team')->with('organisationMembers.organisation')->find($id)]);
     }
 }

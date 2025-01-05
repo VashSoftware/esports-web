@@ -2,8 +2,14 @@
     import Layout from '@/Shared/Layout.svelte'
     import { useForm } from '@inertiajs/svelte'
 
+    let { organisation_members, games } = $props()
+
     let form = useForm({
         title: '',
+        organisation_id: null,
+        event_group_id: null,
+        game_id: null,
+        game_mode_id: null,
     })
 
     function submitForm() {
@@ -15,37 +21,37 @@
     <form on:submit|preventDefault={submitForm} class="flex flex-col text-center">
         <div class="my-3 flex justify-around">
             <label for="organization">Organization</label>
-            <select>
-                {#each [] as organization}
-                    <option value={organization.id}>{organization.name}</option>
+            <select bind:value={$form.organisation_id} class="text-black">
+                {#each organisation_members as organisation_member}
+                    <option value={organisation_member.organisation.id}>{organisation_member.organisation.name}</option>
                 {/each}
             </select>
         </div>
 
         <div class="my-3 flex justify-around">
             <label for="event_group">Event Group</label>
-            <select>
-                {#each [] as event_group}
+            <select bind:value={$form.event_group_id} class="text-black">
+                {#each organisation_members.find((om) => om.organisation.id == $form.organisation_id)?.organisation.event_groups as event_group}
                     <option value={event_group.id}>{event_group.name}</option>
                 {/each}
             </select>
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Title</label>
-            <input type="text" bind:value={$form.title} />
+            <input class="text-black" type="text" bind:value={$form.title} />
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Game</label>
-            <select>
-                {#each [] as game}
+            <select class="text-black" bind:value={$form.game_id}>
+                {#each games as game}
                     <option value={game.id}>{game.name}</option>
                 {/each}
             </select>
         </div>
         <div class="my-3 flex justify-around">
             <label for="event_group">Game Mode</label>
-            <select>
-                {#each [] as game_mode}
+            <select class="text-black" bind:value={$form.game_mode_id}>
+                {#each games.find((game) => game.id == $form.game_id)?.game_modes as game_mode}
                     <option value={game_mode.id}>{game_mode.name}</option>
                 {/each}
             </select>

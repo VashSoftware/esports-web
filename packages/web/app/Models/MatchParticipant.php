@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class MatchParticipant extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['team_id', 'index'];
 
     public function vashMatch(): BelongsTo
     {
@@ -24,5 +27,10 @@ class MatchParticipant extends Model
     public function matchParticipantPlayers(): HasMany
     {
         return $this->hasMany(MatchParticipantPlayer::class);
+    }
+
+    public function roll(): HasOne
+    {
+        return $this->hasOne(Roll::class);
     }
 }

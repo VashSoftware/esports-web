@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Round;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -36,6 +35,8 @@ class RoundController extends Controller
         $event = Event::find($validated['event_id']);
 
         $event->rounds()->create();
+
+        return back();
     }
 
     /**

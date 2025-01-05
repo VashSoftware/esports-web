@@ -12,6 +12,8 @@ class Team extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'is_personal_team'];
+
     public function matchParticipants(): HasMany
     {
         return $this->hasMany(MatchParticipant::class);

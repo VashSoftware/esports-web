@@ -11,6 +11,8 @@ class VashMatch extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['finished_at', 'is_rolling', 'osu_lobby', 'map_pool_id', 'bans_per_team', 'current_banner', 'current_picker', 'action_limit'];
+
     public function mapPool(): BelongsTo
     {
         return $this->belongsTo(MapPool::class);
@@ -24,5 +26,10 @@ class VashMatch extends Model
     public function matchParticipants(): HasMany
     {
         return $this->hasMany(MatchParticipant::class);
+    }
+
+    public function osuLobbyStates(): HasMany
+    {
+        return $this->hasMany(OsuLobbyState::class);
     }
 }

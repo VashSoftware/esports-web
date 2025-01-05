@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Team;
+use App\Models\TeamMember;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TeamController extends Controller
 {
@@ -19,7 +22,7 @@ class TeamController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Teams/Create');
     }
 
     /**
@@ -27,7 +30,19 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
+
+        $team = Team::create($validated);
+
+        TeamMember::create([
+            'team_id' => $team->id,
+            'profile_id' => $request->user()->profile->id,
+        ]);
+
+        return redirect('/teams/'.$team->id);
+
     }
 
     /**
@@ -35,7 +50,7 @@ class TeamController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Inertia::render('Teams/Show', ['team' => Team::with('teamMembers.profile')->find($id)]);
     }
 
     /**
@@ -43,7 +58,7 @@ class TeamController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return Inertia::render('Teams/Edit', ['team' => Team::with('teamMembers.profile')->find($id)]);       //
     }
 
     /**

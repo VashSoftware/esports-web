@@ -8,7 +8,8 @@
     import { route } from 'momentum-trail'
 
     const form = useForm({
-        name: '',
+        username: '',
+        display_name: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -30,19 +31,34 @@
 <GuestLayout>
     <form onsubmit={submit}>
         <div>
-            <InputLabel for="name" value="Name" />
+            <InputLabel for="userName" value="Username" />
 
             <TextInput
-                id="name"
+                id="userName"
                 type="text"
                 class="mt-1 block w-full"
-                bind:value={$form.name}
+                bind:value={$form.username}
                 required
                 autofocus
-                autocomplete="name"
+                autocomplete="userName"
             />
 
-            <InputError class="mt-2" message={$form.errors.name} />
+            <InputError class="mt-2" message={$form.errors.username} />
+        </div>
+
+        <div class="mt-4">
+            <InputLabel for="displayName" value="Display Name" />
+
+            <TextInput
+                id="displayName"
+                type="text"
+                class="mt-1 block w-full"
+                bind:value={$form.display_name}
+                required
+                autocomplete="displayName"
+            />
+
+            <InputError class="mt-2" message={$form.errors.display_name} />
         </div>
 
         <div class="mt-4">

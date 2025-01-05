@@ -11,17 +11,19 @@ class MatchMap extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['map_pool_map_id', 'vash_match_id'];
+
     public function scores(): HasMany
     {
         return $this->hasMany(Score::class);
     }
 
-    public function vashMatches(): BelongsTo
+    public function vashMatch(): BelongsTo
     {
         return $this->belongsTo(VashMatch::class);
     }
 
-    public function mapPoolMaps(): BelongsTo
+    public function mapPoolMap(): BelongsTo
     {
         return $this->belongsTo(MapPoolMap::class);
     }

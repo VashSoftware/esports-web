@@ -1,325 +1,53 @@
-import { BanchoClient } from "bancho.js";
+import { Client } from "irc";
 import express from "express";
-import type { Request, Response } from "express";
-import { createMatch } from "./endpoints/createMatch.ts";
-import { sendMessages } from "./endpoints/sendMessages.ts";
-import { invitePlayer } from "./endpoints/invitePlayer.ts";
-import { io } from "socket.io-client";
+import axios from "axios";
 
-console.log("Starting osu! server.");
+function setupIrc() {
+  const client = new Client("irc.ppy.sh", process.env.IRC_USERNAME!, {
+    userName: process.env.IRC_USERNAME,
+    password: process.env.IRC_PASSWORD,
+  });
 
-const banchoClient = new BanchoClient({
-  username: process.env.OSU_USERNAME!,
-  password: process.env.OSU_IRC_KEY!,
-  apiKey: process.env.OSU_API_KEY!,
-});
-await banchoClient.connect();
+  client.addListener("error", function(message) {
+    console.error("error: ", message);
+  });
 
-console.log("Connected to Bancho");
+  client.addListener("registered", function(message) {
+    console.log("Registered", message);
+  });
 
-const socket = io("http://socket.io:3001", {
-  transports: ["websocket"],
-});
-
-socket.on("connect", () => {
-  console.log("Connected to Realtime Server - ID:", socket.id);
-});
-
-socket.on("connect_error", (error) => {
-  console.error("Socket.IO connection error:", error);
-});
-
-socket.on("disconnect", (reason) => {
-  console.warn("Socket.IO disconnected:", reason);
-  // Attempt to reconnect
-  socket.connect();
-});
-
-socket.on("reconnect_attempt", (attemptNumber) => {
-  console.log("Attempting to reconnect:", attemptNumber);
-});
-
-socket.on("reconnect", (attemptNumber) => {
-  console.log("Socket.IO reconnected after", attemptNumber, "attempts");
-});
-
-socket.on("reconnect_error", (error) => {
-  console.error("Socket.IO reconnection error:", error);
-});
-
-socket.on("reconnect_failed", () => {
-  console.error("Socket.IO reconnection failed");
-});
-
-const ongoingMatches = await supabase
-  .from("matches")
-  .select("*")
-  .eq("ongoing", true);
-
-if (ongoingMatches.error) {
-  console.error("Error fetching ongoing matches:", ongoingMatches.error);
-} else {
-  for (const match of ongoingMatches.data!) {
-    createMatch(match.id, banchoClient, supabase, socket);
-  }
-}
-
-async function canMakeMatch(supabase: SupabaseClient) {
-  const matches = await supabase
-    .from("matches")
-    .select("*")
-    .eq("ongoing", true);
-
-  if (matches.data!.length >= 4) {
-    return false;
-  }
-
-  return true;
-}
-
-async function pollMatches() {
-  console.log("Polling for matches...");
-  const { data, error } = await supabase
-    .from("match_queue")
-    .select("*")
-    .eq("position", 1)
-    .maybeSingle();
-
-  if (!data) {
-    return;
-  }
-
-  if (!canMakeMatch(supabase)) {
-    return;
-  }
-
-  socket.emit("match-queue-update", {});
-
-  createMatch(data.match_id, banchoClient, supabase, socket);
-}
-
-setInterval(pollMatches, 10000);
-
-async function pollQuickQueue() {
-  console.log("Polling for solo queue...");
-  const quickQueue = await supabase
-    .from("quick_queue")
-    .select(
-      "*, teams(*, team_members(*, user_profiles(*, user_ratings(*, games(name)))))"
-    )
-    .order("position", { ascending: true })
-    .not("position", "is", null);
-
-  if (!quickQueue.data) {
-    return;
-  }
-
-  if (quickQueue.data.length < 2) {
-    return;
-  }
-
-  socket.emit("quick-queue-update", {});
-
-  await supabase
-    .from("quick_queue")
-    .update({ position: null })
-    .in(
-      "position",
-      quickQueue.data.map((qq) => qq.position)
-    );
-
-  type Team = {
-    id: number;
-    average_star_rating: number;
-    name: string;
-    team_members: {
-      id: number;
-      user_profiles: {
-        id: number;
-        user_platforms: {
-          platforms: {
-            id: number;
-            name: string;
-          };
-          value: string;
-        }[];
-        user_ratings: {
-          id: number;
-          games: {
-            id: number;
-            name: string;
-          };
-          rating: number;
-        }[];
-      };
-    }[];
-  };
-
-  const averageTeamRatingDifferences = [];
-  for (const team1 of quickQueue.data as { position: number; teams: Team }[]) {
-    for (const team2 of quickQueue.data as {
-      position: number;
-      teams: Team;
-    }[]) {
-      if (team1.position === team2.position) {
-        continue;
-      }
-
-      const team1Ratings =
-        team1.teams.team_members.reduce((acc, tm) => {
-          const osuRating = tm.user_profiles.user_ratings.find(
-            (ur) => ur.games.name === "osu!"
-          );
-          return acc + (osuRating ? osuRating.rating : 0);
-        }, 0) / team1.teams.team_members.length;
-
-      const team2Ratings =
-        team2.teams.team_members.reduce((acc, tm) => {
-          const osuRating = tm.user_profiles.user_ratings.find(
-            (ur) => ur.games.name === "osu!"
-          );
-          return acc + (osuRating ? osuRating.rating : 0);
-        }, 0) / team2.teams.team_members.length;
-
-      averageTeamRatingDifferences.push({
-        team1,
-        team2,
-        average_rating: Math.abs((team1Ratings + team2Ratings) / 2),
+  client.addListener("message", async function(from, to, message) {
+    try {
+      await axios.post("http://laravel.test/api/osu_messages", {
+        username: from,
+        channel: to,
+        message,
       });
+    } catch (error) {
+      console.error("Failed to send message to Laravel API:", error.response ? error.response.data : error.message);
     }
-  }
-
-  const sortedTeamMatchups = averageTeamRatingDifferences.sort(
-    (a, b) => a.average_rating - b.average_rating
-  );
-
-  console.log(
-    "Average team members SR: ",
-    sortedTeamMatchups[0].average_rating
-  );
-
-  const mapPoolIdReq = await supabase.rpc("get_closest_map_pool", {
-    average_star_rating: sortedTeamMatchups[0].average_rating,
   });
 
-  console.log("Picked map pool ID:", mapPoolIdReq.data);
+  return client;
+}
 
-  if (mapPoolIdReq.error || !mapPoolIdReq.data) {
-    console.error("Error fetching map pool ID:", mapPoolIdReq.error);
-    return;
-  }
+function setupExpress(ircClient: Client) {
+  const app = express();
+  app.use(express.json());
 
-  const mapPoolId: number = mapPoolIdReq.data;
+  app.post("/send-message", (req, res) => {
+    const data = req.body;
 
-  const mapPool = await supabase
-    .from("map_pools")
-    .select("*")
-    .eq("id", mapPoolId)
-    .single();
+    console.log(`Sending message to ${data.channel}: ${data.message}`);
+    ircClient.say(data.channel, data.message);
 
-  if (!mapPool.data) {
-    console.error("Error fetching map pool:", mapPool.error);
-    return;
-  }
-
-  const insertData = async (table: string, data: object) => {
-    const result = await supabase.from(table).insert(data).select("*");
-
-    if (result.error) throw new Error(result.error.message);
-    return result.data;
-  };
-
-  const event = await insertData("events", {
-    name: `Quick Match: ${sortedTeamMatchups[0].team1.teams.name} vs ${sortedTeamMatchups[0].team2.teams.name}`,
-    quick_event: true,
+    res.send("Message sent");
   });
 
-  const round = await insertData("rounds", {
-    event_id: event[0].id,
-    best_of: mapPool.data.recommended_best_of,
-    bans_per_match_participant: 0,
-    name: `Quick Match: ${sortedTeamMatchups[0].team1.teams.name} vs ${sortedTeamMatchups[0].team2.teams.name}`,
-  });
-
-  const match = await insertData("matches", {
-    ongoing: true,
-    start_time: new Date(),
-    round_id: round[0].id,
-    type: "quick",
-    map_pool_id: mapPoolId,
-  });
-
-  const participant_1 = await insertData("participants", {
-    team_id: sortedTeamMatchups[0].team1.teams.id,
-    event_id: event[0].id,
-  });
-
-  const participant_2 = await insertData("participants", {
-    team_id: sortedTeamMatchups[0].team2.teams.id,
-    event_id: event[0].id,
-  });
-
-  const match_participant_1 = await supabase
-    .from("match_participants")
-    .insert({
-      match_id: match[0].id,
-      participant_id: participant_1[0].id,
-      surrendered_bans: true,
-    })
-    .select("*, participants(teams(team_members(*)))");
-
-  const match_participant_2 = await supabase
-    .from("match_participants")
-    .insert({
-      match_id: match[0].id,
-      participant_id: participant_2[0].id,
-      surrendered_bans: true,
-    })
-    .select("*, participants(teams(team_members(*)))");
-
-  await insertData("match_participant_players", {
-    match_participant_id: match_participant_1.data![0].id,
-    team_member:
-      match_participant_1.data![0].participants.teams.team_members[0].id,
-    state: 1,
-  });
-
-  await insertData("match_participant_players", {
-    match_participant_id: match_participant_2.data![0].id,
-    team_member:
-      match_participant_2.data![0].participants.teams.team_members[0].id,
-    state: 1,
-  });
-
-  const matchQueue = await supabase
-    .from("match_queue")
-    .select("*")
-    .gt("position", 0);
-
-  await insertData("match_queue", {
-    match_id: match[0].id,
-    position: matchQueue.data!.length + 1,
+  app.listen(3000, () => {
+    console.log("Express server listening on port 3000");
   });
 }
 
-pollQuickQueue();
-setInterval(pollQuickQueue, 30000);
-
-const app = express();
-const port = 3000;
-app.use(express.json());
-
-app.post("/send-messages", async (req: Request, res: Response) => {
-  await sendMessages(req.body.messages, req.body.channelId, banchoClient);
-
-  return res.json({ success: true });
-});
-app.post("/invite-player", async (req: Request, res: Response) => {
-  await invitePlayer(req.body.playerOsuId, req.body.channelId, banchoClient);
-
-  return res.json({ success: true });
-});
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+const client = setupIrc();
+setupExpress(client);

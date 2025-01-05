@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +20,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
     ];
@@ -49,23 +47,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function badges(): MorphMany
+    public function profile(): HasOne
     {
-        return $this->morphMany(Badge::class, 'badgeable');
-    }
-
-    public function organisations(): HasMany
-    {
-        return $this->hasMany(OrganisationMember::class);
-    }
-
-    public function teamMembers(): HasMany
-    {
-        return $this->hasMany(TeamMember::class);
-    }
-
-    public function ratings(): MorphMany
-    {
-        return $this->morphMany(Rating::class, 'rateable');
+        return $this->hasOne(Profile::class);
     }
 }

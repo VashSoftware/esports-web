@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\VashMatch;
+use Illuminate\Console\Command;
 
 class StartMatches extends Command
 {

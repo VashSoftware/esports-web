@@ -11,7 +11,14 @@ class MatchParticipantPlayer extends Model
 {
     use HasFactory;
 
-    public function MatchParticipant(): BelongsTo
+    protected $fillable = ['team_member_id', 'match_participant_id', 'in_lobby', 'lobby_slot', 'ready', 'osu_team'];
+
+    public function teamMember(): BelongsTo
+    {
+        return $this->belongsTo(TeamMember::class);
+    }
+
+    public function matchParticipant(): BelongsTo
     {
         return $this->belongsTo(MatchParticipant::class);
     }

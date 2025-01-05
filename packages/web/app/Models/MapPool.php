@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MapPool extends Model
@@ -21,5 +20,10 @@ class MapPool extends Model
     public function vashMatches(): HasMany
     {
         return $this->hasMany(VashMatch::class);
+    }
+
+    public function calculateRating()
+    {
+        $maps = $this->mapPoolMaps();
     }
 }

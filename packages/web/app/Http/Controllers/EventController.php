@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Event;
+use App\Models\Game;
+use App\Models\GameMode;
+use App\Models\Organisation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class EventController extends Controller
 {
@@ -21,7 +25,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Events/Create');
+        return Inertia::render('Events/Create', ['organisation_members' => Auth::user()->organisationMembers()->with('organisation.eventGroups')->get(), 'games' => Game::with('gameModes')->get()]);
     }
 
     /**
@@ -29,11 +33,17 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required',
+            'organisation_id' => 'required|exists:organisations,id',
+            'event_group_id' => 'required|exists:event_groups,id',
+            'game_id' => 'required|exists:games,id',
+            'game_mode_id' => 'required|exists:game_modes,id',
         ]);
 
-        $event = Event::create($request->all());
+        $organisation = Organisation::find($validated['organisation_id']);
+
+        $event = $organisation->events()->create($validated);
 
         return redirect()->route('events.show', $event->id);
     }
@@ -48,7 +58,19 @@ class EventController extends Controller
 
     public function manage(string $id)
     {
-        return Inertia::render('Events/Manage', ['event' => Event::with('teams')->with('rounds')->find($id)]);
+        return Inertia::render('Events/Manage', [
+            'event' => Event::with('teams')->with('rounds')->find($id),
+            'games' => Game::all(), 'game_modes' => GameMode::all(),
+            'event_groups' => Event::find($id)->organisation->eventGroups()->get(),
+        ]);
+    }
+
+    public function register(string $id)
+    {
+        return Inertia::render('Events/Register', [
+            'event' => Event::find($id),
+            'team_members' => Auth::user()->teamMembers()->with('team')->get(),
+        ]);
     }
 
     /**
@@ -64,7 +86,17 @@ class EventController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'nullable',
+            'has_qualifier_stage' => 'nullable',
+            'has_group_stage' => 'nullable',
+        ]);
+
+        $event = Event::find($id);
+
+        $event->update($validated);
+
+        return redirect('events/'.$id.'/manage', 303);
     }
 
     /**
