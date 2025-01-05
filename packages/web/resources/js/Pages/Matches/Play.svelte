@@ -14,7 +14,10 @@
 
     onMount(() => {
         const channel = window.Echo.channel('match.' + match.id)
-        channel.listen('MatchUpdated', (e) => {})
+
+        channel.listen('MatchParticipantPlayerUpdated', (e) => {
+            console.log(e)
+        })
         channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
         channel.listen('MatchEnded', (e) => {
             match.finished_at = e.match.finished_at
@@ -36,6 +39,10 @@
                 ...match,
                 match_participants: newParticipants,
             }
+
+            if (!match.match_participants.some((mp) => !mp.roll)) {
+                match.is_rolling = false
+            }
         })
 
         const matchTimerInterval = setInterval(() => {
@@ -47,6 +54,19 @@
         }
     })
 
+    function userCanRoll() {
+        if (!match.is_rolling) return false
+
+        for (const mp of match.match_participants) {
+            for (const mpp of mp.match_participant_players) {
+                if (mpp.id === getUserMatchParticipantPlayer().id && mp.roll) {
+                    return false
+                }
+            }
+        }
+
+        return true
+    }
     function userCanBan() {
         return user.profile.team_members.find((tm) =>
             tm.team.match_participants.find((mp) => mp.id == match.current_banner),
@@ -101,6 +121,8 @@
     }
 
     function getPlayerStatusIcon() {
+        const player = getUserMatchParticipantPlayer()
+
         return '👍'
     }
 
@@ -151,13 +173,17 @@
             <div class="flex flex-col gap-2">
                 <div class="rounded-xl bg-secondary p-4">
                     <h2 class="text-xl font-bold">{participant.team.name}</h2>
-                    <img src="/public/" alt="Team Logo" />
+                    <img src="/storage/" alt="Team Logo" />
                 </div>
 
                 {#each participant.match_participant_players as player}
-                    <div class="flex justify-between gap-2 rounded bg-secondary p-2">
-                        <img src="" alt="Player" />
-                        <h3>{player.team_member.profile?.username}</h3>
+                    <div class="flex items-center justify-between gap-4 rounded bg-secondary p-2">
+                        <img
+                            src={'/storage/' + player.team_member.profile.profile_picture}
+                            class="size-12 rounded-full"
+                            alt="Player"
+                        />
+                        <h3 class="font-semibold">{player.team_member.profile?.username}</h3>
                         <p>{getPlayerStatusIcon()}</p>
                     </div>
                 {/each}
@@ -311,6 +337,15 @@
     <div class="fixed inset-0 z-10 bg-black opacity-50"></div>
     <div class="fixed inset-0 z-20 flex items-center justify-center">
         <div class="relative w-11/12 max-w-md rounded-xl bg-white p-8 text-center shadow-xl">
+            {#if !match.is_rolling}
+                <button
+                    onclick={() => (rollModalShown = false)}
+                    class="absolute right-4 top-4 text-xl font-bold text-gray-500 hover:text-gray-700"
+                >
+                    X
+                </button>
+            {/if}
+
             <h3 class="mb-6 text-2xl font-bold">Roll</h3>
 
             <div class="mb-6 flex h-48 justify-around">
@@ -331,7 +366,8 @@
             </div>
 
             <button
-                class="mt-4 rounded bg-green-500 px-6 py-2 text-white transition hover:bg-green-600"
+                class="mt-4 rounded bg-green-500 px-6 py-2 text-white transition hover:bg-green-600 disabled:bg-gray-300"
+                disabled={!userCanRoll()}
                 onclick={() => {
                     router.post('/rolls', {
                         match_participant_id: getUserMatchParticipantPlayer()?.match_participant_id,
