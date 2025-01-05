@@ -3,7 +3,9 @@
 namespace App\Listeners;
 
 use App\Events\OsuLobbyCreated;
+use App\Jobs\GetOsuSettings;
 use App\Models\MatchParticipantPlayer;
+use App\Services\MatchService;
 use App\Services\OsuService;
 
 class SetupOsuLobby
@@ -11,7 +13,7 @@ class SetupOsuLobby
     /**
      * Create the event listener.
      */
-    public function __construct(public OsuService $osuService)
+    public function __construct(public MatchService $matchService, public OsuService $osuService)
     {
         //
     }
@@ -27,8 +29,10 @@ class SetupOsuLobby
 
         foreach ($event->match->matchParticipants as $participant) {
             foreach ($participant->matchParticipantPlayers as $player) {
-                $this->osuService->inviteMatchPlayer($player->id);
+                $this->matchService->inviteMatchPlayer($player->id);
             }
         }
+
+        GetOsuSettings::dispatch($event->match->id);
     }
 }

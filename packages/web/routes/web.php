@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/match-queue', [MatchQueueController::class, 'join'])->name('match-queue.join');
     Route::delete('/match-queue', [MatchQueueController::class, 'leave'])->name('match-queue.leave');
     Route::get('/matches/{match}/play', [MatchController::class, 'play'])->name('matches.play');
+    Route::post('/matches/{match}/play/invite-player', [MatchController::class, 'invitePlayer'])->name('matches.invite-player');
 
     Route::resource('/match_bans', MatchBanController::class);
     Route::resource('/match_maps', MatchMapController::class);

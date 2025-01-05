@@ -4,11 +4,12 @@ namespace App\Services;
 
 use App\Events\MapPicked;
 use App\Events\NewMatch;
-use App\Jobs\GetOsuSettings;
 use App\Models\MatchMap;
+use App\Models\MatchParticipantPlayer;
 use App\Models\Score;
 use App\Models\VashMatch;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MatchService
 {
@@ -54,8 +55,6 @@ class MatchService
             }
 
             NewMatch::dispatch($match);
-
-            GetOsuSettings::dispatch($match->id);
         });
 
         //        $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, 'Welcome to Vash Esports!');
@@ -193,9 +192,13 @@ class MatchService
         $this->osuService->sendIRCMessage($match->osu_lobby, '!mp close');
     }
 
-    public function invitePlayer(string $osuLobbyName, string $username)
+    public function inviteMatchPlayer(MatchParticipantPlayer $matchParticipantPlayer)
     {
-        $this->osuService->sendIRCMessage($osuLobbyName, '!mp invite '.$username);
+        $playerOsuName = $matchParticipantPlayer->teamMember->profile->platforms()->where('platforms.name', 'osu!')->first()->pivot->name;
+
+        Log::info('Inviting match participant ID: '.$matchParticipantPlayer->id.' to osu! lobby: '.'#mp_'.$matchParticipantPlayer->matchParticipant->vashMatch->osu_lobby);
+
+        $this->osuService->sendIRCMessage('#mp_'.$matchParticipantPlayer->matchParticipant->vashMatch->osu_lobby, '!mp invite '.$playerOsuName);
     }
 
     public function invitePlayers() {}

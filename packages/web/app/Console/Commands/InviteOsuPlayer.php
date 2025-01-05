@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\MatchParticipantPlayer;
+use App\Services\MatchService;
 use App\Services\OsuService;
 use Illuminate\Console\Command;
 
@@ -24,8 +26,8 @@ class InviteOsuPlayer extends Command
     /**
      * Execute the console command.
      */
-    public function handle(OsuService $osuService)
+    public function handle(MatchService $matchService)
     {
-        $osuService->inviteMatchPlayer($this->argument('player-id'));
+        $matchService->inviteMatchPlayer(MatchParticipantPlayer::find($this->argument('player-id')));
     }
 }

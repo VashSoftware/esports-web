@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MapPool;
+use App\Models\MatchParticipantPlayer;
 use App\Models\VashMatch;
+use App\Services\MatchService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -38,5 +40,16 @@ class MatchController extends Controller
     public function play(string $id)
     {
         return Inertia::render('Matches/Play', ['match' => VashMatch::with(['mapPool.mapPoolMaps.mapPoolMapMods.mod', 'mapPool.mapPoolMaps.map.mapSet', 'matchMaps.mapPoolMap.mapPoolMapMods.mod',  'matchMaps.mapPoolMap.map.mapSet', 'matchParticipants.team', 'matchParticipants.matchParticipantPlayers.teamMember.profile', 'matchMaps.scores.matchParticipantPlayer', 'matchParticipants.roll'])->find($id)]);
+    }
+
+    public function invitePlayer(Request $request, string $id, MatchService $matchService)
+    {
+        $validated = $request->validate([
+            'match_participant_player_id' => 'required|exists:match_participant_players,id',
+        ]);
+
+        $matchService->inviteMatchPlayer(MatchParticipantPlayer::find($validated['match_participant_player_id']));
+
+        return back();
     }
 }

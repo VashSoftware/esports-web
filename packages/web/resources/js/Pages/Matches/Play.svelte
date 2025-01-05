@@ -2,7 +2,7 @@
     import Layout from '@/Shared/Layout.svelte'
     import { router, Link } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
-    import type { Match, User, MapPoolMap } from '@/Types/app'
+    import type { Match, User, MapPoolMap, MatchParticipantPlayer, Score, MatchParticipant } from '@/Types/app'
 
     let { match, user }: { match: Match; user: User } = $props()
 
@@ -15,16 +15,16 @@
     onMount(() => {
         const channel = window.Echo.channel('match.' + match.id)
 
-        channel.listen('MatchParticipantPlayerUpdated', (e) => {
+        channel.listen('MatchParticipantPlayerUpdated', (e: { match_participant_player: MatchParticipantPlayer }) => {
             console.log(e)
         })
-        channel.listen('ScoreUpdated', (e) => console.log('Event: ' + e))
-        channel.listen('MatchEnded', (e) => {
+        channel.listen('ScoreUpdated', (e: { score: Score }) => console.log('Event: ' + e))
+        channel.listen('MatchEnded', (e: { match: Match }) => {
             match.finished_at = e.match.finished_at
             matchEndedModalShown = true
         })
 
-        channel.listen('ParticipantRolled', (e) => {
+        channel.listen('ParticipantRolled', (e: { matchParticipant: MatchParticipant }) => {
             const newParticipants = match.match_participants.map((mp) => {
                 if (mp.id === e.matchParticipant.id) {
                     return {
@@ -59,7 +59,7 @@
 
         for (const mp of match.match_participants) {
             for (const mpp of mp.match_participant_players) {
-                if (mpp.id === getUserMatchParticipantPlayer().id && mp.roll) {
+                if (mpp.id === getUserMatchParticipantPlayer()!.id && mp.roll) {
                     return false
                 }
             }
@@ -67,6 +67,7 @@
 
         return true
     }
+
     function userCanBan() {
         return user.profile.team_members.find((tm) =>
             tm.team.match_participants.find((mp) => mp.id == match.current_banner),
@@ -179,11 +180,22 @@
                 {#each participant.match_participant_players as player}
                     <div class="flex items-center justify-between gap-4 rounded bg-secondary p-2">
                         <img
-                            src={'/storage/' + player.team_member.profile.profile_picture}
+                            src={'/storage/' + player.team_member.profile?.profile_picture}
                             class="size-12 rounded-full"
                             alt="Player"
                         />
-                        <h3 class="font-semibold">{player.team_member.profile?.username}</h3>
+                        <div class="flex flex-col gap-2">
+                            <h3 class="font-semibold">{player.team_member.profile?.username}</h3>
+                            {#if participant.id == getUserMatchParticipantPlayer().id}
+                                <button
+                                    class="rounded bg-primary px-4 py-2"
+                                    onclick={() =>
+                                        router.post(`/matches/${match.id}/play/invite-player`, {
+                                            match_participant_player_id: player.id,
+                                        })}>Invite to osu! Lobby</button
+                                >
+                            {/if}
+                        </div>
                         <p>{getPlayerStatusIcon()}</p>
                     </div>
                 {/each}

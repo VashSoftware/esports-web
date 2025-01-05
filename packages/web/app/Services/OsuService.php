@@ -80,15 +80,6 @@ class OsuService
         $this->sendIRCMessage($match->osu_lobby, '!mp settings');
     }
 
-    public function inviteMatchPlayer(int $matchParticipantPlayerId)
-    {
-        $matchParticipantPlayer = MatchParticipantPlayer::find($matchParticipantPlayerId);
-
-        $playerOsuName = $matchParticipantPlayer->teamMember->profile->platforms()->where('platforms.name', 'osu!')->first()->pivot->name;
-
-        $this->sendIRCMessage('#mp_'.$matchParticipantPlayer->matchParticipant->vashMatch->osu_lobby, '!mp invite '.$playerOsuName);
-    }
-
     public function updatePlayerStatus(int $matchParticipantPlayerId)
     {
         $matchParticipantPlayer = MatchParticipantPlayer::find($matchParticipantPlayerId);
