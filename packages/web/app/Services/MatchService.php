@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Events\MapPicked;
+use App\Events\MatchParticipantPlayerUpdated;
 use App\Events\NewMatch;
 use App\Models\MatchMap;
 use App\Models\MatchParticipantPlayer;
+use App\Models\OsuLobbyState;
 use App\Models\Score;
 use App\Models\VashMatch;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +52,8 @@ class MatchService
                 foreach ($participant->team->teamMembers as $member) {
                     $player = $participant->matchParticipantPlayers()->create([
                         'team_member_id' => $member->id,
+                        'ready' => false,
+                        'in_lobby' => false,
                     ]);
                 }
             }
@@ -214,5 +218,84 @@ class MatchService
         ]);
 
         $this->osuService->makeOsuLobby($match->id);
+    }
+
+    public function finalizeLobbyState(VashMatch $vashMatch)
+    {
+        // grab the most recent NON-finalized state that we just turned "finalized"
+        // (or you could do a slightly different lookup if you store multiple states)
+        $osuLobbyState = OsuLobbyState::where('vash_match_id', $vashMatch->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (! $osuLobbyState) {
+            return;
+        }
+
+        // parse all lines
+        $usersInLobby = [];
+        $userReadiness = [];
+
+        foreach ($osuLobbyState->osuMessages as $msg) {
+            if (preg_match(
+                '/^Slot\s+(\d+)\s+(Ready|Not Ready)\s+https:\/\/osu\.ppy\.sh\/u\/(\d+)\s+(.*?)\s+\[(Team [A-Za-z]+)\]/',
+                $msg->message,
+                $m
+            )) {
+                $slot = $m[1];
+                $readyText = $m[2];
+                $osuUserId = $m[3];
+                $username = $m[4]; // e.g. "Stan"
+                $team = $m[5]; // e.g. "Team Blue"
+
+                // track they’re in the lobby
+                $usersInLobby[$osuUserId] = [
+                    'username' => $username,
+                    'team' => $team,
+                    'slot' => $slot,
+                ];
+                // track readiness
+                $userReadiness[$osuUserId] = ($readyText === 'Ready');
+            }
+        }
+
+        // now update all match participant players
+        $allPlayers = $vashMatch->matchParticipants
+            ->flatMap->matchParticipantPlayers;
+
+        foreach ($allPlayers as $player) {
+            // figure out that player's osu user id
+            $playerOsuId = $player->teamMember
+                ->profile
+                ->platforms()
+                ->where('platforms.name', 'osu!')
+                ->first()
+                ->pivot
+                ->id;
+
+            // if we have an entry for that user, they're in-lobby (could be multiple participants with same ID!)
+            if (isset($usersInLobby[$playerOsuId])) {
+                $player->update([
+                    'in_lobby' => true,
+                    'ready' => $userReadiness[$playerOsuId],
+                    'osu_team' => $usersInLobby[$playerOsuId]['team'],
+                    'lobby_slot' => $usersInLobby[$playerOsuId]['slot'],
+                ]);
+            } else {
+                // no mention = not in-lobby
+                $player->update([
+                    'in_lobby' => false,
+                    'ready' => false,
+                    'osu_team' => null,
+                    'lobby_slot' => null,
+                ]);
+            }
+
+            MatchParticipantPlayerUpdated::dispatch($player);
+        }
+
+        $osuLobbyState->update([
+            'finalized' => true,
+        ]);
     }
 }

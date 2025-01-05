@@ -27,4 +27,9 @@ class VashMatch extends Model
     {
         return $this->hasMany(MatchParticipant::class);
     }
+
+    public function osuLobbyStates(): HasMany
+    {
+        return $this->hasMany(OsuLobbyState::class);
+    }
 }

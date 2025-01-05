@@ -13,6 +13,7 @@ use App\Models\MatchParticipant;
 use App\Models\MatchParticipantPlayer;
 use App\Models\Mod;
 use App\Models\Organisation;
+use App\Models\OsuLobbyState;
 use App\Models\Profile;
 use App\Models\Team;
 use App\Models\TeamMember;
@@ -167,6 +168,7 @@ return new class extends Migration
             $table->foreignIdFor(MapSet::class)->constrained();
             $table->string('difficulty_name');
             $table->integer('osu_id');
+            $table->integer('playmode');
             $table->timestamps();
         });
 
@@ -216,6 +218,10 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(MatchParticipant::class);
             $table->foreignIdFor(TeamMember::class);
+            $table->boolean('ready');
+            $table->boolean('in_lobby');
+            $table->string('osu_team')->nullable();
+            $table->integer('lobby_slot')->nullable();
             $table->timestamps();
         });
 
@@ -247,6 +253,7 @@ return new class extends Migration
             $table->string('channel');
             $table->string('username');
             $table->foreignIdFor(Profile::class)->nullable();
+            $table->foreignIdFor(OsuLobbyState::class)->nullable();
             $table->timestamps();
         });
 
@@ -254,6 +261,13 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(MatchParticipant::class)->constrained();
             $table->integer('roll');
+            $table->timestamps();
+        });
+
+        Schema::create('osu_lobby_states', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(VashMatch::class);
+            $table->boolean('finalized')->default(false);
             $table->timestamps();
         });
     }

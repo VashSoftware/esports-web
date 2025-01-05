@@ -79,16 +79,19 @@ class DatabaseSeeder extends Seeder
 
         DB::table('maps')->insert([[
             'difficulty_name' => 'Test Difficulty',
-            'osu_id' => 12345,
+            'osu_id' => 658127,
             'map_set_id' => 1,
+            'playmode' => 0,
         ], [
             'difficulty_name' => 'Test Difficulty 2',
-            'osu_id' => 12346,
+            'osu_id' => 658127,
             'map_set_id' => 2,
+            'playmode' => 0,
         ], [
             'difficulty_name' => 'Test Difficulty 3',
-            'osu_id' => 12347,
+            'osu_id' => 658127,
             'map_set_id' => 3,
+            'playmode' => 0,
         ]]);
 
         DB::table('map_pools')->insert([

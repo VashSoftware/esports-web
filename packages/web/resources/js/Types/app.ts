@@ -26,6 +26,10 @@ export interface MatchParticipant {
 
 export interface MatchParticipantPlayer {
     id: number
+    ready: boolean
+    in_lobby: boolean
+    lobby_slot: number | null
+    osu_team: string | null
     match_participant_id: number
     match_participant: MatchParticipant
     team_member_id: number
@@ -128,6 +132,7 @@ export interface Organisation {
 export interface Profile {
     id: number,
     username: string
+    profile_picture: string
     user_id: number,
     user: User
     team_members: TeamMember[]

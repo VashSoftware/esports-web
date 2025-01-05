@@ -15,8 +15,27 @@
     onMount(() => {
         const channel = window.Echo.channel('match.' + match.id)
 
-        channel.listen('MatchParticipantPlayerUpdated', (e: { match_participant_player: MatchParticipantPlayer }) => {
+        channel.listen('MatchParticipantPlayerUpdated', (e: { matchParticipantPlayer: MatchParticipantPlayer }) => {
             console.log(e)
+
+            match = {
+                ...match,
+                match_participants: match.match_participants.map((mp) => ({
+                    ...mp,
+                    match_participant_players: mp.match_participant_players.map((mpp) => {
+                        if (mpp.id === e.matchParticipantPlayer.id) {
+                            return {
+                                ...mpp,
+                                in_lobby: e.matchParticipantPlayer.in_lobby,
+                                lobby_slot: e.matchParticipantPlayer.lobby_slot,
+                                osu_team: e.matchParticipantPlayer.osu_team,
+                                ready: e.matchParticipantPlayer.ready,
+                            }
+                        }
+                        return mpp
+                    }),
+                })),
+            }
         })
         channel.listen('ScoreUpdated', (e: { score: Score }) => console.log('Event: ' + e))
         channel.listen('MatchEnded', (e: { match: Match }) => {
@@ -121,10 +140,12 @@
         return `${''} has ${''} to pick a map.`
     }
 
-    function getPlayerStatusIcon() {
-        const player = getUserMatchParticipantPlayer()
+    function getPlayerStatusIcon(player: MatchParticipantPlayer) {
+        if (player?.ready) return '✅ Ready'
 
-        return '👍'
+        if (player?.in_lobby) return '🟢 In Lobby'
+
+        return '❌ Not In Lobby'
     }
 
     function getMatchParticipantScores(match_map_id: number, match_participant_id: number) {
@@ -186,7 +207,7 @@
                         />
                         <div class="flex flex-col gap-2">
                             <h3 class="font-semibold">{player.team_member.profile?.username}</h3>
-                            {#if participant.id == getUserMatchParticipantPlayer().id}
+                            {#if player.id == getUserMatchParticipantPlayer()!.id && !player.in_lobby}
                                 <button
                                     class="rounded bg-primary px-4 py-2"
                                     onclick={() =>
@@ -196,7 +217,7 @@
                                 >
                             {/if}
                         </div>
-                        <p>{getPlayerStatusIcon()}</p>
+                        <p>{getPlayerStatusIcon(player)}</p>
                     </div>
                 {/each}
             </div>

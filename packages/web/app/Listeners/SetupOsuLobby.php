@@ -29,7 +29,7 @@ class SetupOsuLobby
 
         foreach ($event->match->matchParticipants as $participant) {
             foreach ($participant->matchParticipantPlayers as $player) {
-                $this->matchService->inviteMatchPlayer($player->id);
+                $this->matchService->inviteMatchPlayer($player);
             }
         }
 

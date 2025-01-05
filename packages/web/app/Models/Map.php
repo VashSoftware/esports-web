@@ -13,7 +13,7 @@ class Map extends Model
     use HasFactory;
     use Searchable;
 
-    protected $fillable = ['difficulty_name', 'osu_id'];
+    protected $fillable = ['difficulty_name', 'osu_id', 'playmode'];
 
     public function toSearchableArray(): array
     {
