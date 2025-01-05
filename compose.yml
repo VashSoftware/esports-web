@@ -1,0 +1,87 @@
+services:
+
+    laravel:
+        build:
+            context: 'packages/web'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+            - '${REVERB_PORT:-8080}:${REVERB_PORT:-8080}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - './packages/web:/var/www/html'
+        networks:
+            - vash-net
+        depends_on:
+            - pgsql
+            - redis
+        labels:
+          - "traefik.enable=true"
+          - "traefik.http.routers.laravel.rule=Host(`esports.vash.software`)"
+          - "traefik.http.services.laravel.loadbalancer.server.port=${APP_PORT:-80}"
+
+    pgsql:
+        image: 'postgres:17'
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'vash-pgsql:/var/lib/postgresql/data'
+        networks:
+            - vash-net
+        healthcheck:
+            test:
+                - CMD
+                - pg_isready
+                - '-q'
+                - '-d'
+                - '${DB_DATABASE}'
+                - '-U'
+                - '${DB_USERNAME}'
+            retries: 3
+            timeout: 5s
+
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'vash-redis:/data'
+        networks:
+            - vash-net
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+
+    osu:
+        build: packages/osu
+        restart: unless-stopped
+        ports:
+            - '${OSU_PORT:-3000}:3000'
+        networks:
+            - vash-net
+
+networks:
+    vash-net:
+        driver: bridge
+    traefik_net:
+        external: true
+
+volumes:
+    vash-pgsql:
+        driver: local
+    vash-redis:
+        driver: local
+
