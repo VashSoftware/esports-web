@@ -30,7 +30,7 @@ class MapPoolMapModController extends Controller
     {
         $validated = $request->validate([
             'map_pool_map_id' => 'required|exists:map_pool_maps,id',
-            'mod_id' => 'required|exists:mods,id'
+            'mod_id' => 'required|exists:mods,id',
         ]);
 
         MapPoolMapMod::create($validated);

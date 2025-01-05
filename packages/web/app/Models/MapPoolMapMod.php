@@ -9,11 +9,13 @@ class MapPoolMapMod extends Model
 {
     protected $fillable = ['map_pool_map_id', 'mod_id'];
 
-    public function mapPoolMap(): BelongsTo {
+    public function mapPoolMap(): BelongsTo
+    {
         return $this->belongsTo(MapPoolMap::class);
     }
 
-    public function mod(): BelongsTo {
+    public function mod(): BelongsTo
+    {
         return $this->belongsTo(Mod::class);
     }
 }

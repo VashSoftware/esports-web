@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\VashMatch;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -55,7 +54,6 @@ class AppServiceProvider extends ServiceProvider
                 $userActiveMatches = $activeMatches->filter(function ($match) use ($userProfileId) {
                     foreach ($match->matchParticipants as $participant) {
                         foreach ($participant->matchParticipantPlayers as $player) {
-                            Log::debug($player);
                             if ($player->teamMember->profile_id == $userProfileId) {
                                 return true;
                             }

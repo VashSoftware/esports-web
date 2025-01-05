@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\MatchParticipantPlayer;
 use App\Services\MatchService;
-use App\Services\OsuService;
 use Illuminate\Console\Command;
 
 class InviteOsuPlayer extends Command
