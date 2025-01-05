@@ -2,7 +2,15 @@
     import Layout from '@/Shared/Layout.svelte'
     import { router, Link } from '@inertiajs/svelte'
     import { onMount } from 'svelte'
-    import type { Match, User, MapPoolMap, MatchParticipantPlayer, Score, MatchParticipant } from '@/Types/app'
+    import type {
+        Match,
+        User,
+        MapPoolMap,
+        MatchParticipantPlayer,
+        Score,
+        MatchParticipant,
+        MatchMap,
+    } from '@/Types/app'
 
     let { match, user }: { match: Match; user: User } = $props()
 
@@ -16,8 +24,6 @@
         const channel = window.Echo.channel('match.' + match.id)
 
         channel.listen('MatchParticipantPlayerUpdated', (e: { matchParticipantPlayer: MatchParticipantPlayer }) => {
-            console.log(e)
-
             match = {
                 ...match,
                 match_participants: match.match_participants.map((mp) => ({
@@ -36,11 +42,6 @@
                     }),
                 })),
             }
-        })
-        channel.listen('ScoreUpdated', (e: { score: Score }) => console.log('Event: ' + e))
-        channel.listen('MatchEnded', (e: { match: Match }) => {
-            match.finished_at = e.match.finished_at
-            matchEndedModalShown = true
         })
 
         channel.listen('ParticipantRolled', (e: { matchParticipant: MatchParticipant }) => {
@@ -62,6 +63,21 @@
             if (!match.match_participants.some((mp) => !mp.roll)) {
                 match.is_rolling = false
             }
+        })
+
+        channel.listen('MapPicked', (e: { matchMap: MatchMap }) => {
+            console.log(e)
+            match = {
+                ...match,
+                match_maps: [...match.match_maps, e.matchMap],
+            }
+        })
+
+        channel.listen('ScoreUpdated', (e: { score: Score }) => console.log('Event: ' + e))
+
+        channel.listen('MatchEnded', (e: { match: Match }) => {
+            match.finished_at = e.match.finished_at
+            matchEndedModalShown = true
         })
 
         const matchTimerInterval = setInterval(() => {

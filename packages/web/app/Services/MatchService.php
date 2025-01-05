@@ -136,7 +136,9 @@ class MatchService
 
     public function pickMap(int $matchId, int $mapPoolMapId)
     {
-        DB::transaction(function () use ($matchId, $mapPoolMapId) {
+        $matchMap = null;
+
+        DB::transaction(function () use ($matchId, $mapPoolMapId, &$matchMap) { // Note the &
             $matchMap = MatchMap::create([
                 'vash_match_id' => $matchId,
                 'map_pool_map_id' => $mapPoolMapId,
@@ -174,10 +176,13 @@ class MatchService
                 'current_picker' => $nextPicker->id,
             ]);
 
-            $this->osuService->sendIRCMessage('#mp_'.$match->osu_lobby, '!mp map '.$matchMap->mapPoolMap->map->osu_id.' '.$matchMap->mapPoolMap->map->playmode);
-
-            MapPicked::dispatch($matchMap);
+            $this->osuService->sendIRCMessage(
+                '#mp_'.$match->osu_lobby,
+                '!mp map '.$matchMap->mapPoolMap->map->osu_id.' '.$matchMap->mapPoolMap->map->playmode
+            );
         });
+
+        broadcast(new MapPicked($matchMap))->toOthers();
     }
 
     public function addParticipantPlayer() {}
