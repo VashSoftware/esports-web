@@ -39,7 +39,7 @@ export interface MatchParticipantPlayer {
 export interface MatchMap {
     id: number
     match_id: number
-    match: Match
+    vash_match: Match
     map_pool_map_id: number
     map_pool_map: MapPoolMap
     scores: Score[]

@@ -70,6 +70,8 @@
             match = {
                 ...match,
                 match_maps: [...match.match_maps, e.matchMap],
+                current_picker: e.matchMap.vash_match.current_picker,
+                action_limit: e.matchMap.vash_match.action_limit,
             }
         })
 
@@ -137,25 +139,35 @@
     }
 
     function getMapPoolStatus() {
+        // Helper function to calculate time left
+        const calculateTimeLeft = (actionLimit) => {
+            const actionLimitDate = new Date(actionLimit)
+            const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
+            return formatTime(timeLeft)
+        }
+
         if (match.current_banner && match.action_limit) {
             if (userCanBan()) {
-                const actionLimitDate = new Date(match.action_limit)
-                const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
-                return `You have ${formatTime(timeLeft)} to ban a map.`
+                const timeLeft = calculateTimeLeft(match.action_limit)
+                return `You have ${timeLeft} to ban a map.`
             }
 
-            return `Waiting for ${match.current_banner} to a ban a map.`
+            return `Waiting for ${match.current_banner} to ban a map.`
         }
 
         if (userCanPick() && match.action_limit) {
-            const actionLimitDate = new Date(match.action_limit)
-            const timeLeft = Math.max(0, actionLimitDate.getTime() - Date.now())
-            return `You have ${formatTime(timeLeft)} to pick a map.`
+            const timeLeft = calculateTimeLeft(match.action_limit)
+            return `You have ${timeLeft} to pick a map.`
         }
 
-        return `${''} has ${''} to pick a map.`
-    }
+        if (match.current_picker && match.action_limit) {
+            const timeLeft = calculateTimeLeft(match.action_limit)
+            return `${match.match_participants.find((mp) => mp.id == match.current_picker)?.team.name} has ${timeLeft} to pick a map.`
+        }
 
+        // Default message if none of the conditions are met
+        return 'Map pool status is unavailable.'
+    }
     function getPlayerStatusIcon(player: MatchParticipantPlayer) {
         if (player?.ready) return '✅ Ready'
 
