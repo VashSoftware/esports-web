@@ -113,12 +113,16 @@
     }
 
     function userCanBan() {
+        if (!match.action_limit) return false
+
         return user.profile.team_members.find((tm) =>
             tm.team.match_participants.find((mp) => mp.id == match.current_banner),
         )
     }
 
     function userCanPick() {
+        if (!match.action_limit) return false
+
         return user.profile.team_members.find((tm) =>
             tm.team.match_participants.find((mp) => mp.id == match.current_picker),
         )
@@ -172,7 +176,6 @@
             return `${match.match_participants.find((mp) => mp.id == match.current_picker)?.team.name} has ${timeLeft} to pick a map.`
         }
 
-        // Default message if none of the conditions are met
         return 'Map pool status is unavailable.'
     }
     function getPlayerStatusIcon(player: MatchParticipantPlayer) {
