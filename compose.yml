@@ -76,8 +76,6 @@ services:
 networks:
     vash-net:
         driver: bridge
-    traefik_net:
-        external: true
 
 volumes:
     vash-pgsql:
