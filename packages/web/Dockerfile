@@ -15,7 +15,9 @@ RUN apt install -y nginx supervisor \
     && docker-php-ext-install pdo pdo_mysql bcmath opcache \
     && chown -R www-data:www-data /app
 
-RUN php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan key:generate
+COPY .env.example .env
+RUN php artisan key:generate
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
