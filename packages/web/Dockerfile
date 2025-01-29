@@ -20,8 +20,8 @@ RUN bun run build
 FROM php:8.4-fpm AS build
 
 RUN apt-get update && \
-    apt-get install -y nginx supervisor && \
-    docker-php-ext-install pdo pdo_mysql bcmath opcache && \
+    apt-get install -y nginx supervisor libpq-dev && \
+    docker-php-ext-install pdo pdo_pgsql bcmath opcache && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -30,6 +30,8 @@ COPY --from=deps /app/node_modules /app/node_modules
 COPY --from=deps /app/public /app/public
 
 COPY . .
+
+RUN php artisan key:generate
 
 RUN chown -R www-data:www-data /app
 
