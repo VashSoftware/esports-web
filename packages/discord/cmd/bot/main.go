@@ -14,7 +14,7 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("No .env file found, using system environment variables")
 	}
 
 	go func() {
@@ -26,7 +26,12 @@ func main() {
 		}
 	}()
 
-	discord, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
+	discordToken := os.Getenv("DISCORD_TOKEN")
+	if discordToken == "" {
+		log.Fatal("DISCORD_TOKEN environment variable is required")
+	}
+
+	discord, err := discordgo.New("Bot " + discordToken)
 	if err != nil {
 		log.Fatal(err)
 	}
