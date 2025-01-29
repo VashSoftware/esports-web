@@ -74,10 +74,8 @@ services:
       retries: 3
       timeout: 5s
 networks:
-  vash-net:
-    driver: bridge
-  traefik_net:
-    external: true
+    vash-net:
+        driver: bridge
 
 volumes:
   vash-pgsql:
