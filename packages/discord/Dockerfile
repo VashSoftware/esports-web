@@ -11,10 +11,11 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the source code to the container
-COPY src/ ./src/
+COPY cmd/ ./cmd/
+COPY internals/ ./internals/
 
 # Build the Go server
-RUN go build -o main ./src/main.go
+RUN go build -o main ./cmd/bot/main.go
 
 # Start a new stage from scratch
 FROM alpine:latest
@@ -27,7 +28,6 @@ WORKDIR /root/
 
 # Copy the binary from the builder stage
 COPY --from=builder /app/main .
-COPY --from=builder /app/.env .
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
