@@ -19,7 +19,7 @@ RUN bun run build
 FROM php:8.4-fpm AS build
 
 RUN apt-get update && \
-    apt-get install -y nginx supervisor libpq-dev && \
+    apt-get install -y nodejs npm nginx supervisor libpq-dev && \
     docker-php-ext-install pdo pdo_pgsql bcmath opcache && \
     rm -rf /var/lib/apt/lists/*
 
