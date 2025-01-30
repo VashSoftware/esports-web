@@ -31,7 +31,6 @@ RUN mkdir -p /app/storage/framework/views
 RUN chown -R www-data:www-data /app
 
 RUN php artisan config:clear && \
-    php artisan cache:clear && \
     php artisan route:clear && \
     php artisan view:clear
 
