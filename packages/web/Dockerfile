@@ -14,6 +14,7 @@ COPY package*.json bun.lock ./
 RUN bun install
 
 COPY . .
+
 RUN bun run build
 
 FROM php:8.4-fpm AS build
@@ -24,15 +25,18 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-# Copy built assets and dependencies from deps stage
 COPY --from=deps /app /app
 
-# Copy configuration files
+RUN mkdir -p /app/storage/framework/views
+RUN chown -R www-data:www-data /app
+
+RUN php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear
+
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN chmod -R 755 /app
-RUN chown -R www-data:www-data /app
 
 EXPOSE 8080
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
