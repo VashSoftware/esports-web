@@ -31,8 +31,6 @@ COPY --from=deps /app /app
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Generate application key and set permissions
-RUN php artisan key:generate
 RUN chmod -R 755 /app
 RUN chown -R www-data:www-data /app
 
