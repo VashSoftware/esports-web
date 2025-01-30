@@ -13,7 +13,6 @@ RUN npm install -g bun
 COPY package*.json bun.lock ./
 RUN bun install
 
-# Copy full code and build in this stage
 COPY . .
 RUN bun run build
 
@@ -25,16 +24,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY --from=deps /app/vendor /app/vendor
-COPY --from=deps /app/node_modules /app/node_modules
-COPY --from=deps /app/public /app/public
+# Copy built assets and dependencies from deps stage
+COPY --from=deps /app /app
 
-COPY . .
-
+# Generate application key and set permissions
 RUN php artisan key:generate
-
+RUN chmod -R 755 /app
 RUN chown -R www-data:www-data /app
 
+# Copy configuration files
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
