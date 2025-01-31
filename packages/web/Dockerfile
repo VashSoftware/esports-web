@@ -27,8 +27,7 @@ RUN apt-get update && \
 WORKDIR /app
 COPY --from=deps /app /app
 
-# Ensure storage directories exist and set permissions
-RUN chown -R www-data:www-data /app/storage
+RUN chown -R www-data:www-data /app
 
 EXPOSE 8080
 
@@ -36,5 +35,4 @@ RUN php artisan config:clear && \
     php artisan route:clear && \
     php artisan view:clear
 
-# Start the SSR server, Reverb, and the main application server
 CMD php artisan reverb:start & php artisan serve --host=0.0.0.0 --port=8080
