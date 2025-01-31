@@ -1,4 +1,4 @@
-FROM php:8.4-fpm AS deps
+FROM php:8.4-cli AS deps
 
 RUN apt-get update && \
     apt-get install -y zip unzip npm && \
@@ -17,25 +17,25 @@ COPY . .
 
 RUN bun run build
 
-FROM php:8.4-fpm AS build
+FROM php:8.4-cli AS runtime
 
 RUN apt-get update && \
-    apt-get install -y nodejs npm nginx supervisor libpq-dev && \
-    docker-php-ext-install pdo pdo_pgsql bcmath opcache && \
+    apt-get install -y libpq-dev nodejs npm && \
+    docker-php-ext-install pdo pdo_pgsql bcmath opcache pcntl && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY --from=deps /app /app
 
-RUN mkdir -p /app/storage/framework/views
-RUN chown -R www-data:www-data /app
+# Ensure storage directories exist and set permissions
+RUN chown -R www-data:www-data /app/storage
+
+EXPOSE 8080
 
 RUN php artisan config:clear && \
     php artisan route:clear && \
-    php artisan view:clear
+    php artisan view:clear && \
+    php artisan optimize
 
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-EXPOSE 8080
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start the SSR server, Reverb, and the main application server
+CMD php artisan inertia:start-ssr & php artisan reverb:start & php artisan serve --host=0.0.0.0 --port=8080
