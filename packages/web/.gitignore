@@ -1,5 +1,4 @@
 /.phpunit.cache
-/bootstrap/ssr
 /node_modules
 /public/build
 /public/hot
@@ -12,16 +11,13 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
-.php-cs-fixer.cache
 Homestead.json
 Homestead.yaml
-auth.json
 npm-debug.log
 yarn-error.log
+/auth.json
 /.fleet
 /.idea
+/.nova
 /.vscode
 /.zed
-resources/js/routes.d.ts
-resources/js/routes.json
-bun.lockb

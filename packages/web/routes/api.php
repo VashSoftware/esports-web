@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\OsuMessageController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::resource('/osu_messages', OsuMessageController::class);
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');

@@ -10,7 +10,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN composer install --no-scripts --no-progress --prefer-dist --optimize-autoloader
 
 RUN npm install -g bun
-COPY package*.json bun.lock ./
+COPY package*.json bun.lock* ./
 RUN bun install
 
 COPY . .
@@ -38,4 +38,4 @@ RUN php artisan config:clear && \
     php artisan optimize
 
 # Start the SSR server, Reverb, and the main application server
-CMD php artisan inertia:start-ssr & php artisan reverb:start & php artisan serve --host=0.0.0.0 --port=8080
+CMD php artisan reverb:start & php artisan serve --host=0.0.0.0 --port=8080
