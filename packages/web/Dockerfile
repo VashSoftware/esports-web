@@ -34,8 +34,7 @@ EXPOSE 8080
 
 RUN php artisan config:clear && \
     php artisan route:clear && \
-    php artisan view:clear && \
-    php artisan optimize
+    php artisan view:clear
 
 # Start the SSR server, Reverb, and the main application server
 CMD php artisan reverb:start & php artisan serve --host=0.0.0.0 --port=8080
