@@ -1,47 +1,38 @@
 services:
-  laravel-web:
-    build:
-      context: "packages/web"
+  web:
+    build: packages/web
+    env_file: packages/web/.env
+    restart: unless-stopped
     ports:
       - "${APP_PORT:-8080}:8080"
-      - "${VITE_PORT:-5173}:${VITE_PORT:-5173}"
-    env_file: packages/web/.env
-    volumes:
-      - "./packages/web:/var/www/html"
     networks:
       - vash-net
 
-  #   laravel-reverb:
-  #     build:
-  #       context: "packages/web"
-  #       dockerfile: Dockerfile.reverb
-  #     ports:
-  #       - "${REVERB_PORT:-8080}:${REVERB_PORT:-8080}"
-  #     environment:
-  #       WWWUSER: "${WWWUSER}"
-  #       IGNITION_LOCAL_SITES_PATH: "${PWD}"
-  #     volumes:
-  #       - "./packages/web:/var/www/html"
-  #     networks:
-  #       - vash-net
-
   osu:
     build: packages/osu
+    env_file: packages/osu/.env
     restart: unless-stopped
     ports:
       - "${OSU_PORT:-3000}:3000"
     networks:
       - vash-net
 
+  discord:
+    build: packages/discord
+    env_file: packages/discord/.env
+    restart: unless-stopped
+    networks:
+      - vash-net
+
   pgsql:
-    image: "postgres:17"
+    image: postgres:17
     ports:
       - "${FORWARD_DB_PORT:-5432}:5432"
     environment:
-      PGPASSWORD: "${DB_PASSWORD:-secret}"
-      POSTGRES_DB: "${DB_DATABASE}"
-      POSTGRES_USER: "${DB_USERNAME}"
-      POSTGRES_PASSWORD: "${DB_PASSWORD:-secret}"
+      PGPASSWORD: "${DB_PASSWORD:-password}"
+      POSTGRES_DB: "${DB_DATABASE:-postgres}"
+      POSTGRES_USER: "${DB_USERNAME:-postgres}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-password}"
     volumes:
       - "vash-pgsql:/var/lib/postgresql/data"
     networks:
@@ -52,16 +43,16 @@ services:
         - pg_isready
         - "-q"
         - "-d"
-        - "${DB_DATABASE}"
+        - "${DB_DATABASE:-postgres}"
         - "-U"
-        - "${DB_USERNAME}"
+        - "${DB_USERNAME:-postgres}"
       retries: 3
       timeout: 5s
 
   redis:
-    image: "redis:alpine"
+    image: redis
     ports:
-      - "${FORWARD_REDIS_PORT:-6379}:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - "vash-redis:/data"
     networks:
@@ -73,9 +64,10 @@ services:
         - ping
       retries: 3
       timeout: 5s
+
 networks:
-    vash-net:
-        driver: bridge
+  vash-net:
+    driver: bridge
 
 volumes:
   vash-pgsql:
