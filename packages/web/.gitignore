@@ -21,3 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+bootstrap/ssr
+resources/js/routes.json
+resources/js/routes.d.ts
