@@ -22,7 +22,10 @@ RUN bun run build
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-RUN php artisan optimize
+RUN php artisan config:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
+# RUN php artisan optimize
 
 RUN chown -R www-data:www-data /var/www
 
