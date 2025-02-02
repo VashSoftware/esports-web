@@ -2,71 +2,46 @@
 
 namespace App\Providers;
 
-use App\Models\VashMatch;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public $singletons = [];
+    /**
+     * The path to the "home" route for your application.
+     *
+     * This is used by Laravel authentication to redirect users after login.
+     *
+     * @var string
+     */
+    public const HOME = '/';
 
     /**
      * Register any application services.
      */
-    public function register(): void {}
+    public function register(): void
+    {
+        Model::unguard();
+    }
 
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
-        Inertia::share([
-            'user' => (function (Request $request) {
-                return $request->user()
-                    ? $request->user()->load('profile.teamMembers.team.matchParticipants')->only('id', 'name', 'email', 'profile')
-                    : null;
-            }),
-            'match_queue' => (function (Request $request) {
-                if ($user = $request->user()) {
-                    $personalTeam = $user->profile->personalTeam();
+        //
 
-                    if ($personalTeam) {
-                        return Redis::exists('match_queue:1v1:'.$personalTeam->id);
-                    }
-                }
+        $this->bootRoute();
+    }
 
-                return null;
-            }),
-            'current_matches' => (function (Request $request) {
-                if (! $request->user()) {
-                    return null;
-                }
+    public function bootRoute(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
 
-                $activeMatches = VashMatch::with('matchParticipants.matchParticipantPlayers.teamMember')
-                    ->whereNull('finished_at')
-                    ->get();
-
-                $userProfileId = $request->user()->profile->id;
-
-                $userActiveMatches = $activeMatches->filter(function ($match) use ($userProfileId) {
-                    foreach ($match->matchParticipants as $participant) {
-                        foreach ($participant->matchParticipantPlayers as $player) {
-                            if ($player->teamMember->profile_id == $userProfileId) {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                });
-
-                return $userActiveMatches->all();
-            }),
-        ]);
-
-        Vite::prefetch(concurrency: 3);
     }
 }

@@ -1,31 +1,34 @@
 <?php
 
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\EventGroupController;
-use App\Http\Controllers\GameController;
-use App\Http\Controllers\GameModeController;
-use App\Http\Controllers\MapController;
-use App\Http\Controllers\MapPoolController;
-use App\Http\Controllers\MapPoolMapController;
-use App\Http\Controllers\MapPoolMapModController;
-use App\Http\Controllers\MatchBanController;
-use App\Http\Controllers\MatchController;
-use App\Http\Controllers\MatchMapController;
-use App\Http\Controllers\MatchQueueController;
-use App\Http\Controllers\ModController;
-use App\Http\Controllers\OrganisationController;
-use App\Http\Controllers\ParticipantController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RollController;
-use App\Http\Controllers\RoundController;
-use App\Http\Controllers\TeamController;
-use App\Models\Mod;
-use App\Models\Score;
-use App\Models\Team;
-use App\Models\TeamMember;
-use App\Models\VashMatch;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ContactsController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImagesController;
+use App\Http\Controllers\OrganizationsController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+// Auth
+
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login');
+
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        ->name('login.store');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -102,5 +105,3 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('rolls', RollController::class);
 });
-
-require __DIR__.'/auth.php';
