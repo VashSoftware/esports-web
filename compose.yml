@@ -1,13 +1,20 @@
 services:
   web:
-    build: packages/web
+    image: oven/bun
+    command: sh -c "bun install && bun run dev --host"
+    volumes:
+      - ./packages/web:/home/bun/app
     restart: unless-stopped
     ports:
-      - "${WEB_PORT:-80}:3000"
-    environment:
-      - DB_URL=${DB_URL:-postgresql://postgres:password@pgsql:5432/postgres}
+      - "${WEB_PORT:-80}:5173"
+    env_file: .env
     networks:
       - vash-net
+    develop:
+      watch:
+        - action: sync
+          target: packages/web
+          path: /home/bun/app
 
   osu:
     build: packages/osu
