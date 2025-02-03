@@ -113,7 +113,7 @@ FRONTEND_API_URL=http://localhost:3000/api
 
 # Backend Configuration
 BACKEND_PORT=4000
-DATABASE_URL=postgresql://user:password@localhost:5432/vash_esports
+DB_URL=postgresql://user:password@localhost:5432/vash_esports
 
 # Supabase Configuration
 SUPABASE_URL=https://your-supabase-url.supabase.co
