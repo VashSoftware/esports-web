@@ -13,12 +13,19 @@ services:
     develop:
       watch:
         - action: sync
-          target: packages/web
-          path: /home/bun/app
+          target: /home/bun/app/src
+          path: ./packages/web/src
 
   matchmaking:
     build: packages/matchmaking
     env_file: packages/matchmaking/.env
+    restart: unless-stopped
+    networks:
+      - vash-net
+
+  realtime:
+    build: packages/realtime
+    env_file: packages/realtime/.env
     restart: unless-stopped
     networks:
       - vash-net
