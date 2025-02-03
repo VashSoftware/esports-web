@@ -26,5 +26,17 @@ export const actions: Actions = {
 		} else {
 			redirect(303, '/');
 		}
+	},
+	signInWithGoogle: async ({ url, locals: { supabase } }) => {
+		const { data, error } = await supabase.auth.signInWithOAuth({
+			provider: 'google',
+			options: {
+				redirectTo: url.origin + '/auth/callback'
+			}
+		});
+
+		if (data.url) {
+			redirect(303, data.url);
+		}
 	}
 };
