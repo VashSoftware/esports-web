@@ -16,12 +16,17 @@ services:
           target: packages/web
           path: /home/bun/app
 
+  matchmaking:
+    build: packages/matchmaking
+    env_file: packages/matchmaking/.env
+    restart: unless-stopped
+    networks:
+      - vash-net
+
   osu:
     build: packages/osu
     env_file: packages/osu/.env
     restart: unless-stopped
-    ports:
-      - "${OSU_PORT:-3000}:3000"
     networks:
       - vash-net
 
