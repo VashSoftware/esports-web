@@ -13,8 +13,9 @@ export const GET: RequestHandler = async (event) => {
 		if (!error) {
 			redirect(303, `/${next.slice(1)}`);
 		}
+		console.log(error);
 	}
 
 	// return the user to an error page with instructions
-	redirect(303, '/auth/auth-code-error');
+	redirect(303, '/auth/error');
 };
