@@ -54,7 +54,7 @@
 			<div class="align-center flex flex-col gap-2">
 				<button
 					type="button"
-					class="flex items-center space-x-2 rounded bg-pink-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+					class="flex items-center space-x-2 rounded bg-pink-600 px-4 py-2 text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
 					formaction="?/signInWithOsu"
 				>
 					<!-- Osu Icon could go here -->
