@@ -5,7 +5,7 @@
 		action="?/login"
 		class="w-full max-w-sm space-y-6 rounded-lg border border-white p-8 shadow-lg"
 	>
-		<h2 class="text-center text-2xl font-semibold text-white">Login</h2>
+		<h2 class="text-center text-2xl font-semibold text-white">Log in to Vash Esports</h2>
 
 		<!-- Email Input -->
 		<div>
@@ -48,6 +48,41 @@
 			>
 				Sign Up
 			</button>
+		</div>
+
+		<div class="text-center py-4">or, log in with these platforms:</div>
+
+		<div>
+			<div class="align-center flex flex-col gap-2">
+				<button
+					type="button"
+					class="flex items-center space-x-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+				>
+					<!-- Google Icon could go here -->
+					<span>Google</span>
+				</button>
+				<button
+					type="button"
+					class="flex items-center space-x-2 rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+				>
+					<!-- Discord Icon could go here -->
+					<span>Discord</span>
+				</button>
+				<button
+					type="button"
+					class="flex items-center space-x-2 rounded bg-purple-600 px-4 py-2 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+				>
+					<!-- Twitch Icon could go here -->
+					<span>Twitch</span>
+				</button>
+				<button
+					type="button"
+					class="flex items-center space-x-2 rounded bg-pink-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+				>
+					<!-- Osu Icon could go here -->
+					<span>osu!</span>
+				</button>
+			</div>
 		</div>
 	</form>
 </div>
