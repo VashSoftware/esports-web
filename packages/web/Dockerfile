@@ -23,7 +23,9 @@ COPY . .
 
 # [optional] tests & build
 ENV NODE_ENV=production
-ENV DB_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+ENV PUBLIC_SUPABASE_URL="https://example.com"
+ENV PUBLIC_SUPABASE_ANON_KEY="example"
+ENV DB_URL="postgresql://postgres:password@localhost:5432/postgres"
 # RUN bun test
 RUN bun run build
 

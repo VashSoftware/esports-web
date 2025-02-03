@@ -46,6 +46,8 @@
 		"vitest": "^3.0.0"
 	},
 	"dependencies": {
+		"@supabase/ssr": "^0.5.2",
+		"@supabase/supabase-js": "^2.48.1",
 		"drizzle-orm": "^0.38.4",
 		"postgres": "^3.4.5"
 	}

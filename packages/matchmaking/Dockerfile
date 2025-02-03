@@ -31,4 +31,4 @@ COPY . .
 # Run the app
 USER bun
 EXPOSE 3000/tcp
-CMD [ "bun", "run", "index.ts" ]
+CMD [ "bun", "run", "src/index.ts" ]
