@@ -13,8 +13,7 @@
 			<input
 				id="email"
 				name="email"
-				type="email"
-				required
+				type="text"
 				placeholder="you@example.com"
 				class="w-full rounded bg-gray-700 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
 			/>
@@ -27,7 +26,6 @@
 				id="password"
 				name="password"
 				type="password"
-				required
 				placeholder="Your password"
 				class="w-full rounded bg-gray-700 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
 			/>
