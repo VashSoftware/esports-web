@@ -23,6 +23,7 @@ COPY . .
 
 # [optional] tests & build
 ENV NODE_ENV=production
+ENV DB_URL="postgresql://postgres:postgres@localhost:5432/postgres"
 # RUN bun test
 RUN bun run build
 
