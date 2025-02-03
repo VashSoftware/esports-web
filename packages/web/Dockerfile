@@ -23,8 +23,8 @@ COPY . .
 
 # [optional] tests & build
 ENV NODE_ENV=production
-ENV PUBLIC_SUPABASE_URL="https://example.com"
-ENV PUBLIC_SUPABASE_ANON_KEY="example"
+ENV SUPABASE_URL="https://example.com"
+ENV SUPABASE_ANON_KEY="example"
 ENV DB_URL="postgresql://postgres:password@localhost:5432/postgres"
 # RUN bun test
 RUN bun run build
