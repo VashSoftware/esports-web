@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-80}:5173"
-    env_file: .env
+    env_file: packages/web/.env
     networks:
       - vash-net
     develop:

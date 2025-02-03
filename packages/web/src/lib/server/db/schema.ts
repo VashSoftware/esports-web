@@ -110,7 +110,9 @@ export const teamMembers = pgTable('team_members', {
 export const users = pgTable('users', {
 	id: serial('id').primaryKey(),
 	username: text('username'),
-	email: text('email')
+	displayName: text('display_name'),
+	email: text('email'),
+	profile_picture: text('profile_picture')
 });
 
 export const badges = pgTable('badges', {
