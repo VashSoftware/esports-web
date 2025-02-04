@@ -1,4 +1,5 @@
-import { pgTable, serial, text, integer } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import { pgTable, serial, text, integer, primaryKey, real } from 'drizzle-orm/pg-core';
 
 export const games = pgTable('games', {
 	id: serial('id').primaryKey(),
@@ -35,18 +36,59 @@ export const rounds = pgTable('rounds', {
 
 export const osuMaps = pgTable('osu_maps', {
 	id: serial('id').primaryKey(),
-	beatmapId: integer('beatmap_id')
+	beatmapId: integer('beatmap_id'),
+	difficultyName: text('difficulty_name'),
+	stars: real('stars')
 });
+
+export const osuMapsRelations = relations(osuMaps, ({ many, one }) => ({
+	osuMapPoolMaps: many(osuMapPoolMaps),
+	osuMapSet: one(osuMapSets)
+}));
 
 export const osuMapSets = pgTable('osu_map_sets', {
 	id: serial('id').primaryKey(),
-	name: text('name')
+	name: text('name'),
+	artist: text('artist'),
+	title: text('title')
 });
+
+export const osuMapSetsRelations = relations(osuMaps, ({ many }) => ({
+	osuMap: many(osuMaps)
+}));
 
 export const osuMapPools = pgTable('osu_map_pools', {
 	id: serial('id').primaryKey(),
 	name: text('name')
 });
+
+export const osuMapPoolsRelations = relations(osuMapPools, ({ many }) => ({
+	osuMapPoolMaps: many(osuMapPoolMaps)
+}));
+
+export const osuMapPoolMaps = pgTable(
+	'osu_map_pool_maps',
+	{
+		osuMapId: integer('osu_map_id')
+			.notNull()
+			.references(() => osuMaps.id),
+		osuMapPoolId: integer('osu_map_pool_id')
+			.notNull()
+			.references(() => osuMapPools.id)
+	},
+	(t) => [primaryKey({ columns: [t.osuMapId, t.osuMapPoolId] })]
+);
+
+export const osuMapPoolMapssRelations = relations(osuMapPoolMaps, ({ one }) => ({
+	osuMapPool: one(osuMapPools, {
+		fields: [osuMapPoolMaps.osuMapPoolId],
+		references: [osuMapPools.id]
+	}),
+	osuMap: one(osuMaps, {
+		fields: [osuMapPoolMaps.osuMapId],
+		references: [osuMaps.id]
+	})
+}));
 
 export const osuMessages = pgTable('osu_messages', {
 	id: serial('id').primaryKey()
