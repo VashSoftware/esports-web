@@ -1,52 +1,68 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
-	import * as Table from '$lib/components/ui/table';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 
 	let { data } = $props();
 </script>
 
-<div class="my-5 flex items-center justify-between">
-	<div></div>
-	<h1 class="text-center text-2xl">Map Pools</h1>
+<Dialog.Root>
+	<div class="my-5 flex items-center justify-between">
+		<div></div>
+		<h1 class="text-center text-2xl">Map Pools</h1>
+		<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Edit Profile</Dialog.Trigger>
+	</div>
 
-	<a href="/map_pools/create">
-		<button class="mx-16 rounded bg-blue-500 px-4 py-2">Create</button>
-	</a>
-</div>
-
-<div class="my-16 flex flex-col content-center">
-	<Table.Root>
-		<Table.Header>
-			<Table.Row>
-				<Table.Head class="w-[100px]">Invoice</Table.Head>
-				<Table.Head>Status</Table.Head>
-				<Table.Head>Method</Table.Head>
-				<Table.Head class="text-right">Amount</Table.Head>
-			</Table.Row>
-		</Table.Header>
-	</Table.Root>
-
-	<table class="table-auto">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Created At</th>
-				<th>Mods</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each data.mapPools as pool}
-				<tr onclick={() => goto(`/map_pools/${pool.id}`)}>
-					<td>
-						{#if pool.verified_at}
-							<div>Verified</div>
-						{/if}
-						{pool.name}</td
-					>
-					<td>{pool.description}</td>
-					<td>{pool.created_at}</td>
+	<div class="my-16 flex flex-col content-center">
+		<table class="table-auto">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Created At</th>
+					<th>Mods</th>
 				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
+			</thead>
+			<tbody>
+				{#each data.mapPools as pool}
+					<tr
+						onclick={() => goto(`/map_pools/${pool.id}`)}
+						class="cursor-pointer hover:bg-gray-100"
+					>
+						<td>
+							{#if pool.verified_at}
+								<div>Verified</div>
+							{/if}
+							{pool.name}
+						</td>
+						<td>{pool.description}</td>
+						<td>{pool.created_at}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
+
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Edit profile</Dialog.Title>
+			<Dialog.Description>
+				Make changes to your profile here. Click save when you're done.
+			</Dialog.Description>
+		</Dialog.Header>
+		<div class="grid gap-4 py-4">
+			<div class="grid grid-cols-4 items-center gap-4">
+				<Label for="name" class="text-right">Name</Label>
+				<Input id="name" value="Pedro Duarte" class="col-span-3" />
+			</div>
+			<div class="grid grid-cols-4 items-center gap-4">
+				<Label for="username" class="text-right">Username</Label>
+				<Input id="username" value="@peduarte" class="col-span-3" />
+			</div>
+		</div>
+		<Dialog.Footer>
+			<Button type="submit">Save changes</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>

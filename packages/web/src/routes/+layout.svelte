@@ -2,11 +2,10 @@
 	import '../app.css';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { ModeWatcher } from 'mode-watcher';
 
 	let { children, data } = $props();
 	let { session, supabase } = $derived(data);
-
-	console.log(data.session);
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
@@ -23,6 +22,7 @@
 	// let current_matches = $state(data.current_matches )
 </script>
 
+<ModeWatcher />
 <div class="flex h-screen">
 	<!-- Sidebar -->
 	{#if data.route.id !== '/login'}
@@ -35,7 +35,7 @@
 					<button
 						id="create-button"
 						onclick={() => (showMenu = !showMenu)}
-						class="text-3xl hover:text-gray-400 focus:outline-none"
+						class="focus:outline-hidden text-3xl hover:text-gray-400"
 						aria-label="Create"
 					>
 						+
@@ -164,7 +164,7 @@
 					</a>
 					<a href="/settings">
 						<button
-							class="ml-auto rounded bg-black p-2 hover:bg-opacity-75 focus:outline-none"
+							class="focus:outline-hidden ml-auto rounded bg-black p-2 hover:bg-opacity-75"
 							aria-label="Settings"
 						>
 							<!-- Settings Icon -->

@@ -15,7 +15,7 @@
 				name="email"
 				type="text"
 				placeholder="you@example.com"
-				class="w-full rounded bg-gray-700 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+				class="w-full rounded bg-gray-700 px-3 py-2 text-white focus:outline-hidden focus:ring-2 focus:ring-blue-500"
 			/>
 		</div>
 
@@ -27,7 +27,7 @@
 				name="password"
 				type="password"
 				placeholder="Your password"
-				class="w-full rounded bg-gray-700 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+				class="w-full rounded bg-gray-700 px-3 py-2 text-white focus:outline-hidden focus:ring-2 focus:ring-blue-500"
 			/>
 		</div>
 
@@ -35,14 +35,14 @@
 		<div class="flex items-center justify-between">
 			<button
 				type="submit"
-				class="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+				class="rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
 			>
 				Login
 			</button>
 			<button
 				type="submit"
 				formaction="?/signup"
-				class="rounded bg-gray-600 px-4 py-2 font-semibold text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+				class="rounded bg-gray-600 px-4 py-2 font-semibold text-white hover:bg-gray-700 focus:outline-hidden focus:ring-2 focus:ring-gray-500"
 			>
 				Sign Up
 			</button>
@@ -54,7 +54,7 @@
 			<div class="align-center flex flex-col gap-2">
 				<button
 					type="button"
-					class="flex items-center space-x-2 rounded bg-pink-600 px-4 py-2 text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
+					class="flex items-center space-x-2 rounded bg-pink-600 px-4 py-2 text-white hover:bg-pink-700 focus:outline-hidden focus:ring-2 focus:ring-pink-500"
 					formaction="?/signInWithOsu"
 				>
 					<!-- Osu Icon could go here -->
@@ -62,7 +62,7 @@
 				</button>
 				<button
 					type="button"
-					class="flex items-center space-x-2 rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+					class="flex items-center space-x-2 rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
 					formaction="?/signInWithDiscord"
 				>
 					<!-- Discord Icon could go here -->
@@ -70,7 +70,7 @@
 				</button>
 				<button
 					type="button"
-					class="flex items-center space-x-2 rounded bg-purple-600 px-4 py-2 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+					class="flex items-center space-x-2 rounded bg-purple-600 px-4 py-2 text-white hover:bg-purple-700 focus:outline-hidden focus:ring-2 focus:ring-purple-500"
 					formaction="?/signInWithTwitch"
 				>
 					<!-- Twitch Icon could go here -->
@@ -79,7 +79,7 @@
 				<button
 					type="submit"
 					formaction="?/signInWithGoogle"
-					class="flex items-center space-x-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+					class="flex items-center space-x-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-hidden focus:ring-2 focus:ring-red-500"
 				>
 					<!-- Google Icon could go here -->
 					<span>Google</span>
