@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, serial, text, integer, primaryKey, real } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, integer, primaryKey, real, boolean } from 'drizzle-orm/pg-core';
 
 export const games = pgTable('games', {
 	id: serial('id').primaryKey(),
@@ -79,7 +79,7 @@ export const osuMapPoolMaps = pgTable(
 	(t) => [primaryKey({ columns: [t.osuMapId, t.osuMapPoolId] })]
 );
 
-export const osuMapPoolMapssRelations = relations(osuMapPoolMaps, ({ one }) => ({
+export const osuMapPoolMapsRelations = relations(osuMapPoolMaps, ({ one }) => ({
 	osuMapPool: one(osuMapPools, {
 		fields: [osuMapPoolMaps.osuMapPoolId],
 		references: [osuMapPools.id]
@@ -113,15 +113,32 @@ export const ratings = pgTable('ratings', {
 });
 
 export const matches = pgTable('matches', {
-	id: serial('id').primaryKey()
+	id: serial('id').primaryKey(),
+	isRolling: boolean('is_rolling'),
+	currentBanner: integer('current_banner_id').references(() => matchParticipants.id),
+	currentPicker: integer('current_picker_id').references(() => matchParticipants.id)
 });
+
+export const matchRelations = relations(matches, ({ one, many }) => ({
+	game: one(games),
+	gameMode: one(gameModes),
+	event: one(events),
+	round: one(rounds),
+	matchParticipants: many(matchParticipants)
+}));
 
 export const matchParticipants = pgTable('match_participants', {
-	id: serial('id').primaryKey()
+	id: serial('id').primaryKey(),
+	matchId: integer('match_id').references(() => matches.id)
 });
 
+export const matchParticipantsRelations = relations(matchParticipants, ({ one }) => ({
+	match: one(matches)
+}));
+
 export const matchParticipantPlayers = pgTable('match_participant_players', {
-	id: serial('id').primaryKey()
+	id: serial('id').primaryKey(),
+	matchParticipantId: integer('match_participant_id').references(() => matchParticipants.id)
 });
 
 export const matchRolls = pgTable('match_rolls', {

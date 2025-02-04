@@ -20,8 +20,14 @@ services:
     build: packages/matchmaking
     env_file: packages/matchmaking/.env
     restart: unless-stopped
+    ports:
+      - "${MATCHMAKING_PORT:-3000}:3000"
     networks:
       - vash-net
+    develop:
+      watch:
+        - action: rebuild
+          path: ./packages/matchmaking/src
 
   realtime:
     build: packages/realtime
