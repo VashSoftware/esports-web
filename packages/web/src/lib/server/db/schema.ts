@@ -1,14 +1,5 @@
 import { relations } from 'drizzle-orm';
-import {
-	pgTable,
-	serial,
-	text,
-	integer,
-	primaryKey,
-	real,
-	boolean,
-	uuid
-} from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, integer, real, boolean, uuid } from 'drizzle-orm/pg-core';
 
 export const games = pgTable('games', {
 	id: serial('id').primaryKey(),
@@ -72,22 +63,19 @@ export const osuMapPools = pgTable('osu_map_pools', {
 });
 
 export const osuMapPoolsRelations = relations(osuMapPools, ({ many }) => ({
-	osuMapPoolMaps: many(osuMapPoolMaps),
+	maps: many(osuMapPoolMaps),
 	matches: many(matches)
 }));
 
-export const osuMapPoolMaps = pgTable(
-	'osu_map_pool_maps',
-	{
-		osuMapId: integer('osu_map_id')
-			.notNull()
-			.references(() => osuMaps.id),
-		osuMapPoolId: integer('osu_map_pool_id')
-			.notNull()
-			.references(() => osuMapPools.id)
-	},
-	(t) => [primaryKey({ columns: [t.osuMapId, t.osuMapPoolId] })]
-);
+export const osuMapPoolMaps = pgTable('osu_map_pool_maps', {
+	id: serial('id').primaryKey(),
+	osuMapId: integer('osu_map_id')
+		.notNull()
+		.references(() => osuMaps.id),
+	osuMapPoolId: integer('osu_map_pool_id')
+		.notNull()
+		.references(() => osuMapPools.id)
+});
 
 export const osuMapPoolMapsRelations = relations(osuMapPoolMaps, ({ one }) => ({
 	osuMapPool: one(osuMapPools, {
@@ -136,8 +124,22 @@ export const matchRelations = relations(matches, ({ one, many }) => ({
 	gameMode: one(gameModes),
 	event: one(events),
 	round: one(rounds),
-	matchParticipants: many(matchParticipants),
-	mapPool: one(osuMapPools)
+	participants: many(matchParticipants),
+	currentBanner: one(matchParticipants, {
+		fields: [matches.currentBanner],
+		references: [matchParticipants.id]
+	}),
+	currentPicker: one(matchParticipants, {
+		fields: [matches.currentPicker],
+		references: [matchParticipants.id]
+	}),
+	mapPool: one(osuMapPools, {
+		fields: [matches.mapPoolId],
+		references: [osuMapPools.id]
+	}),
+	rolls: many(matchRolls),
+	bans: many(matchBans),
+	picks: many(matchPicks)
 }));
 
 export const matchParticipants = pgTable('match_participants', {
@@ -145,8 +147,12 @@ export const matchParticipants = pgTable('match_participants', {
 	matchId: integer('match_id').references(() => matches.id)
 });
 
-export const matchParticipantsRelations = relations(matchParticipants, ({ one }) => ({
-	match: one(matches)
+export const matchParticipantsRelations = relations(matchParticipants, ({ one, many }) => ({
+	match: one(matches, {
+		fields: [matchParticipants.matchId],
+		references: [matches.id]
+	}),
+	players: many(matchParticipantPlayers)
 }));
 
 export const matchParticipantPlayers = pgTable('match_participant_players', {
@@ -156,21 +162,69 @@ export const matchParticipantPlayers = pgTable('match_participant_players', {
 });
 
 export const matchParticipantPlayersRelations = relations(matchParticipantPlayers, ({ one }) => ({
-	matchParticipant: one(matchParticipants),
+	matchParticipant: one(matchParticipants, {
+		fields: [matchParticipantPlayers.matchParticipantId],
+		references: [matchParticipants.id]
+	}),
 	teamMember: one(teamMembers)
 }));
 
 export const matchRolls = pgTable('match_rolls', {
-	id: serial('id').primaryKey()
+	id: serial('id').primaryKey(),
+	matchId: integer('match_id').references(() => matches.id),
+	matchParticipantId: integer('match_participant_id').references(() => matchParticipants.id),
+	roll: integer('roll')
 });
+
+export const matchRollsRelations = relations(matchRolls, ({ one }) => ({
+	matchId: one(matches, {
+		fields: [matchRolls.matchId],
+		references: [matches.id]
+	}),
+	matchParticipant: one(matchParticipants, {
+		fields: [matchRolls.matchParticipantId],
+		references: [matchParticipants.id]
+	})
+}));
 
 export const matchBans = pgTable('match_bans', {
-	id: serial('id').primaryKey()
+	id: serial('id').primaryKey(),
+	matchId: integer('match_id').references(() => matches.id),
+	matchParticipantId: integer('match_participant_id').references(() => matchParticipants.id),
+	mapPoolMapId: integer('map_pool_map_id').references(() => osuMapPoolMaps.id)
 });
 
-export const matchPicks = pgTable('match_maps', {
-	id: serial('id').primaryKey()
+export const matchBansRelations = relations(matchBans, ({ one }) => ({
+	matchId: one(matches, {
+		fields: [matchBans.matchId],
+		references: [matches.id]
+	}),
+	matchParticipant: one(matchParticipants, {
+		fields: [matchBans.matchParticipantId],
+		references: [matchParticipants.id]
+	}),
+	mapPoolMap: one(osuMapPoolMaps, {
+		fields: [matchBans.mapPoolMapId],
+		references: [osuMapPoolMaps.id]
+	})
+}));
+
+export const matchPicks = pgTable('match_picks', {
+	id: serial('id').primaryKey(),
+	matchId: integer('match_id').references(() => matches.id),
+	mapPoolMapId: integer('map_pool_map_id').references(() => osuMapPoolMaps.id)
 });
+
+export const matchPicksRelations = relations(matchPicks, ({ one }) => ({
+	matchId: one(matches, {
+		fields: [matchPicks.matchId],
+		references: [matches.id]
+	}),
+	mapPoolMap: one(osuMapPoolMaps, {
+		fields: [matchPicks.mapPoolMapId],
+		references: [osuMapPoolMaps.id]
+	})
+}));
 
 export const scores = pgTable('scores', {
 	id: serial('id').primaryKey()
