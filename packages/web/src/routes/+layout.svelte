@@ -3,6 +3,7 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
+	import { io } from 'socket.io-client';
 
 	let { children, data } = $props();
 	let { session, supabase } = $derived(data);
@@ -14,7 +15,12 @@
 			}
 		});
 
-		return () => data.subscription.unsubscribe();
+		const socket = io('http://localhost:3000');
+
+		return () => {
+			data.subscription.unsubscribe();
+			socket.disconnect();
+		};
 	});
 
 	let showMenu = $state(false);

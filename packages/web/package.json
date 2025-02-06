@@ -58,6 +58,7 @@
 		"@tailwindcss/vite": "^4.0.3",
 		"drizzle-orm": "^0.39.1",
 		"mode-watcher": "^0.5.1",
-		"postgres": "^3.4.5"
+		"postgres": "^3.4.5",
+		"socket.io-client": "^4.8.1"
 	}
 }

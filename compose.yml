@@ -20,8 +20,6 @@ services:
     build: packages/matchmaking
     env_file: packages/matchmaking/.env
     restart: unless-stopped
-    ports:
-      - "${MATCHMAKING_PORT:-3000}:3000"
     networks:
       - vash-net
     develop:
@@ -33,8 +31,14 @@ services:
     build: packages/realtime
     env_file: packages/realtime/.env
     restart: unless-stopped
+    ports:
+      - "${REALTIME_PORT:-3000}:3000"
     networks:
       - vash-net
+    develop:
+      watch:
+        - action: rebuild
+          path: ./packages/realtime/src
 
   osu:
     build: packages/osu
@@ -42,6 +46,10 @@ services:
     restart: unless-stopped
     networks:
       - vash-net
+    develop:
+      watch:
+        - action: rebuild
+          path: ./packages/osu/src
 
   discord:
     build: packages/discord
