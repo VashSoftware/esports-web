@@ -242,7 +242,7 @@ export const teamRelations = relations(teams, ({ many }) => ({
 export const teamMembers = pgTable('team_members', {
 	id: serial('id').primaryKey(),
 	teamId: integer('team_id').references(() => teams.id),
-	userId: integer('user_id').references(() => users.id)
+	userId: uuid('user_id').references(() => users.id)
 });
 
 export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
@@ -251,12 +251,11 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
 }));
 
 export const users = pgTable('users', {
-	id: serial('id').primaryKey(),
+	id: uuid('id').primaryKey(),
 	username: text('username'),
 	displayName: text('display_name'),
 	email: text('email'),
-	profile_picture: text('profile_picture'),
-	supabaseUserId: uuid('supabase_user_id').notNull()
+	profile_picture: text('profile_picture')
 });
 
 export const userRelations = relations(users, ({ many }) => ({
