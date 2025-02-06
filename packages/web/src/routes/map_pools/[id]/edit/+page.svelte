@@ -7,7 +7,7 @@
 <h1 class="my-4 text-center text-2xl font-bold">{data.mapPool.name}</h1>
 
 <div class="flex flex-col justify-center text-center">
-	<form>
+	<form method="post" action="?/addMap">
 		<button class="my-3 rounded bg-white px-4 py-2 text-black">Add Map</button>
 	</form>
 	<table class="table-auto">
@@ -18,7 +18,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each data.mapPool.map_pool_maps as map}
+			{#each data.mapPool.maps as map}
 				<tr>
 					<td class="flex items-center justify-center gap-2">
 						{#each map.map_pool_map_mods as mod}

@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		mapPool: await db.query.osuMapPools.findFirst({
 			where: eq(osuMapPools.id, parseInt(params.id)),
 			with: {
-				osuMapPoolMaps: true
+				maps: true
 			}
 		})
 	};

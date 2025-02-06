@@ -69,9 +69,7 @@ export const osuMapPoolsRelations = relations(osuMapPools, ({ many }) => ({
 
 export const osuMapPoolMaps = pgTable('osu_map_pool_maps', {
 	id: serial('id').primaryKey(),
-	osuMapId: integer('osu_map_id')
-		.notNull()
-		.references(() => osuMaps.id),
+	osuMapId: integer('osu_map_id').references(() => osuMaps.id),
 	osuMapPoolId: integer('osu_map_pool_id')
 		.notNull()
 		.references(() => osuMapPools.id)
