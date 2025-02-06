@@ -1,35 +1,30 @@
 <script lang="ts">
-    import Layout from '../../Shared/Layout.svelte'
-    import { Link } from '@inertiajs/svelte'
-
-    export let events
+	const { data } = $props();
 </script>
 
-<Layout>
-    <Link href="/events/create">
-        <button>Create Event</button>
-    </Link>
+<a href="/events/create">
+	<button>Create Event</button>
+</a>
 
-    <table>
-        <thead>
-            <tr>
-                <th> Title </th>
-                <th> Description</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each events as event}
-                <tr>
-                    <td>{event.title}</td>
-                    <td>{event.description}</td>
-                    <td>{event.date}</td>
-                    <td>
-                        <Link href={`/events/${event.id}`}>View</Link>
-                    </td>
-                </tr>
-            {/each}
-        </tbody>
-    </table>
-</Layout>
+<table>
+	<thead>
+		<tr>
+			<th> Title </th>
+			<th> Description</th>
+			<th>Date</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.events as event}
+			<tr>
+				<td>{event.title}</td>
+				<td>{event.description}</td>
+				<td>{event.date}</td>
+				<td>
+					<a href={`/events/${event.id}`}>View</a>
+				</td>
+			</tr>
+		{/each}
+	</tbody>
+</table>
