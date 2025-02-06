@@ -89,7 +89,10 @@ export const osuMapPoolMapsRelations = relations(osuMapPoolMaps, ({ one }) => ({
 }));
 
 export const osuMessages = pgTable('osu_messages', {
-	id: serial('id').primaryKey()
+	id: serial('id').primaryKey(),
+	username: text('username'),
+	channel: text('channel'),
+	message: text('message')
 });
 
 export const mods = pgTable('mods', {
@@ -166,7 +169,10 @@ export const matchParticipantPlayersRelations = relations(matchParticipantPlayer
 		fields: [matchParticipantPlayers.matchParticipantId],
 		references: [matchParticipants.id]
 	}),
-	teamMember: one(teamMembers)
+	teamMember: one(teamMembers, {
+		fields: [matchParticipantPlayers.teamMemberId],
+		references: [teamMembers.id]
+	})
 }));
 
 export const matchRolls = pgTable('match_rolls', {

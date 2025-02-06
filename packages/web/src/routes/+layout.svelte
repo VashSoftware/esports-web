@@ -6,6 +6,7 @@
 	import { io } from 'socket.io-client';
 
 	let { children, data } = $props();
+	console.log(data.currentMatches);
 	let { session, supabase } = $derived(data);
 
 	onMount(() => {
@@ -24,8 +25,6 @@
 	});
 
 	let showMenu = $state(false);
-
-	// let current_matches = $state(data.current_matches )
 </script>
 
 <ModeWatcher />
@@ -189,21 +188,20 @@
 
 	<!-- Main Content Area -->
 	<main class="flex-1 overflow-auto bg-black text-white">
-		<!-- {#if $page.component != 'Matches/Play' && $page.props.match_queue}
+		{#if data.route.id != '/matches/[id]/play' && data.matchQueue}
 			<div
 				class="flex items-center justify-between bg-yellow-500 p-2 text-center text-xl font-bold text-black"
 			>
 				<div></div>
 				<p>You're in the queue!</p>
-				<button
-					onclick={() => router.delete('/match-queue')}
-					class="mx-1 rounded bg-black px-2 py-1 text-white">X</button
-				>
+				<form action="?/leaveQueue" method="post">
+					<button class="mx-1 rounded bg-black px-2 py-1 text-white">X</button>
+				</form>
 			</div>
 		{/if}
 
-		{#if $page.component != 'Matches/Play' && current_matches.length > 0}
-			<a href="/matches/{current_matches[0].id}/play">
+		{#if data.route.id != '/matches/[id]/play' && data.currentMatches?.length > 0}
+			<a href="/matches/{data.currentMatches[0].id}/play">
 				<div
 					class="flex items-center justify-between bg-yellow-500 p-2 text-center text-xl font-bold text-black"
 				>
@@ -212,7 +210,7 @@
 					<button class="mx-1 rounded bg-black px-2 py-1 text-white">X</button>
 				</div>
 			</a>
-		{/if} -->
+		{/if}
 		<!-- Content goes here -->
 		{@render children?.()}
 	</main>
