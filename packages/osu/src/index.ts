@@ -49,5 +49,5 @@ function setupExpress(ircClient: Client) {
 }
 
 const client = setupIrc();
-// setupExpress(client);
+setupExpress(client);
 client.connect();
