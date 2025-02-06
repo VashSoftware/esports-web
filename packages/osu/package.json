@@ -2,7 +2,8 @@
   "name": "match-container",
   "module": "index.ts",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.30.4"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -16,7 +17,9 @@
     "@types/express": "^5.0.0",
     "@types/irc": "^0.5.4",
     "axios": "^1.7.9",
+    "drizzle-orm": "^0.39.2",
     "express": "^4.21.2",
-    "irc": "0.5.0"
+    "irc": "0.5.0",
+    "postgres": "^3.4.5"
   }
 }

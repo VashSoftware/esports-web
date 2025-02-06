@@ -1,6 +1,7 @@
 import { Client } from "irc";
 import express from "express";
-import axios from "axios";
+import { db } from "./db";
+import { osuMessages } from "./db/schema";
 
 function setupIrc() {
   const client = new Client("irc.ppy.sh", process.env.IRC_USERNAME!, {
@@ -8,24 +9,22 @@ function setupIrc() {
     password: process.env.IRC_PASSWORD,
   });
 
-  client.addListener("error", function(message) {
+  client.addListener("error", function (message) {
     console.error("error: ", message);
   });
 
-  client.addListener("registered", function(message) {
+  client.addListener("registered", function (message) {
     console.log("Registered", message);
   });
 
-  client.addListener("message", async function(from, to, message) {
-    try {
-      await axios.post("http://laravel.test/api/osu_messages", {
-        username: from,
-        channel: to,
-        message,
-      });
-    } catch (error) {
-      console.error("Failed to send message to Laravel API:", error.response ? error.response.data : error.message);
-    }
+  client.addListener("message", async function (from, to, message) {
+    console.log(`Received message from ${from} in ${to}: ${message}`);
+
+    await db.insert(osuMessages).values({
+      username: from,
+      channel: to,
+      message,
+    });
   });
 
   return client;
@@ -50,4 +49,5 @@ function setupExpress(ircClient: Client) {
 }
 
 const client = setupIrc();
-setupExpress(client);
+// setupExpress(client);
+client.connect();
