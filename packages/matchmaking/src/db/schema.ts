@@ -7,6 +7,7 @@ import {
   primaryKey,
   real,
   boolean,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 export const games = pgTable("games", {
@@ -72,6 +73,7 @@ export const osuMapPools = pgTable("osu_map_pools", {
 
 export const osuMapPoolsRelations = relations(osuMapPools, ({ many }) => ({
   osuMapPoolMaps: many(osuMapPoolMaps),
+  matches: many(matches),
 }));
 
 export const osuMapPoolMaps = pgTable(
@@ -122,10 +124,12 @@ export const ratings = pgTable("ratings", {
 
 export const matches = pgTable("matches", {
   id: serial("id").primaryKey(),
+  mapPoolId: integer("map_pool_id").references(() => osuMapPools.id),
   isRolling: boolean("is_rolling"),
   currentBanner: integer("current_banner_id").references(
     () => matchParticipants.id
   ),
+  bansPerMatchParticipant: integer("bans_per_match_participant"),
   currentPicker: integer("current_picker_id").references(
     () => matchParticipants.id
   ),
@@ -137,6 +141,7 @@ export const matchRelations = relations(matches, ({ one, many }) => ({
   event: one(events),
   round: one(rounds),
   matchParticipants: many(matchParticipants),
+  mapPool: one(osuMapPools),
 }));
 
 export const matchParticipants = pgTable("match_participants", {
@@ -156,7 +161,16 @@ export const matchParticipantPlayers = pgTable("match_participant_players", {
   matchParticipantId: integer("match_participant_id").references(
     () => matchParticipants.id
   ),
+  teamMemberId: integer("team_member_id").references(() => teamMembers.id),
 });
+
+export const matchParticipantPlayersRelations = relations(
+  matchParticipantPlayers,
+  ({ one }) => ({
+    matchParticipant: one(matchParticipants),
+    teamMember: one(teamMembers),
+  })
+);
 
 export const matchRolls = pgTable("match_rolls", {
   id: serial("id").primaryKey(),
@@ -179,9 +193,20 @@ export const teams = pgTable("teams", {
   name: text("name"),
 });
 
+export const teamRelations = relations(teams, ({ many }) => ({
+  teamMembers: many(teamMembers),
+}));
+
 export const teamMembers = pgTable("team_members", {
   id: serial("id").primaryKey(),
+  teamId: integer("team_id").references(() => teams.id),
+  userId: integer("user_id").references(() => users.id),
 });
+
+export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
+  team: one(teams),
+  user: one(users),
+}));
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -189,7 +214,12 @@ export const users = pgTable("users", {
   displayName: text("display_name"),
   email: text("email"),
   profile_picture: text("profile_picture"),
+  supabaseUserId: uuid("supabase_user_id").notNull(),
 });
+
+export const userRelations = relations(users, ({ many }) => ({
+  teamMembers: many(teamMembers),
+}));
 
 export const badges = pgTable("badges", {
   id: serial("id").primaryKey(),

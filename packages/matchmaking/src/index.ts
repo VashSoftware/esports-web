@@ -9,36 +9,41 @@ import {
 async function runMatchmaking() {}
 
 async function createMatch(
-  matchParticipantIds: number[],
-  matchParticipantPlayerIds: number[],
+  teams: { id: number; teamMemberIds: number[] }[],
   mapPoolId: number,
   bansPerMatchParticipant: number
 ) {
   await db.transaction(async (tx) => {
-    await tx
+    const match = await tx
       .insert(matches)
       .values({
+        mapPoolId,
         isRolling: true,
         currentBanner: null,
+        bansPerMatchParticipant,
         currentPicker: null,
       })
       .returning();
 
-    await tx
-      .insert(matchParticipants)
-      .values(
-        matchParticipantIds.map((mp) => {
-          return {
-            matchId: 1,
-          };
+    for (const team of teams) {
+      const matchParticipant = await tx
+        .insert(matchParticipants)
+        .values({
+          matchId: match[0].id,
+          teamId: team.id,
         })
-      )
-      .returning();
+        .returning();
 
-    await tx.insert(matchParticipantPlayers).values({}).returning();
+      for (const teamMemberId of team.teamMemberIds) {
+        await tx.insert(matchParticipantPlayers).values({
+          matchParticipantId: matchParticipant[0].id,
+          teamMemberId,
+        });
+      }
+    }
   });
 
-  await fetch("osu");
+  // await fetch("osu");
 }
 
 setInterval(() => {
@@ -46,6 +51,7 @@ setInterval(() => {
 }, 10000);
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
@@ -56,12 +62,7 @@ app.post("/create-match", async (req, res) => {
   const data = req.body;
   console.log("Creating match:", data);
 
-  await createMatch(
-    data.matchParticipantIds,
-    data.matchParticipantPlayerIds,
-    data.mapPoolId,
-    data.bansPerMatchParticipant
-  );
+  await createMatch(data.teams, data.mapPoolId, data.bansPerMatchParticipant);
 
   res.send("Match created");
 });
