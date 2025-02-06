@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 
 	let { data } = $props();
-	console.log(data.user);
 
 	let createMatchModalHidden = $state(true);
 </script>
@@ -46,7 +45,7 @@
 	<div class="text-center">
 		<label for="">Team</label>
 		<select name="team" id="">
-			{#each data.user.profile.team_members as teamMember}
+			{#each data.user.teamMembers as teamMember}
 				<option value={teamMember.team.id}>{teamMember.team.name}</option>
 			{/each}
 		</select>

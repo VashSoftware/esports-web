@@ -252,8 +252,14 @@ export const teamMembers = pgTable('team_members', {
 });
 
 export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
-	team: one(teams),
-	user: one(users)
+	team: one(teams, {
+		fields: [teamMembers.teamId],
+		references: [teams.id]
+	}),
+	user: one(users, {
+		fields: [teamMembers.userId],
+		references: [users.id]
+	})
 }));
 
 export const users = pgTable('users', {

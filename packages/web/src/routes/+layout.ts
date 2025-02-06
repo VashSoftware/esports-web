@@ -42,7 +42,8 @@ export const load: LayoutLoad = async ({ data, depends, fetch, route }) => {
 	return {
 		session,
 		supabase,
-		user,
+		supabaseUser: user,
+		user: data.user,
 		route,
 		currentMatches: data.currentMatches
 	};

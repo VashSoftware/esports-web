@@ -162,7 +162,7 @@
 							class="h-10 w-10 rounded-full object-cover"
 						/> -->
 							<div class="ml-3">
-								<p class="text-sm font-medium">{data.session?.user.email}</p>
+								<p class="text-sm font-medium">{data.user.displayName}</p>
 								<p class="text-xs text-gray-400">@{data.user?.username}</p>
 							</div>
 						</div>
