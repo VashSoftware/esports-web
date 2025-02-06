@@ -6,7 +6,7 @@
 	import { io } from 'socket.io-client';
 
 	let { children, data } = $props();
-	console.log(data.currentMatches);
+
 	let { session, supabase } = $derived(data);
 
 	onMount(() => {
@@ -114,21 +114,12 @@
 								Matches
 							</a>
 						</li>
-						<!--                    <li>
-                        <a
-                            href="/events"
-                            class="block rounded px-4 py-2 transition-colors hover:bg-black hover:bg-opacity-75"
-                        >
-                            Events
-                        </a>
-                   </li>
-   -->
 						<li>
 							<a
-								href="/leaderboard"
+								href="/events"
 								class="block rounded px-4 py-2 transition-colors hover:bg-black hover:bg-opacity-75"
 							>
-								Leaderboard
+								Events
 							</a>
 						</li>
 						<li>
@@ -141,10 +132,19 @@
 						</li>
 						<li>
 							<a
+								href="/leaderboard"
+								class="block rounded px-4 py-2 transition-colors hover:bg-black hover:bg-opacity-75"
+							>
+								Leaderboard
+							</a>
+						</li>
+
+						<li>
+							<a
 								href="/premium"
 								class="block rounded px-4 py-2 transition-colors hover:bg-black hover:bg-opacity-75"
 							>
-								Premium
+								Vash Premium
 							</a>
 						</li>
 					</ul>
